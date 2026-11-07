@@ -11,6 +11,7 @@ from skill_memory import record as record_skill, overview as skill_overview
 from lexicon_store import search as lexicon_search, count as lexicon_count
 from sentence_translation import translate as translate_sentence, split_words
 from spatial_board import save as save_board, load as load_board, list_boards
+from board_assets import store as store_board_image, read as read_board_image, recognize as recognize_page
 
 SAMPLE = {
     "tasse": LexicalItem("Tasse", "de", "чашка", "die", "/ˈtasə/"),
@@ -33,6 +34,18 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         parsed = urlparse(self.path)
+        if parsed.path.startswith("/v1/board-assets/"):
+            try:
+                binary=read_board_image(parsed.path.split("/")[3])
+            except ValueError:
+                return self.respond(400,{"error":"invalid_asset_id"})
+            if binary is None:return self.respond(404,{"error":"not_found"})
+            self.send_response(200)
+            self.send_header("Content-Type","image/png")
+            self.send_header("Content-Length",str(len(binary)))
+            self.send_header("X-Content-Type-Options","nosniff")
+            self.end_headers()
+            return self.wfile.write(binary)
         if parsed.path == "/canvas":
             page = Path(__file__).with_name("canvas.html").read_bytes()
             self.send_response(200)
@@ -134,6 +147,19 @@ class Handler(BaseHTTPRequestHandler):
         return self.respond(404, {"error": "not_found"})
 
     def do_PUT(self):
+        if self.path in ("/v1/board-assets","/v1/ocr"):
+            try:
+                length=int(self.headers.get("Content-Length","0"))
+                if not 1<=length<=8_000_000:
+                    return self.respond(413,{"error":"invalid_image_size"})
+                data=self.rfile.read(length)
+                if self.path=="/v1/board-assets":
+                    return self.respond(200,store_board_image(data))
+                lang=self.headers.get("X-OCR-Language","deu")
+                return self.respond(200,recognize_page(data,lang))
+            except ValueError as exc:
+                return self.respond(400,{"error":"invalid_image","detail":str(exc)})
+
         parts = urlparse(self.path).path.strip("/").split("/")
         if len(parts) != 4 or parts[:2] != ["v1", "mnemonics"] or parts[3] != "import-image":
             return self.respond(404, {"error": "not_found"})
