@@ -7,14 +7,37 @@ import urllib.parse
 from uuid import uuid4
 
 BASE="http://127.0.0.1:8188"
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise ValueError("ComfyUI redirects are forbidden")
+
+_opener=urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoRedirect())
+def _open(url,timeout):
+    target=url.full_url if isinstance(url,urllib.request.Request) else url
+    parsed=urllib.parse.urlsplit(target)
+    if parsed.scheme!='http' or parsed.hostname!='127.0.0.1' or parsed.username or parsed.password:
+        raise ValueError('Only local ComfyUI is permitted')
+    return _opener.open(url,timeout=timeout)
+
 def _request(path,payload=None,timeout=15):
     url=BASE+path
     data=json.dumps(payload).encode("utf-8") if payload is not None else None
     req=urllib.request.Request(url,data=data,headers={"Content-Type":"application/json"} if data else {},method="POST" if data else "GET")
-    with urllib.request.urlopen(req,timeout=timeout) as response:
-        raw=response.read(4_000_001)
+    with _open(req,timeout=timeout) as response:
+        raw=_read_bounded(response,4_000_000,timeout)
     if len(raw)>4_000_000:raise ValueError("Comfy response too large")
     return json.loads(raw)
+def _read_bounded(response,limit,timeout):
+    deadline=time.monotonic()+timeout
+    chunks=[];size=0
+    while size<=limit:
+        if time.monotonic()>=deadline:raise TimeoutError('Comfy response deadline exceeded')
+        chunk=response.read1(min(65536,limit+1-size))
+        if not chunk:break
+        chunks.append(chunk);size+=len(chunk)
+    return b''.join(chunks)
+
 def configured():
     return os.getenv("STUDY_COMFYUI_ENABLED","0")=="1"
 def _checkpoint():
@@ -183,7 +206,7 @@ def image_bytes(prompt_id,filename,subfolder=''):
     info=result(prompt_id)
     if info['status']!='complete' or not any(i['filename']==filename and i['subfolder']==subfolder for i in info['images']):raise ValueError('Image not produced by this local job')
     qs=urllib.parse.urlencode({'filename':filename,'subfolder':subfolder,'type':'output'})
-    with urllib.request.urlopen(BASE+'/view?'+qs,timeout=15) as response:data=response.read(8_000_001)
+    with _open(BASE+'/view?'+qs,timeout=15) as response:data=_read_bounded(response,8_000_000,15)
     if len(data)>8_000_000:raise ValueError('Image too large')
     from PIL import Image
     try:
