@@ -17,6 +17,7 @@ from phonovision import analyze_wav, svg as sound_svg, metaphor
 from local_speech import transcribe as offline_transcribe, align as offline_align
 from pitch_shift import shift_wav
 from mesh_export import mesh as export_mesh
+from speech_projects import save as save_speech_project, get as get_speech_project, list_projects as list_speech_projects, save_audio as save_speech_audio, read_audio as read_speech_audio
 
 SAMPLE = {
     "tasse": LexicalItem("Tasse", "de", "чашка", "die", "/ˈtasə/"),
@@ -39,6 +40,26 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         parsed = urlparse(self.path)
+        if parsed.path == "/v1/speech-projects":
+            return self.respond(200,{"items":list_speech_projects()})
+        if parsed.path.startswith("/v1/speech-projects/"):
+            parts=parsed.path.strip("/").split("/")
+            if len(parts) in (3,4):
+                try:
+                    if len(parts)==4 and parts[3]=="audio":
+                        raw=read_speech_audio(parts[2])
+                        if raw is None:return self.respond(404,{"error":"not_found"})
+                        self.send_response(200)
+                        self.send_header("Content-Type","audio/wav")
+                        self.send_header("Content-Length",str(len(raw)))
+                        self.send_header("Cache-Control","no-store")
+                        self.end_headers()
+                        return self.wfile.write(raw)
+                    if len(parts)==3:
+                        p=get_speech_project(parts[2])
+                        return self.respond(200,p) if p else self.respond(404,{"error":"not_found"})
+                except ValueError:
+                    return self.respond(400,{"error":"invalid_project_id"})
         if parsed.path.startswith("/v1/board-assets/"):
             try:
                 binary=read_board_image(parsed.path.split("/")[3])
@@ -170,6 +191,14 @@ class Handler(BaseHTTPRequestHandler):
         return self.respond(404, {"error": "not_found"})
 
     def do_PUT(self):
+        if self.path.startswith("/v1/speech-projects/") and self.path.endswith("/audio"):
+            try:
+                length=int(self.headers.get("Content-Length","0"))
+                if not 1<=length<=2_000_000:return self.respond(413,{"error":"audio_too_large"})
+                result=save_speech_audio(self.path.split("/")[3],self.rfile.read(length))
+                return self.respond(200,result)
+            except KeyError:return self.respond(404,{"error":"project_not_found"})
+            except ValueError as exc:return self.respond(400,{"error":"invalid_audio","detail":str(exc)})
         if self.path in ("/v1/board-assets","/v1/ocr","/v1/phonovision/analyze","/v1/speech/transcribe","/v1/speech/align","/v1/speech/pitch-shift"):
             try:
                 length=int(self.headers.get("Content-Length","0"))
@@ -219,7 +248,7 @@ class Handler(BaseHTTPRequestHandler):
             return self.respond(503, {"error": "pillow_not_installed"})
 
     def do_POST(self):
-        if self.path not in ("/v1/mnemonics/preview", "/v1/mnemonics", "/v1/learning/check", "/v1/learning/submit", "/v1/skills/record", "/v1/translate", "/v1/boards", "/v1/phonovision/metaphor", "/v1/phonovision/mesh") and not (self.path.startswith("/v1/mnemonics/") and self.path.endswith("/generate")):
+        if self.path not in ("/v1/mnemonics/preview", "/v1/mnemonics", "/v1/learning/check", "/v1/learning/submit", "/v1/skills/record", "/v1/translate", "/v1/boards", "/v1/phonovision/metaphor", "/v1/phonovision/mesh", "/v1/speech-projects") and not (self.path.startswith("/v1/mnemonics/") and self.path.endswith("/generate")):
             return self.respond(404, {"error": "not_found"})
         try:
             length = int(self.headers.get("Content-Length", "0"))
@@ -229,6 +258,8 @@ class Handler(BaseHTTPRequestHandler):
             data = json.loads(self.rfile.read(length))
             if not isinstance(data, dict):
                 raise ValueError("JSON object required")
+            if self.path == "/v1/speech-projects":
+                return self.respond(200,save_speech_project(data))
             if self.path == "/v1/phonovision/mesh":
                 return self.respond(200,export_mesh(data.get("spectrogram"),data.get("shape","sphere"),
                    data.get("strength",.25),data.get("label",""),data.get("profile")))
