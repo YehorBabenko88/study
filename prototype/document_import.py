@@ -5,6 +5,7 @@ PDF bytes are stored locally; extraction and OCR are processed page by page.
 import io
 import json
 import sqlite3
+from contextlib import contextmanager
 from pathlib import Path
 from uuid import uuid4,UUID
 from datetime import datetime,timezone
@@ -12,6 +13,7 @@ from visual_memory import DB,LOCK
 
 ROOT=Path(__file__).with_name("document_uploads")
 MAX_UPLOAD=100_000_000
+@contextmanager
 def _db():
     db=sqlite3.connect(DB,timeout=30)
     db.execute("""CREATE TABLE IF NOT EXISTS documents(
@@ -22,7 +24,10 @@ def _db():
       document_id TEXT NOT NULL,page_number INTEGER NOT NULL,
       text TEXT NOT NULL,method TEXT NOT NULL,
       PRIMARY KEY(document_id,page_number))""")
-    return db
+    try:
+        yield db
+    finally:
+        db.close()
 def create(data,name):
     if not isinstance(data,bytes) or not 1<=len(data)<=MAX_UPLOAD or not data.startswith(b"%PDF-"):
         raise ValueError("PDF required, up to 100 MB per upload")
