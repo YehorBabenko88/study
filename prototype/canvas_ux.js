@@ -330,6 +330,7 @@ function describePDF(job){
     if(job.status==='ocr_error')return `Ошибка OCR · ${progress}. Проверь Tesseract и немецкий язык (deu), затем нажми «Повторить OCR». Исходный PDF сохранён.`;
     if(job.status==='unavailable')return 'Обработка PDF недоступна: '+(job.reason||'проверь зависимости');
     if(job.status==='failed')return 'Обработка не завершена: '+(job.error||'неизвестная ошибка');
+    if(Number.isInteger(job.retry_pages)&&job.retry_pages>0)return progress+` · Требуют OCR: ${job.retry_pages}. Нажми «Повторить OCR» ещё раз; успешные страницы сохранены.`;
     return progress+' · '+(job.status==='complete'?'обработка завершена':job.status);
 }
 async function processPDF(retry){
