@@ -264,7 +264,7 @@ class CanvasUXBrowserTests(unittest.IsolatedAsyncioTestCase):
             body=route.request.post_data_json;requests.append(body)
             await route.fulfill(json={'id':'test-pdf','next_page':0 if not body.get('retry') else 2,
                 'page_count':2,'status':'ocr_error' if not body.get('retry') else 'complete',
-                'error':'OCR unavailable' if not body.get('retry') else ''})
+                'error':'OCR unavailable' if not body.get('retry') else '', 'retry_pages':4})
         await self.page.route('**/v1/documents/test-pdf/process',process)
         await self.page.route('**/v1/documents/test-pdf/pages/0',lambda route:route.fulfill(json={'text':'','method':'no_text'}))
         await self.page.route('**/v1/documents',lambda route:route.fulfill(json={'items':[{'id':'test-pdf','name':'Test','next_page':0,'page_count':2,'status':'ocr_error'}]}))
@@ -273,7 +273,7 @@ class CanvasUXBrowserTests(unittest.IsolatedAsyncioTestCase):
         await self.page.wait_for_function("document.getElementById('pdfStatus').textContent.includes('Ошибка OCR')")
         self.assertIn('Ошибка OCR',await self.page.locator('#pdfStatus').inner_text())
         await self.page.locator('#pdfRetry').click()
-        await self.page.wait_for_function("document.getElementById('pdfStatus').textContent.includes('обработка завершена')")
+        await self.page.wait_for_function("document.getElementById('pdfStatus').textContent.includes('Требуют OCR: 4')")
         self.assertEqual(requests[-1],{'batch':2,'ocr':True,'retry':True})
         count=await self.page.locator('.node').count()
         await self.page.locator('#pdfPage').click()
