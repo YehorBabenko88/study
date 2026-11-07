@@ -87,3 +87,25 @@ class CanvasUXBrowserTests(baseline.GestureBrowserTests):
             await self.page.wait_for_timeout(2200)
             self.assertIn('Fixture '+state,await lab.locator('#comfyStatus').inner_text())
             await self.page.unroute('**/v1/comfy/jobs/fixture-job')
+
+    async def test_two_tabs_keep_independent_drafts(self):
+        url=baseline.URL+'/canvas'
+        context=await self.browser.new_context(viewport={'width':1440,'height':900})
+        first=await context.new_page()
+        await first.goto(url)
+        second=await context.new_page()
+        try:
+            await second.goto(url)
+            for page,title,text in ((first,'Draft one','First unsaved card'),(second,'Draft two','Second unsaved card')):
+                await page.locator('.node.word').first.get_by_role('button',name='Выбрать',exact=True).click()
+                await page.locator('#title').fill(title)
+                await page.locator('#edit').fill(text)
+                await page.locator('#apply').click()
+            await self.page.wait_for_timeout(450)
+            for page,title,text in ((first,'Draft one','First unsaved card'),(second,'Draft two','Second unsaved card')):
+                await page.reload()
+                await page.locator('.node.word').first.wait_for()
+                self.assertEqual(await page.locator('#title').input_value(),title)
+                self.assertEqual(await page.locator('.node.word .body').first.inner_text(),text)
+        finally:
+            await context.close()
