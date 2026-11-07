@@ -6,6 +6,7 @@ Never sends data without STUDY_IMAGE_API_URL and STUDY_IMAGE_API_KEY.
 import base64
 import json
 import os
+import struct
 from pathlib import Path
 from urllib.request import Request, urlopen
 from urllib.parse import urlparse
@@ -86,3 +87,42 @@ def image_bytes(scene_id):
         return None
     target = MEDIA / (scene_id + ".png")
     return target.read_bytes() if target.is_file() else None
+
+def import_png(scene_id, binary):
+    """Store a user-selected PNG for a saved scene; no cloud call."""
+    scene_id = str(UUID(scene_id))
+    if get_scene(scene_id) is None:
+        raise KeyError("scene_not_found")
+    if not 24 <= len(binary) <= MAX_IMAGE_BYTES or not binary.startswith(b"\\x89PNG\\r\\n\\x1a\\n"):
+        raise ValueError("Only PNG images up to 8 MB are supported")
+    if binary[12:16] != b"IHDR":
+        raise ValueError("Invalid PNG header")
+    width, height = struct.unpack(">II", binary[16:24])
+    if not (1 <= width <= 4096 and 1 <= height <= 4096):
+        raise ValueError("Invalid image dimensions")
+    # Pillow verifies PNG decoding and CRCs when available; otherwise reject to
+    # avoid trusting a header-only check.
+    try:
+        from PIL import Image
+        from io import BytesIO
+    except ImportError as exc:
+        raise RuntimeError("Install Pillow to validate imported PNG files") from exc
+    try:
+        with Image.open(BytesIO(binary)) as im:
+            im.verify()
+        with Image.open(BytesIO(binary)) as im:
+            if im.format != "PNG" or im.size != (width, height):
+                raise ValueError("Invalid PNG content")
+            im.load()
+    except Exception as exc:
+        raise ValueError("Corrupt or unsupported PNG") from exc
+    MEDIA.mkdir(exist_ok=True)
+    target = MEDIA / (scene_id + ".png")
+    tmp = MEDIA / (scene_id + ".upload.tmp")
+    try:
+        tmp.write_bytes(binary)
+        tmp.replace(target)
+    finally:
+        tmp.unlink(missing_ok=True)
+    return {"image_url": "/v1/mnemonics/" + scene_id + "/generated-image",
+            "bytes": len(binary), "source": "user_import"}
