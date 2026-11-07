@@ -1,5 +1,6 @@
 """Local spatial board persistence, separate from mnemonic scenes."""
 import json
+import math
 import sqlite3
 from uuid import uuid4,UUID
 from visual_memory import connection,LOCK
@@ -24,8 +25,15 @@ def validate(doc):
             raise ValueError("invalid text")
         for key in ("x","y"):
             val=n.get(key,0)
-            if not isinstance(val,(int,float)) or not -100000<=val<=100000:
+            if isinstance(val,bool) or not isinstance(val,(int,float)) or not math.isfinite(val) or not -100000<=val<=100000:
                 raise ValueError("invalid coordinate")
+        if "scene_id" in n:
+            if n["type"]!="image" or not isinstance(n["scene_id"],str):
+                raise ValueError("scene reference only allowed on image nodes")
+            try:
+                UUID(n["scene_id"])
+            except ValueError as exc:
+                raise ValueError("invalid scene reference") from exc
     for e in edges:
         if not isinstance(e,dict) or e.get("from") not in ids or e.get("to") not in ids:
             raise ValueError("dangling edge")
