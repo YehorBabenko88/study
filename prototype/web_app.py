@@ -47,6 +47,15 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("X-Content-Type-Options","nosniff")
             self.end_headers()
             return self.wfile.write(binary)
+        if parsed.path == "/phonovision-3d":
+            page = Path(__file__).with_name("phonovision_3d.html").read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type","text/html; charset=utf-8")
+            self.send_header("Content-Length",str(len(page)))
+            self.send_header("Cache-Control","no-store")
+            self.send_header("X-Content-Type-Options","nosniff")
+            self.end_headers()
+            return self.wfile.write(page)
         if parsed.path == "/canvas":
             page = Path(__file__).with_name("canvas.html").read_bytes()
             self.send_response(200)
