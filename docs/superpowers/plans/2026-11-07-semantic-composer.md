@@ -39,4 +39,3 @@ generation_request(revision) -> text-only request or explicit unsupported-mode e
 - [x] Implement SQLite append-only API and safe detached request builder.
 - [x] Run focused tests, full prototype unittest suite, diff checks.
 - [x] Document exact contract, limitations and verification; commit and push own branch, create Draft PR.
-
