@@ -93,7 +93,7 @@ def import_png(scene_id, binary):
     scene_id = str(UUID(scene_id))
     if get_scene(scene_id) is None:
         raise KeyError("scene_not_found")
-    if not 24 <= len(binary) <= MAX_IMAGE_BYTES or not binary.startswith(b"\\x89PNG\\r\\n\\x1a\\n"):
+    if not 24 <= len(binary) <= MAX_IMAGE_BYTES or not binary.startswith(b"\x89PNG\r\n\x1a\n"):
         raise ValueError("Only PNG images up to 8 MB are supported")
     if binary[12:16] != b"IHDR":
         raise ValueError("Invalid PNG header")
