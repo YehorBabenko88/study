@@ -146,4 +146,3 @@ def undo_link(document, token):
     elif token['operation'] != 'none': raise ValueError('invalid undo operation')
     _graph(result)
     return result
-
