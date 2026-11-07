@@ -17,6 +17,9 @@ def connection():
     db=sqlite3.connect(DB,timeout=30)
     try:
         yield db
+    except BaseException:
+        db.rollback()
+        raise
     finally:
         db.close()
 
@@ -63,7 +66,7 @@ def save(data):
 
 def get(pid):
     pid=str(UUID(pid))
-    with LOCK,sqlite3.connect(DB,timeout=30) as db:
+    with LOCK,connection() as db:
         init(db)
         row=db.execute("SELECT id,title,lang,transcript,segments_json,has_audio,updated_at FROM speech_projects WHERE id=?",(pid,)).fetchone()
     if row is None:return None
@@ -72,7 +75,7 @@ def get(pid):
             "audio_url":"/v1/speech-projects/"+pid+"/audio" if row[5] else None,"updated_at":row[6]}
 
 def list_projects():
-    with LOCK,sqlite3.connect(DB,timeout=30) as db:
+    with LOCK,connection() as db:
         init(db)
         rows=db.execute("SELECT id,title,lang,transcript,has_audio,updated_at FROM speech_projects ORDER BY updated_at DESC LIMIT 100").fetchall()
     return [{"id":a,"title":b,"lang":c,"transcript":d[:160],"has_audio":bool(e),"updated_at":f} for a,b,c,d,e,f in rows]
@@ -91,7 +94,7 @@ def save_audio(pid,data):
     temp=AUDIO_DIR/(pid+".tmp")
     temp.write_bytes(data)
     temp.replace(dest)
-    with LOCK,sqlite3.connect(DB,timeout=30) as db:
+    with LOCK,connection() as db:
         init(db)
         db.execute("UPDATE speech_projects SET has_audio=1,updated_at=? WHERE id=?",(datetime.now(timezone.utc).isoformat(),pid))
         db.commit()
