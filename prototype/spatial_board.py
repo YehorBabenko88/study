@@ -19,7 +19,7 @@ def validate(doc):
         if not isinstance(n,dict) or not isinstance(n.get("id"),str) or len(n["id"])>80 or n["id"] in ids:
             raise ValueError("invalid node id")
         ids.add(n["id"])
-        if n.get("type") not in ("word","syllable","image","sentence","note"):
+        if n.get("type") not in ("letter","word","syllable","image","sentence","note","action"):
             raise ValueError("invalid node type")
         if not isinstance(n.get("text",""),str) or len(n.get("text",""))>5000:
             raise ValueError("invalid text")
@@ -44,6 +44,8 @@ def validate(doc):
     for e in edges:
         if not isinstance(e,dict) or e.get("from") not in ids or e.get("to") not in ids:
             raise ValueError("dangling edge")
+        if e.get("relation","association") not in ("association","part_of","sequence","meaning","sound","action"):
+            raise ValueError("invalid relation")
     return {"nodes":nodes,"edges":edges}
 
 def save(doc,board_id=None,title="Моя доска"):
