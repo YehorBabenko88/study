@@ -1,4 +1,5 @@
 import tempfile
+import threading
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -80,6 +81,30 @@ class PDFOCRRetryTests(unittest.TestCase):
             self.assertEqual(second['retry_pages'],0)
         self.assertEqual(engine.call_count,6)
         self.assertEqual(d.page(pid,5)['method'],'ocr_no_text')
+
+    def test_concurrent_late_failure_does_not_overwrite_recovered_text(self):
+        with patch.object(pytesseract,'image_to_string',side_effect=RuntimeError('unavailable')):
+            d.process(self.job,batch=2,ocr=True)
+        entered=threading.Event();succeeded=threading.Event();errors=[]
+        def engine(*args,**kwargs):
+            if threading.current_thread().name=='late-failure':
+                entered.set()
+                if succeeded.wait(.5):raise RuntimeError('late engine failure')
+                raise RuntimeError('engine still unavailable')
+            return 'Recovered result must survive'
+        def run(name):
+            try:d.process(self.job,batch=1,ocr=True,retry=True)
+            except Exception as error:errors.append(error)
+            finally:
+                if name=='success':succeeded.set()
+        with patch.object(pytesseract,'image_to_string',side_effect=engine):
+            first=threading.Thread(target=run,args=('late-failure',),name='late-failure')
+            first.start();self.assertTrue(entered.wait(2))
+            second=threading.Thread(target=run,args=('success',),name='success');second.start()
+            first.join(5);second.join(5)
+        self.assertFalse(first.is_alive() or second.is_alive());self.assertEqual(errors,[])
+        self.assertEqual(d.page(self.job,1)['text'],'Recovered result must survive')
+        self.assertEqual(d.status(self.job)['status'],'complete')
 
 
 if __name__ == '__main__':

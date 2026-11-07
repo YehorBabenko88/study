@@ -10,9 +10,13 @@ from pathlib import Path
 from uuid import uuid4,UUID
 from datetime import datetime,timezone
 from visual_memory import DB,LOCK
+from threading import Lock
+from weakref import WeakValueDictionary
 
 ROOT=Path(__file__).with_name("document_uploads")
 MAX_UPLOAD=100_000_000
+_PROCESS_GUARD=Lock()
+_PROCESS_LOCKS=WeakValueDictionary()
 @contextmanager
 def _db():
     db=sqlite3.connect(DB,timeout=30)
@@ -58,6 +62,17 @@ def list_documents():
         rows=db.execute("SELECT id,name,page_count,next_page,status,error FROM documents ORDER BY created_at DESC LIMIT 100").fetchall()
     return [dict(zip(("id","name","page_count","next_page","status","error"),r)) for r in rows]
 def process(pid,batch=2,ocr=False,retry=False):
+    pid=str(UUID(pid))
+    # Keep concurrent tabs from committing stale OCR failures over a recovered page.
+    # Weak references release idle per-document locks instead of retaining job IDs.
+    with _PROCESS_GUARD:
+        lock=_PROCESS_LOCKS.get(pid)
+        if lock is None:
+            lock=Lock();_PROCESS_LOCKS[pid]=lock
+    with lock:
+        return _process(pid,batch,ocr,retry)
+
+def _process(pid,batch=2,ocr=False,retry=False):
     pid=str(UUID(pid));job=status(pid)
     if job is None:raise KeyError("document_not_found")
     if type(batch) is not int or not 1<=batch<=5:raise ValueError("Batch 1–5")

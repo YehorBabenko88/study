@@ -84,6 +84,29 @@ class Acceptance(unittest.TestCase):
         self.assertEqual(request('/v1/boards',body,'POST')[0],200)
         self.assertEqual(request('/v1/boards',body,'POST',{'Origin':URL})[0],200)
 
+    def test_full_body_forgery_has_no_side_effects(self):
+        import board_assets
+        import visual_memory
+        from study_core import LexicalItem,Anchor,build_scene
+        from PIL import Image
+        scene=visual_memory.save(build_scene(LexicalItem('Tasse','de','cup','die'),[Anchor('ta','plate','cup')]))
+        sid=scene['scene_id']
+        buf=io.BytesIO();Image.new('RGB',(16,16),'orange').save(buf,'PNG')
+        before_boards=json.loads(request('/v1/boards')[1])
+        before_assets=set(board_assets.ROOT.glob('*.png'))
+        for headers in ({},{'Origin':'https://attacker.invalid'},{'Host':'attacker.invalid'}):
+            for method,path,body in [('POST','/v1/boards',b'{"nodes":[],"edges":[],"title":"forgery"}'),('PUT','/v1/board-assets',buf.getvalue()),('DELETE','/v1/mnemonics/'+sid,None)]:
+                with self.subTest(method=method,headers=headers):
+                    try:
+                        status,_=request(path,body,method,headers,csrf=False)
+                        self.assertIn(status,(400,403))
+                    except ConnectionResetError:
+                        status='Windows early-rejection reset'
+                    self.assertEqual(json.loads(request('/v1/boards')[1]),before_boards)
+                    self.assertEqual(set(board_assets.ROOT.glob('*.png')),before_assets)
+                    self.assertIsNotNone(visual_memory.get_scene(sid))
+                    print('FULL_BODY_REJECTION',method,headers,status,'no side effects',flush=True)
+
     def test_mock_comfy_http_roundtrip(self):
         import comfy_adapter as c
         from PIL import Image
