@@ -306,7 +306,11 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         parts=urlparse(self.path).path.strip("/").split("/")
         if len(parts)==5 and parts[:3]==["v1","comfy","jobs"] and parts[4]=="cancel":
-            try:return self.respond(200,comfy_cancel(parts[3]))
+            try:
+                length=int(self.headers.get("Content-Length","0"))
+                if not 0<=length<=MAX_BODY:return self.respond(413,{"error":"invalid_body_length"})
+                self.rfile.read(length)
+                return self.respond(200,comfy_cancel(parts[3]))
             except KeyError:return self.respond(404,{"error":"job_not_found"})
             except ValueError:return self.respond(400,{"error":"invalid_job"})
         if self.path not in ("/v1/mnemonics/preview", "/v1/mnemonics", "/v1/learning/check", "/v1/learning/submit", "/v1/skills/record", "/v1/translate", "/v1/boards", "/v1/phonovision/metaphor", "/v1/phonovision/mesh", "/v1/speech-projects", "/v1/comfy/generate") and not self.path.startswith("/v1/documents/") and not (self.path.startswith("/v1/mnemonics/") and self.path.endswith("/generate")):
