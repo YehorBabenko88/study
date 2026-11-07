@@ -5,11 +5,20 @@ Metadata in SQLite, optional PCM WAV in separate directory. No automatic cloud u
 import io
 import json
 import sqlite3
+from contextlib import contextmanager
 import wave
 from datetime import datetime, timezone
 from pathlib import Path
 from uuid import uuid4, UUID
 from visual_memory import DB, LOCK
+
+@contextmanager
+def connection():
+    db=sqlite3.connect(DB,timeout=30)
+    try:
+        yield db
+    finally:
+        db.close()
 
 AUDIO_DIR=Path(__file__).with_name("speech_audio")
 MAX_AUDIO=2_000_000
@@ -42,7 +51,7 @@ def save(data):
     project_id=data.get("id")
     pid=str(UUID(project_id)) if project_id else str(uuid4())
     now=datetime.now(timezone.utc).isoformat()
-    with LOCK,sqlite3.connect(DB,timeout=30) as db:
+    with LOCK,connection() as db:
         init(db)
         db.execute("""INSERT INTO speech_projects(id,created_at,updated_at,title,lang,transcript,segments_json,has_audio)
             VALUES(?,?,?,?,?,?,?,0) ON CONFLICT(id) DO UPDATE SET
