@@ -40,6 +40,14 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         parsed = urlparse(self.path)
+        if parsed.path in ("/","/home"):
+            page=Path(__file__).with_name("home.html").read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type","text/html; charset=utf-8")
+            self.send_header("Content-Length",str(len(page)))
+            self.send_header("Cache-Control","no-store")
+            self.end_headers()
+            return self.wfile.write(page)
         if parsed.path == "/v1/speech-projects":
             return self.respond(200,{"items":list_speech_projects()})
         if parsed.path.startswith("/v1/speech-projects/"):
@@ -72,7 +80,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("X-Content-Type-Options","nosniff")
             self.end_headers()
             return self.wfile.write(binary)
-        if parsed.path in ("/acoustic-studio", "/phonovision-3d"):
+        if parsed.path in ("/acoustic-studio", "/phonovision-3d", "/spectral-relief"):
             page = Path(__file__).with_name("acoustic_studio.html").read_bytes()
             self.send_response(200)
             self.send_header("Content-Type","text/html; charset=utf-8")
@@ -81,7 +89,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("X-Content-Type-Options","nosniff")
             self.end_headers()
             return self.wfile.write(page)
-        if parsed.path == "/spectral-relief":
+        if parsed.path == "/legacy-spectral-relief":
             page = Path(__file__).with_name("phonovision_3d.html").read_bytes()
             self.send_response(200)
             self.send_header("Content-Type","text/html; charset=utf-8")
@@ -106,7 +114,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self.respond(200,item) if item else self.respond(404,{"error":"not_found"})
             except ValueError:
                 return self.respond(400,{"error":"invalid_board_id"})
-        if parsed.path == "/board":
+        if parsed.path == "/legacy-board":
             page = Path(__file__).with_name("board.html").read_bytes()
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
@@ -115,7 +123,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("X-Content-Type-Options", "nosniff")
             self.end_headers()
             return self.wfile.write(page)
-        if parsed.path in ("/", "/study.html"):
+        if parsed.path == "/legacy-study":
             page = Path(__file__).with_name("study.html").read_bytes()
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
