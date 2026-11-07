@@ -9,11 +9,22 @@ const $=id=>document.getElementById(id);let nodes=[],edges=[],selected=null,link
 const legacyDraftKey="study.canvas.draft.v1";
 // A tab owns its draft identity across reloads; other tabs never overwrite it.
 let draftSessionId;try{draftSessionId=sessionStorage.getItem("study.canvas.draft.session");if(!draftSessionId){draftSessionId=ids();sessionStorage.setItem("study.canvas.draft.session",draftSessionId)}}catch{draftSessionId=ids()}
-const draftKey=legacyDraftKey+":"+draftSessionId;let draftReady=false,draftTimer=null;
+let draftKey=legacyDraftKey+":"+draftSessionId,inheritedDraft=null;let draftReady=false,draftTimer=null;
+function forkDraft(){try{inheritedDraft=localStorage.getItem(draftKey)}catch{}draftSessionId=ids();draftKey=legacyDraftKey+":"+draftSessionId;try{sessionStorage.setItem("study.canvas.draft.session",draftSessionId)}catch{}}
+function initializeDraft(){
+ // sessionStorage is cloned by popups and duplicate tabs. A held browser lock
+ // establishes live ownership before any draft write and forks cloned identities.
+ if(navigator.locks?.request){navigator.locks.request("study.canvas.draft:"+draftSessionId,{ifAvailable:true},lock=>{
+  if(!lock){forkDraft();initializeDraft();return}
+  recoverDraft();return new Promise(resolve=>window.addEventListener("pagehide",resolve,{once:true}));
+ }).catch(()=>status("Черновик недоступен: не удалось получить блокировку. Сохрани доску кнопкой «Сохранить»."));return}
+ try{if(window.opener&&window.opener!==window&&window.opener.location.origin===location.origin&&window.opener.sessionStorage.getItem("study.canvas.draft.session")===draftSessionId)forkDraft()}catch{}
+ recoverDraft();
+}
 function writeDraft(){if(!draftReady)return;try{localStorage.setItem(draftKey,JSON.stringify({version:1,boardId,title:$("title").value,nodes,edges,scale,offset,savedAt:Date.now()},(key,value)=>key==="_dragStarted"?undefined:value))}catch{status("Черновик не сохранён: хранилище браузера недоступно. Сохрани доску кнопкой «Сохранить».")}}
 function scheduleDraft(){if(!draftReady)return;clearTimeout(draftTimer);draftTimer=setTimeout(writeDraft,250)}
-function recoverDraft(){try{const d=JSON.parse(localStorage.getItem(draftKey)||localStorage.getItem(legacyDraftKey)||"null");if(d?.version===1&&Array.isArray(d.nodes)&&d.nodes.length<=10000&&d.nodes.every(n=>n&&typeof n.id==="string"&&typeof n.type==="string"&&typeof n.text==="string"&&Number.isFinite(n.x)&&Number.isFinite(n.y))&&Array.isArray(d.edges)&&d.edges.every(e=>e&&typeof e.from==="string"&&typeof e.to==="string")){nodes=d.nodes;edges=d.edges;boardId=typeof d.boardId==="string"?d.boardId:null;$("title").value=typeof d.title==="string"?d.title:"Моя доска";if(Number.isFinite(d.scale))scale=Math.max(.2,Math.min(3,d.scale));if(Number.isFinite(d.offset?.x)&&Number.isFinite(d.offset?.y))offset=d.offset;renderTransform();status("Локальный черновик восстановлен. Сохрани доску для постоянного хранения.")}}catch{status("Черновик не удалось восстановить; сохранённые доски доступны в «Мои доски».")}draftReady=true;writeDraft()}
-$("title").addEventListener("input",scheduleDraft);window.addEventListener("pagehide",writeDraft);
+function recoverDraft(){try{const d=JSON.parse(localStorage.getItem(draftKey)||inheritedDraft||localStorage.getItem(legacyDraftKey)||"null");if(d?.version===1&&Array.isArray(d.nodes)&&d.nodes.length<=10000&&d.nodes.every(n=>n&&typeof n.id==="string"&&typeof n.type==="string"&&typeof n.text==="string"&&Number.isFinite(n.x)&&Number.isFinite(n.y))&&Array.isArray(d.edges)&&d.edges.every(e=>e&&typeof e.from==="string"&&typeof e.to==="string")){nodes=d.nodes;edges=d.edges;boardId=typeof d.boardId==="string"?d.boardId:null;$("title").value=typeof d.title==="string"?d.title:"Моя доска";if(Number.isFinite(d.scale))scale=Math.max(.2,Math.min(3,d.scale));if(Number.isFinite(d.offset?.x)&&Number.isFinite(d.offset?.y))offset=d.offset;renderTransform();status("Локальный черновик восстановлен. Сохрани доску для постоянного хранения.")}}catch{status("Черновик не удалось восстановить; сохранённые доски доступны в «Мои доски».")}draftReady=true;writeDraft()}
+$("title").addEventListener("input",scheduleDraft);window.addEventListener("pagehide",writeDraft);window.addEventListener("pageshow",e=>{if(e.persisted){draftReady=false;initializeDraft()}});
 const api=async(path,opt)=>{const r=await fetch(path,opt),d=await r.json();if(!r.ok)throw Error(d.detail||d.error||r.status);return d};
 const post=(path,d)=>api(path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)});
 function status(s){$("status").textContent=s}
@@ -100,7 +111,7 @@ $("attachScene").onclick=()=>{const sid=$("sceneChoice").value;if(!sid)return;co
 async function refreshBoards(){try{const d=await api("/v1/boards");$("boards").replaceChildren();for(const b of d.items){const btn=document.createElement("button");btn.textContent=b.title;btn.onclick=async()=>{try{const doc=await api("/v1/boards/"+b.id);boardId=doc.id;undoStack=[];redoStack=[];nodes=doc.nodes;edges=doc.edges;$("title").value=doc.title;selected=null;draw();status("Доска загружена")}catch(e){status(e.message)}};$("boards").append(btn)}}catch(e){status(e.message)}}
 $("load").onclick=refreshBoards;
 add("sentence","Ich stelle die Tasse auf den Tisch.",40,30);const n=add("word","Tasse",50,190);const a=add("syllable","Tas",290,150),b=add("syllable","se",290,275);edges=[{from:n.id,to:a.id},{from:n.id,to:b.id}];draw();undoStack=[];redoStack=[];renderTransform();refreshBoards();refreshScenes();refreshDocuments().then(()=>{const id=new URLSearchParams(location.search).get("document");if(id){$("documentList").value=id;$("pdfStatus").textContent="PDF загружен. Нажми «Обработать следующие страницы», затем «Добавить страницу на доску»."}});refreshSpeech().then(async()=>{const id=new URLSearchParams(location.search).get("project");if(id){$("speechList").value=id;try{await loadSpeech();$("speechGraph").click()}catch(e){status(e.message)}}});
-recoverDraft();
+initializeDraft();
 </script><script>document.querySelectorAll(".study-topnav a").forEach(a=>{if(a.dataset.tab==="canvas")a.setAttribute("aria-current","page")})</script><script>
 (function(){const toggle=document.getElementById("splitToggle");if(!toggle)return;const embedded=window.parent!==window&&window.parent.location.origin===location.origin&&window.parent.location.pathname==="/workspace";if(embedded){toggle.textContent="▣ Закрыть две панели";toggle.setAttribute("aria-pressed","true");toggle.href="/canvas";toggle.target="_top"}else{toggle.setAttribute("aria-pressed","false")}})();
 </script></body></html>
