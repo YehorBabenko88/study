@@ -91,6 +91,15 @@ class APISecurityTests(unittest.TestCase):
             self.assertEqual(self.request('GET', '/health', [('Host', host)])[0], 200)
         self.assertEqual(self.request('GET', '/v1/security/bootstrap', [('Host', self.authority), ('Sec-Fetch-Site', 'cross-site')])[0], 403)
 
+    def test_pdf_retry_route_preserves_typed_values_for_validation(self):
+        token = self.token()
+        headers = [('Host', self.authority), ('X-Study-CSRF', token)]
+        with patch.object(web_app, 'process_document', return_value={'status':'ocr_error'}) as process:
+            status, _, _ = self.request('POST', '/v1/documents/id/process', headers,
+                                       b'{"batch":2,"ocr":"false","retry":true}')
+            self.assertEqual(status, 200)
+            process.assert_called_once_with('id', 2, 'false', True)
+
 
 if __name__ == '__main__':
     unittest.main()

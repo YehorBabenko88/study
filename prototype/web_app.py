@@ -20,7 +20,7 @@ from pitch_shift import shift_wav
 from mesh_export import mesh as export_mesh
 from speech_projects import save as save_speech_project, get as get_speech_project, list_projects as list_speech_projects, save_audio as save_speech_audio, read_audio as read_speech_audio
 from document_import import create as create_document, process as process_document, status as document_status, page as document_page, list_documents
-from comfy_adapter import configured as comfy_configured, submit as comfy_submit, result as comfy_result, image_bytes as comfy_image, cancel as comfy_cancel, list_jobs as comfy_jobs, QueueFull
+from comfy_adapter import configured as comfy_configured, submit as comfy_submit, result as comfy_result, image_bytes as comfy_image, cancel as comfy_cancel, list_jobs as comfy_jobs, consume_generation_request, QueueFull
 
 SAMPLE = {
     "tasse": LexicalItem("Tasse", "de", "чашка", "die", "/ˈtasə/"),
@@ -349,9 +349,14 @@ class Handler(BaseHTTPRequestHandler):
             if not isinstance(data, dict):
                 raise ValueError("JSON object required")
             if self.path.startswith("/v1/documents/") and self.path.endswith("/process"):
-                return self.respond(200,process_document(self.path.split("/")[3],data.get("batch",2),bool(data.get("ocr",False))))
+                return self.respond(200,process_document(self.path.split("/")[3],data.get("batch",2),data.get("ocr",False),data.get("retry",False)))
             if self.path=="/v1/comfy/generate":
-                return self.respond(200,comfy_submit(data.get("prompt",""),data.get("seed",0),data.get("request_id")))
+                if "contract_version" in data:
+                    request = {k:v for k,v in data.items() if k != "request_id"}
+                    return self.respond(200,consume_generation_request(request,data.get("request_id")))
+                if set(data)-{"prompt","seed","request_id","width","height","steps"}:
+                    raise ValueError("Unsupported generation fields")
+                return self.respond(200,comfy_submit(data.get("prompt",""),data.get("seed",0),data.get("request_id"),width=data.get("width",512),height=data.get("height",512),steps=data.get("steps",20)))
             if self.path == "/v1/speech-projects":
                 return self.respond(200,save_speech_project(data))
             if self.path == "/v1/phonovision/mesh":

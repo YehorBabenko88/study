@@ -101,8 +101,8 @@ class JobRegistry:
                 'created_at':row[5], 'updated_at':row[6], 'images':json.loads(row[7] or '[]'),
                 'error':json.loads(row[8]) if row[8] else None}
 
-    def submit(self,prompt,seed=0,request_id=None):
-        payload=json.dumps({'prompt':workflow(prompt,seed=seed)},sort_keys=True)
+    def submit(self,prompt,seed=0,request_id=None,*,width=512,height=512,steps=20):
+        payload=json.dumps({'prompt':workflow(prompt,seed=seed,width=width,height=height,steps=steps)},sort_keys=True)
         request_id=request_id or str(uuid4())
         if not isinstance(request_id,str) or not re.fullmatch(r'[A-Za-z0-9_.:-]{1,120}',request_id):
             raise ValueError('Invalid request_id')
@@ -193,9 +193,22 @@ def registry():
                 timeout=float(os.getenv('STUDY_COMFYUI_TIMEOUT','120')))
         return _registry
 
-def submit(prompt,seed=0,request_id=None):
+def submit(prompt,seed=0,request_id=None,*,width=512,height=512,steps=20):
     if not configured():return {'status':'unavailable','reason':'comfyui_not_enabled'}
-    return registry().submit(prompt,seed,request_id)
+    return registry().submit(prompt,seed,request_id,width=width,height=height,steps=steps)
+
+def consume_generation_request(request,request_id=None):
+    """Consume the composer v1 text-only contract; never accept workflow nodes."""
+    if not isinstance(request,dict) or set(request)!={'contract_version','mode','prompt','parameters','references'}:
+        raise ValueError('Invalid generation request fields')
+    if type(request['contract_version']) is not int or request['contract_version']!=1 or request['mode']!='text_to_image' or request['references']!=[]:
+        raise ValueError('Only v1 text_to_image with empty references is supported')
+    parameters=request['parameters']
+    if not isinstance(parameters,dict) or set(parameters)!={'seed','width','height','steps'}:
+        raise ValueError('Invalid generation parameters')
+    # Validate even while disabled, before creating any job or contacting ComfyUI.
+    workflow(request['prompt'],**parameters)
+    return submit(request['prompt'],request_id=request_id,**parameters)
 
 def result(prompt_id):return registry().result(prompt_id)
 def cancel(prompt_id):return registry().cancel(prompt_id)

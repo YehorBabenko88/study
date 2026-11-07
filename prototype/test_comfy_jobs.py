@@ -26,7 +26,7 @@ class FakeComfyTests(unittest.TestCase):
             def log_message(self,*a):pass
             def do_POST(self):
                 owner.posts+=1
-                self.rfile.read(int(self.headers['Content-Length']))
+                owner.payload=json.loads(self.rfile.read(int(self.headers['Content-Length'])))
                 self.send_response(200);self.end_headers()
                 self.wfile.write(json.dumps({'prompt_id':'12345678-1234-1234-1234-123456789012'}).encode())
             def do_GET(self):
@@ -55,6 +55,26 @@ class FakeComfyTests(unittest.TestCase):
         with self.assertRaises(KeyError):self.registry.result('12345678-1234-1234-1234-123456789012')
     def test_execution_failure(self):
         self.mode='error';self.assertEqual(self.wait(self.registry.submit('cup'))['status'],'failed')
+    def test_parameters_reach_comfy_and_are_bound_to_request_id(self):
+        job=self.registry.submit('cup',seed=42,width=768,height=512,steps=35,request_id='parameters')
+        self.assertEqual(self.wait(job)['status'],'complete')
+        self.assertEqual(self.payload['prompt']['4']['inputs'],{'width':768,'height':512,'batch_size':1})
+        self.assertEqual(self.payload['prompt']['5']['inputs']['steps'],35)
+        self.assertEqual(self.payload['prompt']['5']['inputs']['seed'],42)
+        again=self.registry.submit('cup',seed=42,width=768,height=512,steps=35,request_id='parameters')
+        self.assertEqual(again['job_id'],job['job_id'])
+        self.assertEqual(self.posts,1)
+        with self.assertRaises(ValueError):
+            self.registry.submit('cup',seed=42,width=512,height=512,steps=35,request_id='parameters')
+    def test_versioned_request_rejects_workflows_and_image_conditioning(self):
+        request={'contract_version':1,'mode':'text_to_image','prompt':'cup',
+                 'parameters':{'seed':3,'width':512,'height':768,'steps':5},'references':[]}
+        with patch.object(c,'_registry',self.registry),patch.dict(os.environ,{'STUDY_COMFYUI_ENABLED':'1'}):
+            job=c.consume_generation_request(request,request_id='composer-v1')
+            self.assertEqual(self.wait(job)['status'],'complete')
+            self.assertEqual(self.payload['prompt']['4']['inputs']['height'],768)
+            for bad in (dict(request,mode='image_conditioned'),dict(request,references=['asset']),dict(request,workflow={}),dict(request,contract_version=True)):
+                with self.subTest(bad=bad),self.assertRaises(ValueError):c.consume_generation_request(bad)
     def test_deadline(self):
         self.mode='pending';self.assertEqual(self.wait(self.registry.submit('cup'))['status'],'timed_out')
     def test_cancel_does_not_complete(self):
@@ -94,6 +114,11 @@ class HttpContractTests(unittest.TestCase):
                     self.assertEqual(json.load(urllib.request.urlopen(req))['status'],'cancelled')
                     with self.assertRaises(urllib.error.HTTPError) as caught:urllib.request.urlopen(base+'/v1/comfy/jobs/12345678-1234-1234-1234-123456789012')
                     self.assertEqual(caught.exception.code,404)
+                    for extra in ('workflow','references','url'):
+                        req=urllib.request.Request(base+'/v1/comfy/generate',data=json.dumps({'prompt':'cup',extra:{}}).encode(),headers={'X-Study-CSRF':token})
+                        with self.assertRaises(urllib.error.HTTPError) as rejected:urllib.request.urlopen(req)
+                        self.assertEqual(rejected.exception.code,400)
+                    self.assertEqual(len(registry.list()),1)
                 finally:server.shutdown();server.server_close();thread.join();registry.close()
 
     def test_png_validation(self):
