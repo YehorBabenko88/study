@@ -87,4 +87,3 @@ class CanvasUXBrowserTests(baseline.GestureBrowserTests):
             await self.page.wait_for_timeout(2200)
             self.assertIn('Fixture '+state,await lab.locator('#comfyStatus').inner_text())
             await self.page.unroute('**/v1/comfy/jobs/fixture-job')
-
