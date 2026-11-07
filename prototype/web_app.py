@@ -1,6 +1,7 @@
 """Local-only, in-memory Study web demonstration. NOT a production server."""
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, parse_qs
+from pathlib import Path
 import json
 from study_core import LexicalItem, Anchor, build_scene, check_recall
 
@@ -24,6 +25,15 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         parsed = urlparse(self.path)
+        if parsed.path in ("/", "/study.html"):
+            page = Path(__file__).with_name("study.html").read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(page)))
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.end_headers()
+            return self.wfile.write(page)
         if parsed.path == "/health":
             return self.respond(200, {"status": "ok", "mode": "local-demo"})
         if parsed.path == "/v1/lexicon/search":
