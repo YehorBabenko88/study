@@ -18,6 +18,7 @@ SAMPLE = {
     "stuhl": LexicalItem("Stuhl", "de", "стул", "der", "/ʃtuːl/"),
 }
 MAX_BODY = 16384
+MAX_BOARD_BODY = 4_000_000
 
 class Handler(BaseHTTPRequestHandler):
     def respond(self, status, data):
@@ -156,7 +157,8 @@ class Handler(BaseHTTPRequestHandler):
             return self.respond(404, {"error": "not_found"})
         try:
             length = int(self.headers.get("Content-Length", "0"))
-            if length < 1 or length > MAX_BODY:
+            max_body = MAX_BOARD_BODY if self.path == "/v1/boards" else MAX_BODY
+            if length < 1 or length > max_body:
                 return self.respond(413, {"error": "invalid_body_length"})
             data = json.loads(self.rfile.read(length))
             if not isinstance(data, dict):
