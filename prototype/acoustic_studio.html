@@ -83,4 +83,13 @@ window.addEventListener("message",e=>{if(e.origin!==location.origin||e.source!==
 demoSpectrum();refreshSpeech();
 </script><script>document.querySelectorAll(".study-topnav a").forEach(a=>{if(a.dataset.tab==="lab")a.setAttribute("aria-current","page")})</script><script>
 (function(){const toggle=document.getElementById("splitToggle");if(!toggle)return;const embedded=window.parent!==window&&window.parent.location.origin===location.origin&&window.parent.location.pathname==="/workspace";if(embedded){toggle.textContent="▣ Закрыть две панели";toggle.setAttribute("aria-pressed","true");toggle.href="/phonovision-3d";toggle.target="_top"}else{toggle.setAttribute("aria-pressed","false")}})();
+</script><script>
+(function(){
+ const button=document.createElement("button");button.id="sendSphereToBoard";button.textContent="Передать сферу выбранной карточке";
+ button.onclick=()=>{if(window.parent===window)return $("compositionStatus").textContent="Открой режим двух панелей";window.parent.postMessage({kind:"study-keyboard-transfer",payload:{kind:"image",text:"Звуковая сфера",data_url:$("sphere").toDataURL("image/png")}},location.origin)};
+ $("sphere").after(button);
+ const send=document.createElement("button");send.textContent="Передать готовый образ выбранной карточке";
+ send.onclick=()=>{const image=$("comfyImage").style.display!=="none"?$("comfyImage"):$("referencePreview");if(!image.getAttribute("src"))return $("compositionStatus").textContent="Сначала выбери образ";if(window.parent===window)return $("compositionStatus").textContent="Открой режим двух панелей";window.parent.postMessage({kind:"study-keyboard-transfer",payload:{kind:"image",text:$("imagePrompt").value.slice(0,120),asset_id:image.id==="referencePreview"?referenceAssetId:null,url:image.src}},location.origin)};
+ $("sendReference").after(send);
+})();
 </script></body></html>
