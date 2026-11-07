@@ -321,4 +321,42 @@ window.addEventListener('storage',event=>{if(event.key===draftKey&&event.newValu
 // Flush the departing board before a board-list click starts its asynchronous load.
 $('boards').addEventListener('click',flushDraft,true);
 $('save').addEventListener('click',flushDraft,true);
+
+// PDF processing contract shared with Agent D: errors are recoverable, empty pages are explicit.
+const pdfRetry=uxButton('Повторить OCR ошибочных страниц',()=>processPDF(true));pdfRetry.id='pdfRetry';
+$('pdfNext').after(pdfRetry);
+function describePDF(job){
+    const progress=`${job.next_page??0}/${job.page_count??'?'} страниц`;
+    if(job.status==='ocr_error')return `Ошибка OCR · ${progress}. Проверь Tesseract и немецкий язык (deu), затем нажми «Повторить OCR». Исходный PDF сохранён.`;
+    if(job.status==='unavailable')return 'Обработка PDF недоступна: '+(job.reason||'проверь зависимости');
+    if(job.status==='failed')return 'Обработка не завершена: '+(job.error||'неизвестная ошибка');
+    return progress+' · '+(job.status==='complete'?'обработка завершена':job.status);
+}
+async function processPDF(retry){
+    const id=$('documentList').value;if(!id)return;
+    $('pdfNext').disabled=true;pdfRetry.disabled=true;$('pdfStatus').textContent=retry?'Повторное распознавание...':'Обработка страниц...';
+    try{
+        const result=await post('/v1/documents/'+encodeURIComponent(id)+'/process',retry?{batch:2,ocr:true,retry:true}:{batch:2,ocr:$('pdfOcr').checked});
+        await refreshDocuments();$('documentList').value=id;$('pdfStatus').textContent=describePDF(result);
+    }catch(error){$('pdfStatus').textContent='PDF: '+error.message;}
+    finally{$('pdfNext').disabled=false;pdfRetry.disabled=false;}
+}
+$('pdfNext').onclick=()=>processPDF(false);
+$('pdfPage').onclick=async()=>{
+    const id=$('documentList').value;if(!id)return;
+    try{
+        const index=Number($('pageNumber').value)-1;
+        if(!Number.isInteger(index)||index<0)throw Error('Укажи номер страницы от 1');
+        const page=await api('/v1/documents/'+encodeURIComponent(id)+'/pages/'+index);
+        if(['ocr_error','ocr_unavailable'].includes(page.method))return $('pdfStatus').textContent='Ошибка OCR этой страницы. Нажми «Повторить OCR». Исходник сохранён.';
+        if(!page.text?.trim())return $('pdfStatus').textContent=page.method==='ocr_no_text'?'OCR завершён: текст на странице не найден. Проверь качество исходного скана.':'На странице нет текстового слоя. Включи OCR или нажми «Повторить OCR».';
+        const words=page.text.trim().split(/\s+/u);if(words.length>500)throw Error('Страница содержит более 500 слов: разбей на части');
+        const pos=screenToWorld(stage.getBoundingClientRect().left+110,stage.getBoundingClientRect().top+100);
+        atomic(()=>{
+            const parent={id:ids(),type:'sentence',text:'Страница '+(index+1),x:pos.x,y:pos.y};nodes.push(parent);let previous=null;
+            words.forEach((text,i)=>{const node={id:ids(),type:'word',text,x:pos.x+(i%5)*205,y:pos.y+150+Math.floor(i/5)*115};nodes.push(node);edges.push({from:parent.id,to:node.id,relation:'part_of'});if(previous)edges.push({from:previous.id,to:node.id,relation:'sequence'});previous=node;});draw();
+        });
+        $('pdfStatus').textContent=`Страница ${index+1} добавлена: ${words.length} карточек.`;
+    }catch(error){$('pdfStatus').textContent='PDF: '+error.message;}
+};
 draw();activateDraftKey();
