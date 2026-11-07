@@ -20,7 +20,7 @@ small{color:#596579}
 <button id="check">Проверить без подсказки</button>
 <p><small>Локальный демонстратор: три проверенных вручную примера, без AI, PostgreSQL и сохранения данных. Сначала запусти web_app.py. Открывай HTML как локальный файл.</small></p>
 </main><script>
-const base="http://127.0.0.1:8766", output=document.getElementById("output");
+const base=window.location.origin, output=document.getElementById("output");
 async function request(path,opts){try{const r=await fetch(base+path,opts);output.textContent=JSON.stringify(await r.json(),null,2)}catch(e){output.textContent="Сервер недоступен: "+e.message}}
 function val(id){return document.getElementById(id).value}
 function post(path,data){return request(path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})}
