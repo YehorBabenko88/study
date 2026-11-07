@@ -8,6 +8,7 @@ from visual_memory import save, list_scenes, get_scene, delete_scene, svg
 from ai_images import configured, generate, image_bytes, import_png
 from learning_memory import due_scenes, submit, stats
 from skill_memory import record as record_skill, overview as skill_overview
+from lexicon_store import search as lexicon_search, count as lexicon_count
 
 SAMPLE = {
     "tasse": LexicalItem("Tasse", "de", "чашка", "die", "/ˈtasə/"),
@@ -45,6 +46,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self.respond(404, {"error":"scene_not_found"})
             except ValueError:
                 return self.respond(400, {"error":"invalid_scene_id"})
+        if parsed.path == "/v1/lexicon/stats":
+            return self.respond(200, {"entries":lexicon_count(),"status":"imported_sources_only"})
         if parsed.path == "/v1/learning/due":
             return self.respond(200, {"items": due_scenes()})
         if parsed.path.startswith("/v1/learning/stats/"):
@@ -87,8 +90,14 @@ class Handler(BaseHTTPRequestHandler):
             return self.respond(200, {"status": "ok", "mode": "local-demo"})
         if parsed.path == "/v1/lexicon/search":
             q = parse_qs(parsed.query).get("q", [""])[0].strip().casefold()
-            result = [vars(v) for v in SAMPLE.values() if q and (q in v.lemma.casefold() or q in v.translation.casefold())]
-            return self.respond(200, {"items": result, "source": "hand-curated demo only"})
+            lang = parse_qs(parsed.query).get("lang",["de"])[0]
+            try:
+                result = lexicon_search(q,lang=lang)
+            except ValueError:
+                return self.respond(400, {"error":"invalid_search"})
+            if not result and lang == "de":
+                result = [vars(v) for v in SAMPLE.values() if q and (q in v.lemma.casefold() or q in v.translation.casefold())]
+            return self.respond(200, {"items":result,"source":"imported_lexicon_or_demo_fallback"})
         return self.respond(404, {"error": "not_found"})
 
     def do_DELETE(self):
