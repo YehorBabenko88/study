@@ -1,0 +1,4 @@
+study_local.sqlite3
+study_local.sqlite3-*
+__pycache__/
+*.pyc
