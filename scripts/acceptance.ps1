@@ -5,6 +5,7 @@ param(
 )
 $ErrorActionPreference = "Stop"
 $repo = Split-Path $PSScriptRoot -Parent
+if (Test-Path -LiteralPath $Python) { $Python = (Resolve-Path -LiteralPath $Python).Path }
 New-Item -ItemType Directory -Force -Path $LogDirectory | Out-Null
 $LogDirectory = (Resolve-Path -LiteralPath $LogDirectory).Path
 # Read-only test runner: fixtures own TemporaryDirectory instances; no cleanup of user paths.
