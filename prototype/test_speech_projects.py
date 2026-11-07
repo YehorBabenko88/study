@@ -20,6 +20,22 @@ class SpeechProjectsTests(unittest.TestCase):
   speech_projects.save_audio(p["id"],b.getvalue())
   self.assertEqual(speech_projects.read_audio(p["id"]),b.getvalue())
   self.assertTrue(speech_projects.get(p["id"])["has_audio"])
+ def test_connections_are_explicitly_closed(self):
+  from unittest.mock import patch as mock_patch
+  original=speech_projects.sqlite3.connect
+  connections=[]
+  def tracked(*args,**kwargs):
+   conn=original(*args,**kwargs)
+   connections.append(conn)
+   return conn
+  with mock_patch.object(speech_projects.sqlite3,"connect",side_effect=tracked):
+   project=speech_projects.save({"title":"Close handles","lang":"de","transcript":"Hallo","segments":[]})
+   speech_projects.get(project["id"])
+   speech_projects.list_projects()
+  self.assertGreaterEqual(len(connections),3)
+  for conn in connections:
+   with self.assertRaises(speech_projects.sqlite3.ProgrammingError):
+    conn.execute("SELECT 1")
  def test_invalid_segment(self):
   with self.assertRaises(ValueError):
    speech_projects.save({"segments":[{"label":"a","t":float("nan")}]})
