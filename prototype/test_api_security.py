@@ -100,6 +100,14 @@ class APISecurityTests(unittest.TestCase):
             self.assertEqual(status, 200)
             process.assert_called_once_with('id', 2, 'false', True)
 
+    def test_browser_scripts_are_served_as_javascript(self):
+        for path in ('/canvas-ux.js', '/study-fetch.js'):
+            with self.subTest(path=path):
+                status, headers, raw = self.request('GET', path, [('Host', self.authority)])
+                self.assertEqual(status, 200)
+                self.assertTrue(headers['Content-Type'].startswith('application/javascript'))
+                self.assertGreater(len(raw), 100)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -56,7 +56,8 @@ class Handler(BaseHTTPRequestHandler):
         if parsed.path == "/v1/security/bootstrap":
             return self.respond(200, {"csrf_token": csrf_token(self.server)})
         if parsed.path in ("/study-fetch.js", "/canvas-ux.js"):
-            asset = Path(__file__).with_name(parsed.path[1:])
+            filename = {"/study-fetch.js": "study-fetch.js", "/canvas-ux.js": "canvas_ux.js"}[parsed.path]
+            asset = Path(__file__).with_name(filename)
             if not asset.is_file():
                 return self.respond(404, {"error": "not_found"})
             raw = asset.read_bytes()
@@ -164,15 +165,6 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("X-Content-Type-Options","nosniff")
             self.end_headers()
             return self.wfile.write(page)
-        if parsed.path == "/canvas-ux.js":
-            script = Path(__file__).with_name("canvas_ux.js").read_bytes()
-            self.send_response(200)
-            self.send_header("Content-Type", "text/javascript; charset=utf-8")
-            self.send_header("Content-Length", str(len(script)))
-            self.send_header("Cache-Control", "no-store")
-            self.send_header("X-Content-Type-Options", "nosniff")
-            self.end_headers()
-            return self.wfile.write(script)
         if parsed.path == "/canvas":
             page = Path(__file__).with_name("canvas.html").read_bytes()
             self.send_response(200)
