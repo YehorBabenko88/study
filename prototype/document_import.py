@@ -68,7 +68,7 @@ def process(pid,batch=2,ocr=False,retry=False):
     try:
         if retry:
             with LOCK,_db() as db:
-                numbers=[r[0] for r in db.execute("SELECT page_number FROM document_pages WHERE document_id=? AND method IN ('ocr_error','ocr_unavailable','no_text','ocr_no_text') ORDER BY page_number LIMIT ?",(pid,batch))]
+                numbers=[r[0] for r in db.execute("SELECT page_number FROM document_pages WHERE document_id=? AND method IN ('ocr_error','ocr_unavailable','no_text') ORDER BY page_number LIMIT ?",(pid,batch))]
         else:
             numbers=range(job['next_page'],min(job['next_page']+batch,job['page_count']))
         with fitz.open(ROOT/(pid+".pdf")) as pdf:
