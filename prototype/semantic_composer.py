@@ -75,6 +75,15 @@ def _asset(value):
     return value
 
 
+def _source_asset(value):
+    """Match old spatial_board UUID spellings; normalize only in the manifest."""
+    _string(value, 80, 'source asset ID')
+    try:
+        return str(UUID(value))
+    except (ValueError, AttributeError) as exc:
+        raise ValueError('Invalid source asset ID') from exc
+
+
 def _clean(value):
     # Prompt sanitation is not a guarantee against natural-language injection.
     return ' '.join(''.join(' ' if unicodedata.category(c).startswith('C') else c
@@ -105,7 +114,8 @@ def generation_request(revision):
     This function deliberately cannot produce image-conditioned requests. Agent A
     must implement actual byte upload/workflow wiring before extending it.
     """
-    if type(revision) is not dict or revision.get('schema_version') != 1:
+    if (type(revision) is not dict or type(revision.get('schema_version')) is not int
+            or revision['schema_version'] != 1):
         raise ValueError('Expected composer schema version 1')
     mode = revision.get('mode')
     if mode == 'image_conditioned':
@@ -114,8 +124,11 @@ def generation_request(revision):
         raise ValueError('Invalid mode')
     prompt = _clean(_string(revision.get('effective_prompt'), 1200, 'effective prompt'))
     _string(prompt, 1200, 'effective prompt')
+    parameters = revision.get('parameters')
+    if type(parameters) is not dict or set(parameters) != set(DEFAULT_PARAMETERS):
+        raise ValueError('Stored revision must specify all generation parameters')
     return {'contract_version': 1, 'mode': mode, 'prompt': prompt,
-            'parameters': _parameters(revision.get('parameters')), 'references': []}
+            'parameters': _parameters(parameters), 'references': []}
 
 
 _UNSET = object()
@@ -155,8 +168,18 @@ class CompositionStore:
                     job_id TEXT PRIMARY KEY REFERENCES semantic_jobs(job_id),
                     payload TEXT NOT NULL
                 );
+                CREATE TABLE IF NOT EXISTS semantic_submissions (
+                    request_id TEXT PRIMARY KEY,
+                    revision_id TEXT NOT NULL REFERENCES semantic_revisions(revision_id),
+                    payload TEXT NOT NULL
+                );
+                CREATE TABLE IF NOT EXISTS semantic_submission_links (
+                    request_id TEXT PRIMARY KEY REFERENCES semantic_submissions(request_id),
+                    job_id TEXT NOT NULL UNIQUE REFERENCES semantic_jobs(job_id)
+                );
             ''')
-            for table in ('semantic_revisions', 'semantic_jobs', 'semantic_results'):
+            for table in ('semantic_revisions', 'semantic_jobs', 'semantic_results',
+                          'semantic_submissions', 'semantic_submission_links'):
                 for operation in ('UPDATE', 'DELETE'):
                     db.execute(f'''CREATE TRIGGER IF NOT EXISTS {table}_no_{operation.lower()}
                         BEFORE {operation} ON {table}
@@ -229,26 +252,107 @@ class CompositionStore:
                                  (parent['composition_id'],)).fetchone()[0]
             return self._append(db, scene, parent['composition_id'], version, revision_id)
 
-    def record_job(self, revision_id, prompt_id):
-        """Record a real accepted ComfyUI job, not a submission attempt.
+    def prepare_submission(self, revision_id, *, request_id=None):
+        """Durably snapshot a request before network I/O; same ID is idempotent.
 
-        Call only after the adapter receives prompt_id. No network request here.
-        Duplicate prompt IDs are rejected to prevent ambiguous provenance.
+        Send this exact request with this request_id to A's persistent registry.
+        If the process crashes, recovery_state() exposes the unlinked intent.
         """
-        _string(prompt_id, 200, 'ComfyUI prompt ID')
+        request_id = str(uuid4()) if request_id is None else request_id
+        _string(request_id, 120, 'request ID')
+        if any(c not in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_.:-'
+               for c in request_id):
+            raise ValueError('Invalid request ID')
         with self._connection() as db:
+            db.execute('BEGIN IMMEDIATE')
             revision = self._load(db, revision_id)
             request = generation_request(revision)
+            existing = db.execute('SELECT payload FROM semantic_submissions WHERE request_id=?',
+                                  (request_id,)).fetchone()
+            if existing:
+                intent = json.loads(existing[0])
+                if intent['revision_id'] != revision_id or intent['request'] != request:
+                    raise ValueError('request_id already belongs to another revision/request')
+                return intent
+            intent = {'request_id': request_id, 'revision_id': revision_id,
+                      'request': request, 'created_at': datetime.now(timezone.utc).isoformat()}
+            db.execute('INSERT INTO semantic_submissions VALUES (?,?,?)',
+                       (request_id, revision_id, _json(intent)))
+            return intent
+
+    def record_job(self, revision_id, prompt_id, *, backend='comfyui', request_id=None):
+        """Record an accepted backend job, not a submission attempt.
+
+        backend='study_local' means A's persistent queue UUID, not the upstream
+        ComfyUI prompt ID. Legacy calls default to backend='comfyui'. Intent-backed
+        binds are atomic and idempotent for the exact same revision/job/namespace.
+        """
+        _string(prompt_id, 200, 'ComfyUI prompt ID')
+        if backend not in ('comfyui', 'study_local'):
+            raise ValueError('Unknown backend ID namespace')
+        if request_id is not None:
+            _string(request_id, 120, 'request ID')
+        with self._connection() as db:
+            db.execute('BEGIN IMMEDIATE')
+            revision = self._load(db, revision_id)
+            request = generation_request(revision)
+            if request_id is not None:
+                row = db.execute('SELECT payload FROM semantic_submissions WHERE request_id=?',
+                                 (request_id,)).fetchone()
+                if row is None:
+                    raise KeyError(request_id)
+                intent = json.loads(row[0])
+                if intent['revision_id'] != revision_id or intent['request'] != request:
+                    raise ValueError('Submission intent does not match revision/request')
+                linked = db.execute('''SELECT j.payload FROM semantic_jobs j
+                    JOIN semantic_submission_links l ON l.job_id=j.job_id
+                    WHERE l.request_id=?''', (request_id,)).fetchone()
+                if linked:
+                    job = json.loads(linked[0])
+                    if job['prompt_id'] != prompt_id or job.get('backend', 'comfyui') != backend:
+                        raise ValueError('Submission is already bound to a different backend job')
+                    return job
             job = {'job_id': str(uuid4()), 'revision_id': revision_id,
                    'prompt_id': prompt_id, 'request': request,
+                   'backend': backend, 'request_id': request_id,
                    'created_at': datetime.now(timezone.utc).isoformat(),
                    'reference_images_transmitted': False}
             try:
                 db.execute('INSERT INTO semantic_jobs VALUES (?,?,?,?)',
                            (job['job_id'], revision_id, prompt_id, _json(job)))
+                if request_id is not None:
+                    db.execute('INSERT INTO semantic_submission_links VALUES (?,?)',
+                               (request_id, job['job_id']))
             except sqlite3.IntegrityError as exc:
                 raise ValueError('ComfyUI prompt ID already recorded') from exc
         return job
+
+    def find_job(self, prompt_id, *, backend='comfyui'):
+        """Reverse lookup after restart; never confuse local/upstream namespaces."""
+        _string(prompt_id, 200, 'backend job ID')
+        if backend not in ('comfyui', 'study_local'):
+            raise ValueError('Unknown backend ID namespace')
+        with self._connection() as db:
+            row = db.execute('SELECT payload FROM semantic_jobs WHERE prompt_id=?', (prompt_id,)).fetchone()
+        job = json.loads(row[0]) if row else None
+        return job if job and job.get('backend', 'comfyui') == backend else None
+
+    def recovery_state(self):
+        """Return unlinked durable intents and accepted jobs lacking final results.
+
+        Caller resubmits intents with the SAME request_id to the idempotent backend
+        and polls unfinished jobs by the recorded namespace ID. Never infer success
+        from a missing result, and never silently replace interrupted generation.
+        """
+        with self._connection() as db:
+            intents = db.execute('''SELECT s.payload FROM semantic_submissions s
+                LEFT JOIN semantic_submission_links l ON l.request_id=s.request_id
+                WHERE l.request_id IS NULL ORDER BY s.rowid''').fetchall()
+            jobs = db.execute('''SELECT j.payload FROM semantic_jobs j
+                LEFT JOIN semantic_results r ON r.job_id=j.job_id
+                WHERE r.job_id IS NULL ORDER BY j.rowid''').fetchall()
+        return {'unlinked_submissions': [json.loads(row[0]) for row in intents],
+                'unfinished_jobs': [json.loads(row[0]) for row in jobs]}
 
     def record_result(self, job_id, *, status, outputs=None, error=None):
         """Append one terminal result. Each image is attributed to this job/revision.
@@ -330,11 +434,11 @@ def compose(graph, roots, *, direction='outgoing', max_depth=4, max_nodes=24,
         if type(assets) is not list or len(assets) > 12:
             raise ValueError('Invalid image gallery')
         for asset in assets:
-            _asset(asset)
+            _source_asset(asset)
         if len(set(assets)) != len(assets):
             raise ValueError('Duplicate gallery asset')
         if 'asset_id' in node:
-            _asset(node['asset_id'])
+            _source_asset(node['asset_id'])
         by_id[nid] = node
     for edge in edges:
         if (type(edge) is not dict or type(edge.get('from')) is not str
@@ -382,9 +486,9 @@ def compose(graph, roots, *, direction='outgoing', max_depth=4, max_nodes=24,
     references = []
     for nid in selected:
         node = by_id[nid]
-        assets = set(node.get('image_assets', []))
+        assets = {_source_asset(asset) for asset in node.get('image_assets', [])}
         if 'asset_id' in node:
-            assets.add(node['asset_id'])
+            assets.add(_source_asset(node['asset_id']))
         references.extend({'node_id': nid, 'asset_id': asset} for asset in sorted(assets))
     if len({ref['asset_id'] for ref in references}) > 8:
         raise ValueError('Selection exceeds 8 reference images')

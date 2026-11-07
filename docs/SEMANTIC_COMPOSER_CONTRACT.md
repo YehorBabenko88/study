@@ -2,8 +2,9 @@
 
 Scope: issue #8. Implementation: `prototype/semantic_composer.py`. No existing
 backend, canvas, board, gallery, adapter or database schema files are modified.
-This is the proposed executable boundary for agent A; it has not yet been
-independently accepted by agent A or integrated into HTTP routes.
+The v1 boundary was explicitly confirmed by agent A during the integration
+handoff. A implements it at commit `5a30317ff21fcba5a81845e3f5383e458e52e147`.
+B's branch remains independent; no shared HTTP/UI files are changed here.
 
 ## Compile and review
 
@@ -70,7 +71,10 @@ edges; ID 80 characters, node text 5000 characters, 12 gallery assets per node;
 selection 1..64 nodes and 0..256 edges, depth 0..32; 8 unique reference assets;
 1200 characters each for suggested/effective/user prompt. A manual edit does not
 bypass an oversized automatic description. UUID assets must be canonical lowercase
-hyphenated strings. Finite strict JSON only; unsupported types/keys reject.
+hyphenated strings for new outputs. Old source UUID spellings accepted by
+spatial_board (including compact/braced/uppercase forms) remain unchanged in
+snapshots and normalize only in the reference manifest. Finite strict JSON only;
+unsupported types/keys reject.
 Stored revision envelopes have a separate 8 MB cap to accommodate snapshot
 re-escaping and duplicated selected-edge metadata without reducing the source cap.
 
@@ -105,22 +109,35 @@ not copy image bytes or prevent another service from deleting an asset.
 }
 ```
 
+This is the final v1 request: exactly these five top-level fields and four
+parameter keys. revision.schema_version must be the integer 1 (not boolean), and
+stored parameters must be complete; missing settings reject instead of silently
+reverting to defaults. No source references are transmitted for text_to_image.
+The request ID is a separate transport/idempotency argument, not a sixth field.
+
 Seeds: integer 0..2^53-1; width/height: 512 or 768; steps: 5..35. Unknown parameter
 keys reject. Defaults: seed 0, 512x512, 20 steps. These match existing
 `comfy_adapter.workflow(prompt, **parameters)`. CFG/sampler/checkpoint remain the
 reviewed adapter's responsibility. Same compiler input yields identical prompt and
 fingerprint; exact GPU pixels also depend on model/workflow/runtime versions.
 
-Agent A should expose a submission method accepting the entire request, enforce
-existing ComfyUI opt-in, use all parameters, and return the actual `prompt_id`.
-The current `comfy_adapter.submit(prompt, seed)` only accepts seed: it can be used
-only with default dimensions/steps. Do not silently discard non-default parameters.
-This module performs no network calls or automatic generation.
+Agent A confirmed and implemented `consume_generation_request(request,
+request_id=None)` with strict v1 validation and opt-in. The compatible flat method
+is `submit(prompt, seed=0, request_id=None, *, width=512, height=512, steps=20)`;
+JobRegistry.submit has the same signature. Parameters reach the trusted workflow
+and bind the idempotency payload; reusing request_id with different settings
+rejects. The old base-branch submit lacks these keyword arguments and must not be
+used for this lifecycle. semantic_composer.py itself performs no network calls;
+semantic_composer_example.py demonstrates the actual adapter calls.
 
 After actual successful submission:
 
 ```python
-job = store.record_job(edited["revision_id"], actual_comfy_prompt_id)
+intent = store.prepare_submission(edited["revision_id"])
+accepted = comfy_adapter.consume_generation_request(intent["request"],
+                                                    request_id=intent["request_id"])
+job = store.record_job(edited["revision_id"], accepted["job_id"],
+                       backend="study_local", request_id=intent["request_id"])
 # On completion, A validates the ComfyUI output, saves each new asset, hashes its
 # stored bytes, and records terminal provenance. The old assets stay untouched.
 store.record_result(job["job_id"], status="complete", outputs=[
@@ -129,7 +146,12 @@ store.record_result(job["job_id"], status="complete", outputs=[
 # Or: store.record_result(job["job_id"], status="failed", error="GPU unavailable")
 ```
 
-`record_job` snapshots the request from the stored revision. `record_result`
+`record_job` snapshots the request from the stored revision. A's job_id/prompt_id
+are aliases for the **local persistent queue UUID**, namespace study_local. They
+are not the private upstream ComfyUI ID. B's own job_id identifies its provenance
+record; B's prompt_id retains the adapter's local UUID. Legacy record_job calls
+default to backend=comfyui for backwards compatibility and are never relabeled.
+`record_result`
 appends one terminal outcome; `job_history(revision_id)` returns jobs in insertion
 order with optional result. Every result has job_id and revision_id, so each image
 traces through the job to original graph, selected elements, prompt and seed.
@@ -137,12 +159,34 @@ Retry creates another real job; changed parameters create a child revision first
 Duplicate prompt IDs and overwriting terminal outcomes reject. Output metadata is
 a caller assertion; the composer does not claim to verify pixels or asset hashes.
 
-The caller must submit exactly `generation_request(stored_revision)`; don't submit
-a mutated detached draft and then record a different stored revision. Submission
-and SQLite recording are not a distributed transaction: if the process crashes
-after submission, reconcile the returned ComfyUI ID before resubmitting. Record
-full reviewed workflow, checkpoint hashes and runtime in agent A's execution log
-when bitwise image reproducibility is required.
+The caller must submit exactly the persisted intent request. `prepare_submission`
+commits a stable request_id and request before network I/O. `record_job` commits
+the accepted ID and intent link in one transaction; repeating the identical bind
+returns the old record. Intent/request/revision/namespace mismatches reject.
+`recovery_state()` returns unlinked_submissions and unfinished_jobs after reopening
+the file; `find_job(prompt_id, backend='study_local')` reverses the association.
+
+Recovery protocol:
+
+1. For every unlinked submission, call A with its original request and request_id.
+   A's durable registry returns the same local UUID if it already accepted it;
+   otherwise it queues it once. Persist the returned link. A must retain its DB
+   and compatible checkpoint/workflow configuration; never generate a fresh ID
+   merely to work around an idempotency mismatch.
+2. Poll unfinished jobs by the stored local UUID; never send upstream Comfy IDs to
+   A's ownership-checked lookup. Complete results save new assets and one terminal
+   event. cancelled/timed_out/interrupted/failed map to a failed B event retaining
+   backend_status and diagnostic error. An interrupted job is not auto-regenerated.
+3. Unknown local IDs or unavailable backends leave the intent/job recoverable for
+   explicit reconciliation. Retry with changed parameters uses a new revision and
+   a new request_id. Old versions, jobs and source data remain intact.
+
+This closes the accepted-before-bind crash window while both databases persist;
+it is not a distributed transaction. A changed checkpoint configuration or lost
+queue DB still requires explicit reconciliation. Output asset saving and final
+event storage are also not atomic; a crash in between may leave an orphan asset,
+but cannot overwrite an old result. Record the reviewed workflow, checkpoint
+hashes and runtime in A's execution log for bitwise image reproducibility.
 
 ## Image-conditioned capability (unavailable)
 
@@ -172,9 +216,10 @@ Focused: `python -m unittest discover -s prototype -p test_semantic_composer.py 
 Tests use temporary databases and in-memory graphs, never learner assets/data.
 No live ComfyUI inference or image-conditioned smoke test is performed here.
 
-Verified on Python 3.12.3 / Windows: 23 composer tests passed; full discovery ran
+Initial verification on Python 3.12.3 / Windows: 23 composer tests passed; discovery ran
 122 tests, with 116 passing and 6 skipped (five Playwright/STUDY_E2E_URL browser
 tests and one missing-PyMuPDF PDF test). Existing baseline was 99 tests with the
 same 6 skips. Independent review identified the source/envelope byte-limit
 mismatch; a failing regression test reproduced it before the fix. No other
-important review findings remained. CI status is recorded in the Draft PR.
+important review findings remained. The completed integration handoff and latest
+test matrix are recorded in SEMANTIC_COMPOSER_HANDOFF.md and Draft PR #16.
