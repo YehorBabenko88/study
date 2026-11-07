@@ -32,7 +32,7 @@ def create(data,name):
     if not isinstance(data,bytes) or not 1<=len(data)<=MAX_UPLOAD or not data.startswith(b"%PDF-"):
         raise ValueError("PDF required, up to 100 MB per upload")
     if not isinstance(name,str) or len(name)>200:raise ValueError("Invalid filename")
-    try:import fitz
+    try:import pymupdf as fitz
     except ImportError:return {"status":"unavailable","reason":"pymupdf_missing"}
     try:
         with fitz.open(stream=data,filetype="pdf") as doc:
@@ -55,31 +55,48 @@ def list_documents():
     with LOCK,_db() as db:
         rows=db.execute("SELECT id,name,page_count,next_page,status,error FROM documents ORDER BY created_at DESC LIMIT 100").fetchall()
     return [dict(zip(("id","name","page_count","next_page","status","error"),r)) for r in rows]
-def process(pid,batch=2,ocr=False):
+def process(pid,batch=2,ocr=False,retry=False):
     pid=str(UUID(pid));job=status(pid)
     if job is None:raise KeyError("document_not_found")
-    if not isinstance(batch,int) or not 1<=batch<=5:raise ValueError("Batch 1–5")
-    try:import fitz
+    if type(batch) is not int or not 1<=batch<=5:raise ValueError("Batch 1–5")
+    if type(ocr) is not bool or type(retry) is not bool:raise ValueError("OCR and retry must be booleans")
+    if retry and not ocr:raise ValueError("Retry requires OCR")
+    if job['status']=='ocr_error' and not retry:return job
+    try:import pymupdf as fitz
     except ImportError:return {"status":"unavailable","reason":"pymupdf_missing"}
     from PIL import Image
     try:
+        if retry:
+            with LOCK,_db() as db:
+                numbers=[r[0] for r in db.execute("SELECT page_number FROM document_pages WHERE document_id=? AND method IN ('ocr_error','ocr_unavailable','no_text','ocr_no_text') ORDER BY page_number LIMIT ?",(pid,batch))]
+        else:
+            numbers=range(job['next_page'],min(job['next_page']+batch,job['page_count']))
         with fitz.open(ROOT/(pid+".pdf")) as pdf:
-            for i in range(job["next_page"],min(job["next_page"]+batch,job["page_count"])):
-                page=pdf[i];text=page.get_text("text",sort=True);method="pdf_text"
-                if ocr and len(text.strip())<40:
+            for i in numbers:
+                page=pdf[i];text=page.get_text("text",sort=True);method="pdf_text" if text.strip() else "no_text"
+                error=''
+                if ocr and not text.strip():
                     try:
                         import pytesseract
                         pix=page.get_pixmap(matrix=fitz.Matrix(1.5,1.5),alpha=False)
                         image=Image.frombytes("RGB",(pix.width,pix.height),pix.samples)
                         text=pytesseract.image_to_string(image,lang="deu",config="--psm 3",timeout=30)
-                        method="tesseract_unverified"
-                    except Exception:
-                        method="ocr_unavailable";text=""
+                        method="tesseract_unverified" if text.strip() else "ocr_no_text"
+                    except Exception as exc:
+                        method="ocr_error"
+                        error='OCR unavailable or failed; check Tesseract and deu language data, then Retry. '+type(exc).__name__
                 with LOCK,_db() as db:
                     db.execute("INSERT OR REPLACE INTO document_pages VALUES(?,?,?,?)",(pid,i,text[:100000],method))
-                    db.execute("UPDATE documents SET next_page=?,status=? WHERE id=?",
-                               (i+1,"complete" if i+1==job["page_count"] else "processing",pid))
+                    rows=dict(db.execute('SELECT page_number,method FROM document_pages WHERE document_id=?',(pid,)))
+                    next_page=0
+                    while next_page<job['page_count'] and next_page in rows and rows[next_page] not in ('ocr_error','ocr_unavailable'):
+                        next_page+=1
+                    has_error=any(value in ('ocr_error','ocr_unavailable') for value in rows.values())
+                    state='ocr_error' if has_error else ('complete' if next_page==job['page_count'] else 'processing')
+                    db.execute("UPDATE documents SET next_page=?,status=?,error=? WHERE id=?",
+                               (next_page,state,error if error else (job['error'] if has_error else ''),pid))
                     db.commit()
+                if method=='ocr_error':break
     except Exception as exc:
         with LOCK,_db() as db:
             db.execute("UPDATE documents SET status='failed',error=? WHERE id=?",(str(exc)[:300],pid));db.commit()
