@@ -18,6 +18,8 @@ from local_speech import transcribe as offline_transcribe, align as offline_alig
 from pitch_shift import shift_wav
 from mesh_export import mesh as export_mesh
 from speech_projects import save as save_speech_project, get as get_speech_project, list_projects as list_speech_projects, save_audio as save_speech_audio, read_audio as read_speech_audio
+from document_import import create as create_document, process as process_document, status as document_status, page as document_page, list_documents
+from comfy_adapter import configured as comfy_configured, submit as comfy_submit, result as comfy_result, image_bytes as comfy_image
 
 SAMPLE = {
     "tasse": LexicalItem("Tasse", "de", "чашка", "die", "/ˈtasə/"),
@@ -56,6 +58,33 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("Cache-Control","no-store")
             self.end_headers()
             return self.wfile.write(page)
+        if parsed.path == "/v1/documents":
+            return self.respond(200,{"items":list_documents()})
+        if parsed.path.startswith("/v1/documents/"):
+            parts=parsed.path.strip("/").split("/")
+            try:
+                if len(parts)==3:
+                    p=document_status(parts[2])
+                    return self.respond(200,p) if p else self.respond(404,{"error":"not_found"})
+                if len(parts)==5 and parts[3]=="pages":
+                    p=document_page(parts[2],int(parts[4]))
+                    return self.respond(200,p) if p else self.respond(404,{"error":"page_not_ready"})
+            except ValueError:return self.respond(400,{"error":"invalid_document"})
+        if parsed.path=="/v1/comfy/status":
+            return self.respond(200,{"enabled":comfy_configured()})
+        if parsed.path.startswith("/v1/comfy/jobs/"):
+            parts=parsed.path.strip("/").split("/")
+            try:
+                if len(parts)==4:return self.respond(200,comfy_result(parts[3]))
+                if len(parts)==5 and parts[4]=="image":
+                    q=parse_qs(parsed.query)
+                    raw=comfy_image(parts[3],q.get("filename",[""])[0],q.get("subfolder",[""])[0])
+                    self.send_response(200)
+                    self.send_header("Content-Type","image/png")
+                    self.send_header("Content-Length",str(len(raw)))
+                    self.end_headers()
+                    return self.wfile.write(raw)
+            except Exception:return self.respond(502,{"error":"comfy_result_unavailable"})
         if parsed.path == "/v1/speech-projects":
             return self.respond(200,{"items":list_speech_projects()})
         if parsed.path.startswith("/v1/speech-projects/"):
@@ -207,6 +236,13 @@ class Handler(BaseHTTPRequestHandler):
         return self.respond(404, {"error": "not_found"})
 
     def do_PUT(self):
+        if self.path=="/v1/documents":
+            try:
+                size=int(self.headers.get("Content-Length","0"))
+                if not 1<=size<=100_000_000:return self.respond(413,{"error":"pdf_too_large"})
+                return self.respond(200,create_document(self.rfile.read(size),self.headers.get("X-Document-Name","book.pdf")[:200]))
+            except ValueError as exc:return self.respond(400,{"error":"invalid_pdf","detail":str(exc)})
+
         if self.path.startswith("/v1/speech-projects/") and self.path.endswith("/audio"):
             try:
                 length=int(self.headers.get("Content-Length","0"))
@@ -264,7 +300,7 @@ class Handler(BaseHTTPRequestHandler):
             return self.respond(503, {"error": "pillow_not_installed"})
 
     def do_POST(self):
-        if self.path not in ("/v1/mnemonics/preview", "/v1/mnemonics", "/v1/learning/check", "/v1/learning/submit", "/v1/skills/record", "/v1/translate", "/v1/boards", "/v1/phonovision/metaphor", "/v1/phonovision/mesh", "/v1/speech-projects") and not (self.path.startswith("/v1/mnemonics/") and self.path.endswith("/generate")):
+        if self.path not in ("/v1/mnemonics/preview", "/v1/mnemonics", "/v1/learning/check", "/v1/learning/submit", "/v1/skills/record", "/v1/translate", "/v1/boards", "/v1/phonovision/metaphor", "/v1/phonovision/mesh", "/v1/speech-projects", "/v1/comfy/generate") and not self.path.startswith("/v1/documents/") and not (self.path.startswith("/v1/mnemonics/") and self.path.endswith("/generate")):
             return self.respond(404, {"error": "not_found"})
         try:
             length = int(self.headers.get("Content-Length", "0"))
@@ -274,6 +310,10 @@ class Handler(BaseHTTPRequestHandler):
             data = json.loads(self.rfile.read(length))
             if not isinstance(data, dict):
                 raise ValueError("JSON object required")
+            if self.path.startswith("/v1/documents/") and self.path.endswith("/process"):
+                return self.respond(200,process_document(self.path.split("/")[3],data.get("batch",2),bool(data.get("ocr",False))))
+            if self.path=="/v1/comfy/generate":
+                return self.respond(200,comfy_submit(data.get("prompt",""),data.get("seed",0)))
             if self.path == "/v1/speech-projects":
                 return self.respond(200,save_speech_project(data))
             if self.path == "/v1/phonovision/mesh":
