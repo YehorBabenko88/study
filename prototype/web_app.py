@@ -40,6 +40,14 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         parsed = urlparse(self.path)
+        if parsed.path == "/workspace":
+            page=Path(__file__).with_name("workspace.html").read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type","text/html; charset=utf-8")
+            self.send_header("Content-Length",str(len(page)))
+            self.send_header("Cache-Control","no-store")
+            self.end_headers()
+            return self.wfile.write(page)
         if parsed.path in ("/","/home"):
             page=Path(__file__).with_name("home.html").read_bytes()
             self.send_response(200)
