@@ -5,6 +5,7 @@ from pathlib import Path
 import json
 from study_core import LexicalItem, Anchor, build_scene, check_recall
 from visual_memory import save, list_scenes, get_scene, delete_scene, svg
+from ai_images import configured, generate, image_bytes
 
 SAMPLE = {
     "tasse": LexicalItem("Tasse", "de", "чашка", "die", "/ˈtasə/"),
@@ -35,6 +36,19 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("X-Content-Type-Options", "nosniff")
             self.end_headers()
             return self.wfile.write(page)
+        if parsed.path == "/v1/images/provider":
+            return self.respond(200, {"configured": configured(), "provider": "optional"})
+        if parsed.path.startswith("/v1/mnemonics/") and parsed.path.endswith("/generated-image"):
+            binary = image_bytes(parsed.path.split("/")[3])
+            if binary is None:
+                return self.respond(404, {"error": "image_not_found"})
+            self.send_response(200)
+            self.send_header("Content-Type", "image/png")
+            self.send_header("Content-Length", str(len(binary)))
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.end_headers()
+            return self.wfile.write(binary)
         if parsed.path == "/v1/mnemonics":
             return self.respond(200, {"items": list_scenes()})
         if parsed.path.startswith("/v1/mnemonics/") and parsed.path.endswith("/image"):
@@ -67,7 +81,7 @@ class Handler(BaseHTTPRequestHandler):
         return self.respond(404, {"error": "not_found"})
 
     def do_POST(self):
-        if self.path not in ("/v1/mnemonics/preview", "/v1/mnemonics", "/v1/learning/check"):
+        if self.path not in ("/v1/mnemonics/preview", "/v1/mnemonics", "/v1/learning/check") and not (self.path.startswith("/v1/mnemonics/") and self.path.endswith("/generate")):
             return self.respond(404, {"error": "not_found"})
         try:
             length = int(self.headers.get("Content-Length", "0"))
@@ -76,6 +90,20 @@ class Handler(BaseHTTPRequestHandler):
             data = json.loads(self.rfile.read(length))
             if not isinstance(data, dict):
                 raise ValueError("JSON object required")
+            if self.path.startswith("/v1/mnemonics/") and self.path.endswith("/generate"):
+                if not configured():
+                    return self.respond(503, {"error": "image_provider_not_configured"})
+                instruction = data.get("instruction", "")
+                if not isinstance(instruction, str):
+                    raise ValueError("instruction must be string")
+                sid = self.path.split("/")[3]
+                try:
+                    result = generate(sid, instruction)
+                except KeyError:
+                    return self.respond(404, {"error": "scene_not_found"})
+                except Exception:
+                    return self.respond(502, {"error": "image_provider_failed", "detail": "Check provider settings and server logs"})
+                return self.respond(200, result)
             if self.path in ("/v1/mnemonics/preview", "/v1/mnemonics"):
                 word = data.get("word", "")
                 if not isinstance(word, str):
