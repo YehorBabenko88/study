@@ -63,6 +63,18 @@ class PDFOCRRetryTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             d.process(self.job,retry=True)
 
+    def test_retry_batches_do_not_starve_later_empty_pages(self):
+        pdf=pymupdf.open()
+        for _ in range(6):pdf.new_page()
+        raw=pdf.tobytes();pdf.close()
+        pid=d.create(raw,'blank-six.pdf')['id']
+        d.process(pid,batch=5);d.process(pid,batch=5)
+        with patch.object(pytesseract,'image_to_string',return_value='') as engine:
+            d.process(pid,batch=5,ocr=True,retry=True)
+            d.process(pid,batch=5,ocr=True,retry=True)
+        self.assertEqual(engine.call_count,6)
+        self.assertEqual(d.page(pid,5)['method'],'ocr_no_text')
+
 
 if __name__ == '__main__':
     unittest.main()
