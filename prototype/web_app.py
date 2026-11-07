@@ -51,7 +51,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("X-Content-Type-Options","nosniff")
             self.end_headers()
             return self.wfile.write(binary)
-        if parsed.path == "/acoustic-studio":
+        if parsed.path in ("/acoustic-studio", "/phonovision-3d"):
             page = Path(__file__).with_name("acoustic_studio.html").read_bytes()
             self.send_response(200)
             self.send_header("Content-Type","text/html; charset=utf-8")
@@ -60,7 +60,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("X-Content-Type-Options","nosniff")
             self.end_headers()
             return self.wfile.write(page)
-        if parsed.path == "/phonovision-3d":
+        if parsed.path == "/spectral-relief":
             page = Path(__file__).with_name("phonovision_3d.html").read_bytes()
             self.send_response(200)
             self.send_header("Content-Type","text/html; charset=utf-8")
