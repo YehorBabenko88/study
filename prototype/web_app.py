@@ -6,6 +6,7 @@ import json
 from study_core import LexicalItem, Anchor, build_scene, check_recall
 from visual_memory import save, list_scenes, get_scene, delete_scene, svg
 from ai_images import configured, generate, image_bytes, import_png
+from learning_memory import due_scenes, submit, stats
 
 SAMPLE = {
     "tasse": LexicalItem("Tasse", "de", "чашка", "die", "/ˈtasə/"),
@@ -36,6 +37,13 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("X-Content-Type-Options", "nosniff")
             self.end_headers()
             return self.wfile.write(page)
+        if parsed.path == "/v1/learning/due":
+            return self.respond(200, {"items": due_scenes()})
+        if parsed.path.startswith("/v1/learning/stats/"):
+            try:
+                return self.respond(200, stats(parsed.path.split("/")[4]))
+            except ValueError:
+                return self.respond(400, {"error": "invalid_scene_id"})
         if parsed.path == "/v1/images/provider":
             return self.respond(200, {"configured": configured(), "provider": "optional"})
         if parsed.path.startswith("/v1/mnemonics/") and parsed.path.endswith("/generated-image"):
@@ -100,7 +108,7 @@ class Handler(BaseHTTPRequestHandler):
             return self.respond(503, {"error": "pillow_not_installed"})
 
     def do_POST(self):
-        if self.path not in ("/v1/mnemonics/preview", "/v1/mnemonics", "/v1/learning/check") and not (self.path.startswith("/v1/mnemonics/") and self.path.endswith("/generate")):
+        if self.path not in ("/v1/mnemonics/preview", "/v1/mnemonics", "/v1/learning/check", "/v1/learning/submit") and not (self.path.startswith("/v1/mnemonics/") and self.path.endswith("/generate")):
             return self.respond(404, {"error": "not_found"})
         try:
             length = int(self.headers.get("Content-Length", "0"))
@@ -146,6 +154,12 @@ class Handler(BaseHTTPRequestHandler):
                     scene = save(scene)
                     scene["image_url"] = "/v1/mnemonics/" + scene["scene_id"] + "/image"
                 return self.respond(200, scene)
+            if self.path == "/v1/learning/submit":
+                try:
+                    result = submit(data.get("scene_id",""),data.get("response"))
+                    return self.respond(200,result)
+                except KeyError:
+                    return self.respond(404, {"error":"scene_not_found"})
             expected, response = data.get("expected"), data.get("response")
             if not isinstance(expected, str) or not isinstance(response, str) or max(len(expected), len(response)) > 200:
                 raise ValueError("invalid recall fields")
