@@ -244,6 +244,7 @@ class CanvasUXBrowserTests(unittest.IsolatedAsyncioTestCase):
         await self.page.mouse.move(source['x']+20,source['y']+20)
         await self.page.mouse.down()
         await self.page.mouse.move(target['x']+20,target['y']+20,steps=15)
+        await board.locator('.node.word.drop-target').wait_for()
         await self.page.mouse.up()
         await board.locator('.node.word img').first.wait_for()
         self.assertEqual(await board.locator('body').evaluate("()=>nodes.find(n=>n.type==='word').image_assets"),ASSETS[:1])
