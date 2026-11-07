@@ -4,6 +4,7 @@ from urllib.parse import urlparse, parse_qs
 from pathlib import Path
 import json
 from study_core import LexicalItem, Anchor, build_scene, check_recall
+from visual_memory import save, list_scenes, get_scene, delete_scene, svg
 
 SAMPLE = {
     "tasse": LexicalItem("Tasse", "de", "чашка", "die", "/ˈtasə/"),
@@ -34,6 +35,24 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("X-Content-Type-Options", "nosniff")
             self.end_headers()
             return self.wfile.write(page)
+        if parsed.path == "/v1/mnemonics":
+            return self.respond(200, {"items": list_scenes()})
+        if parsed.path.startswith("/v1/mnemonics/") and parsed.path.endswith("/image"):
+            sid = parsed.path.split("/")[3]
+            scene = get_scene(sid)
+            if scene is None:
+                return self.respond(404, {"error": "not_found"})
+            raw = svg(scene)
+            self.send_response(200)
+            self.send_header("Content-Type", "image/svg+xml; charset=utf-8")
+            self.send_header("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; sandbox")
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.send_header("Content-Length", str(len(raw)))
+            self.end_headers()
+            return self.wfile.write(raw)
+        if parsed.path.startswith("/v1/mnemonics/"):
+            scene = get_scene(parsed.path.split("/")[3])
+            return self.respond(200, scene) if scene else self.respond(404, {"error": "not_found"})
         if parsed.path == "/health":
             return self.respond(200, {"status": "ok", "mode": "local-demo"})
         if parsed.path == "/v1/lexicon/search":
@@ -42,8 +61,13 @@ class Handler(BaseHTTPRequestHandler):
             return self.respond(200, {"items": result, "source": "hand-curated demo only"})
         return self.respond(404, {"error": "not_found"})
 
+    def do_DELETE(self):
+        if self.path.startswith("/v1/mnemonics/") and len(self.path.split("/")) == 4:
+            return self.respond(200, {"deleted": delete_scene(self.path.split("/")[3])})
+        return self.respond(404, {"error": "not_found"})
+
     def do_POST(self):
-        if self.path not in ("/v1/mnemonics/preview", "/v1/learning/check"):
+        if self.path not in ("/v1/mnemonics/preview", "/v1/mnemonics", "/v1/learning/check"):
             return self.respond(404, {"error": "not_found"})
         try:
             length = int(self.headers.get("Content-Length", "0"))
@@ -52,7 +76,7 @@ class Handler(BaseHTTPRequestHandler):
             data = json.loads(self.rfile.read(length))
             if not isinstance(data, dict):
                 raise ValueError("JSON object required")
-            if self.path == "/v1/mnemonics/preview":
+            if self.path in ("/v1/mnemonics/preview", "/v1/mnemonics"):
                 word = data.get("word", "")
                 if not isinstance(word, str):
                     raise ValueError("word must be string")
@@ -70,7 +94,11 @@ class Handler(BaseHTTPRequestHandler):
                     if not all(isinstance(v, str) and 0 < len(v.strip()) <= 200 for v in vals):
                         raise ValueError("invalid anchor fields")
                     anchors.append(Anchor(*vals))
-                return self.respond(200, build_scene(item, anchors))
+                scene = build_scene(item, anchors)
+                if self.path == "/v1/mnemonics":
+                    scene = save(scene)
+                    scene["image_url"] = "/v1/mnemonics/" + scene["scene_id"] + "/image"
+                return self.respond(200, scene)
             expected, response = data.get("expected"), data.get("response")
             if not isinstance(expected, str) or not isinstance(response, str) or max(len(expected), len(response)) > 200:
                 raise ValueError("invalid recall fields")
