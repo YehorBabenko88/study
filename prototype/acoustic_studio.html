@@ -74,7 +74,7 @@ $("referencePreview").addEventListener("dragstart",e=>{if(referenceAssetId)e.dat
 }
 document.addEventListener("pointermove",e=>{if(e.buttons&1&&window.parent!==window&&window.parent.studyTransferBridge)window.parent.studyTransferBridge.move(window,e.clientX,e.clientY)},true);
 document.addEventListener("pointerup",e=>{if(window.parent!==window&&window.parent.studyTransferBridge)window.parent.studyTransferBridge.end(window,e.clientX,e.clientY)},true);
-document.addEventListener("pointercancel",()=>{if(window.parent!==window&&window.parent.studyTransferBridge)window.parent.studyTransferBridge.cancel()},true);
+// Pointer cancellation in a child iframe may occur when the parent overlay appears; the parent owns cancellation.
 function beginVisualTransfer(e,payload){if(e.button!==0||window.parent===window||window.parent.location.pathname!=="/workspace")return false;if(startStudyDrag(e,payload)){e.stopImmediatePropagation();return true}return false}
 $("sphere").addEventListener("pointerdown",e=>{if(window.parent===window||window.parent.location.pathname!=="/workspace")return;beginVisualTransfer(e,{kind:"image",text:"Звуковая сфера",data_url:$("sphere").toDataURL("image/png")})},true);
 $("referencePreview").addEventListener("pointerdown",e=>beginVisualTransfer(e,{kind:"image",text:$("imagePrompt").value.slice(0,120)||"Референс",asset_id:referenceAssetId||null,url:$("referencePreview").src}),true);
