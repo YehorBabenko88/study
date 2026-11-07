@@ -19,7 +19,7 @@ from pitch_shift import shift_wav
 from mesh_export import mesh as export_mesh
 from speech_projects import save as save_speech_project, get as get_speech_project, list_projects as list_speech_projects, save_audio as save_speech_audio, read_audio as read_speech_audio
 from document_import import create as create_document, process as process_document, status as document_status, page as document_page, list_documents
-from comfy_adapter import configured as comfy_configured, submit as comfy_submit, result as comfy_result, image_bytes as comfy_image
+from comfy_adapter import configured as comfy_configured, submit as comfy_submit, result as comfy_result, image_bytes as comfy_image, cancel as comfy_cancel, list_jobs as comfy_jobs, QueueFull
 
 SAMPLE = {
     "tasse": LexicalItem("Tasse", "de", "чашка", "die", "/ˈtasə/"),
@@ -72,6 +72,8 @@ class Handler(BaseHTTPRequestHandler):
             except ValueError:return self.respond(400,{"error":"invalid_document"})
         if parsed.path=="/v1/comfy/status":
             return self.respond(200,{"enabled":comfy_configured()})
+        if parsed.path == "/v1/comfy/jobs":
+            return self.respond(200,{"items":comfy_jobs()})
         if parsed.path.startswith("/v1/comfy/jobs/"):
             parts=parsed.path.strip("/").split("/")
             try:
@@ -84,6 +86,8 @@ class Handler(BaseHTTPRequestHandler):
                     self.send_header("Content-Length",str(len(raw)))
                     self.end_headers()
                     return self.wfile.write(raw)
+            except KeyError:return self.respond(404,{"error":"job_not_found"})
+            except ValueError as exc:return self.respond(400,{"error":"invalid_job","detail":str(exc)})
             except Exception:return self.respond(502,{"error":"comfy_result_unavailable"})
         if parsed.path == "/v1/speech-projects":
             return self.respond(200,{"items":list_speech_projects()})
@@ -300,6 +304,11 @@ class Handler(BaseHTTPRequestHandler):
             return self.respond(503, {"error": "pillow_not_installed"})
 
     def do_POST(self):
+        parts=urlparse(self.path).path.strip("/").split("/")
+        if len(parts)==5 and parts[:3]==["v1","comfy","jobs"] and parts[4]=="cancel":
+            try:return self.respond(200,comfy_cancel(parts[3]))
+            except KeyError:return self.respond(404,{"error":"job_not_found"})
+            except ValueError:return self.respond(400,{"error":"invalid_job"})
         if self.path not in ("/v1/mnemonics/preview", "/v1/mnemonics", "/v1/learning/check", "/v1/learning/submit", "/v1/skills/record", "/v1/translate", "/v1/boards", "/v1/phonovision/metaphor", "/v1/phonovision/mesh", "/v1/speech-projects", "/v1/comfy/generate") and not self.path.startswith("/v1/documents/") and not (self.path.startswith("/v1/mnemonics/") and self.path.endswith("/generate")):
             return self.respond(404, {"error": "not_found"})
         try:
@@ -313,7 +322,7 @@ class Handler(BaseHTTPRequestHandler):
             if self.path.startswith("/v1/documents/") and self.path.endswith("/process"):
                 return self.respond(200,process_document(self.path.split("/")[3],data.get("batch",2),bool(data.get("ocr",False))))
             if self.path=="/v1/comfy/generate":
-                return self.respond(200,comfy_submit(data.get("prompt",""),data.get("seed",0)))
+                return self.respond(200,comfy_submit(data.get("prompt",""),data.get("seed",0),data.get("request_id")))
             if self.path == "/v1/speech-projects":
                 return self.respond(200,save_speech_project(data))
             if self.path == "/v1/phonovision/mesh":
@@ -392,6 +401,7 @@ class Handler(BaseHTTPRequestHandler):
                 raise ValueError("invalid recall fields")
             # A real assessment must retrieve the expected answer from a trusted server-side item ID.
             return self.respond(200, check_recall(expected, response, cues_shown=bool(data.get("cues_shown", False))))
+        except QueueFull:return self.respond(429,{"error":"comfy_queue_full","retryable":True})
         except (ValueError, TypeError, UnicodeError, json.JSONDecodeError) as exc:
             return self.respond(400, {"error": "invalid_request", "detail": str(exc)})
 
