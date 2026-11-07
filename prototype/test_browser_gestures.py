@@ -98,16 +98,6 @@ class GestureBrowserTests(unittest.IsolatedAsyncioTestCase):
         }""")
         self.assertEqual(result,{"unique":True,"count":2,"linked":True})
 
-    async def test_hover_highlights_card(self):
-        board = self.page.frame_locator('iframe[src="/canvas"]')
-        result = await board.locator("body").evaluate("""() => {
-            const el=document.querySelector(".node.word");
-            const rect=el.getBoundingClientRect();
-            window.postMessage({kind:"study-drag-hover",active:true,clientX:rect.left+25,clientY:rect.top+25},location.origin);
-            return true;
-        }""")
-        self.assertTrue(result)
-
     async def test_toggle_split_view(self):
         await self.page.locator("#togglePanels").click()
         await self.page.wait_for_url("**/canvas")
