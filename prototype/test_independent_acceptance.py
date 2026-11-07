@@ -59,6 +59,15 @@ class IndependentDocumentAcceptance(unittest.TestCase):
         self.assertEqual(document_import.page(job["id"],0)["method"],"ocr_unavailable")
         self.assertEqual(document_import.process(job["id"],batch=1)["status"],"complete")
 
+    def test_upload_limit_is_inclusive_and_rejects_oversize_without_writes(self):
+        data = self.pdf(1)
+        with patch.object(document_import, "MAX_UPLOAD", len(data)):
+            self.assertEqual(document_import.create(data, "at-limit.pdf")["page_count"], 1)
+        before = list(document_import.ROOT.iterdir())
+        with patch.object(document_import, "MAX_UPLOAD", len(data)-1):
+            with self.assertRaises(ValueError): document_import.create(data, "over-limit.pdf")
+        self.assertEqual(list(document_import.ROOT.iterdir()), before)
+
     def test_upload_name_never_becomes_filesystem_path(self):
         job = document_import.create(self.pdf(1), "../../outside.pdf")
         self.assertTrue((document_import.ROOT/(job["id"]+".pdf")).is_file())
