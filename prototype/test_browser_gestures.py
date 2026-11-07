@@ -57,10 +57,11 @@ class GestureBrowserTests(unittest.IsolatedAsyncioTestCase):
         dst = await lab.locator("#composition").bounding_box()
         await self.page.mouse.move(src["x"] + 30, src["y"] + 25)
         await self.page.mouse.down()
+        await self.page.locator(".drag-hint").wait_for(timeout=5000)
         await self.page.mouse.move(dst["x"] + 80, dst["y"] + 55, steps=16)
         await self.page.mouse.up()
-        await self.page.wait_for_timeout(250)
-        self.assertIn("Tasse", await lab.locator("#imagePrompt").input_value())
+        await self.page.wait_for_timeout(400)
+        self.assertIn("Tasse", await lab.locator("#imagePrompt").input_value(), "Transfer status: "+(await self.page.locator("#transferStatus").inner_text()))
 
     async def test_sphere_to_existing_word_card(self):
         board = self.page.frame_locator('iframe[src="/canvas"]')
@@ -69,6 +70,7 @@ class GestureBrowserTests(unittest.IsolatedAsyncioTestCase):
         dst = await board.locator(".node.word").first.bounding_box()
         await self.page.mouse.move(src["x"] + 100, src["y"] + 100)
         await self.page.mouse.down()
+        await self.page.locator(".drag-hint").wait_for(timeout=5000)
         await self.page.mouse.move(dst["x"] + 60, dst["y"] + 45, steps=16)
         await self.page.mouse.up()
         await board.locator(".node.word img").first.wait_for(timeout=15000)
