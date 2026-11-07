@@ -4,6 +4,7 @@ from urllib.parse import urlparse, parse_qs
 from pathlib import Path
 import json
 import base64
+from api_security import rejection as security_rejection, csrf_token
 from study_core import LexicalItem, Anchor, build_scene, check_recall
 from visual_memory import save, list_scenes, get_scene, delete_scene, svg
 from ai_images import configured, generate, image_bytes, import_png
@@ -30,6 +31,16 @@ MAX_BODY = 16384
 MAX_BOARD_BODY = 4_000_000
 
 class Handler(BaseHTTPRequestHandler):
+    def parse_request(self):
+        if not super().parse_request():
+            return False
+        error = security_rejection(self)
+        if error:
+            self.close_connection = True
+            self.respond(403, {"error": error})
+            return False
+        return True
+
     def respond(self, status, data):
         raw = json.dumps(data, ensure_ascii=False).encode("utf-8")
         self.send_response(status)
@@ -42,6 +53,20 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         parsed = urlparse(self.path)
+        if parsed.path == "/v1/security/bootstrap":
+            return self.respond(200, {"csrf_token": csrf_token(self.server)})
+        if parsed.path in ("/study-fetch.js", "/canvas-ux.js"):
+            asset = Path(__file__).with_name(parsed.path[1:])
+            if not asset.is_file():
+                return self.respond(404, {"error": "not_found"})
+            raw = asset.read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/javascript; charset=utf-8")
+            self.send_header("Content-Length", str(len(raw)))
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.end_headers()
+            return self.wfile.write(raw)
         if parsed.path == "/workspace":
             page=Path(__file__).with_name("workspace.html").read_bytes()
             self.send_response(200)
