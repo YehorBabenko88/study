@@ -3,11 +3,15 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-import pymupdf
-import pytesseract
+try:
+    import pymupdf
+    import pytesseract
+except ImportError:
+    pymupdf = pytesseract = None
 import document_import as d
 
 
+@unittest.skipUnless(pymupdf and pytesseract,'Requires PyMuPDF and pytesseract Python packages')
 class PDFOCRRetryTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -70,8 +74,10 @@ class PDFOCRRetryTests(unittest.TestCase):
         pid=d.create(raw,'blank-six.pdf')['id']
         d.process(pid,batch=5);d.process(pid,batch=5)
         with patch.object(pytesseract,'image_to_string',return_value='') as engine:
-            d.process(pid,batch=5,ocr=True,retry=True)
-            d.process(pid,batch=5,ocr=True,retry=True)
+            first=d.process(pid,batch=5,ocr=True,retry=True)
+            self.assertEqual(first['retry_pages'],1)
+            second=d.process(pid,batch=5,ocr=True,retry=True)
+            self.assertEqual(second['retry_pages'],0)
         self.assertEqual(engine.call_count,6)
         self.assertEqual(d.page(pid,5)['method'],'ocr_no_text')
 

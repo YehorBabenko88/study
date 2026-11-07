@@ -50,7 +50,9 @@ def status(pid):
     pid=str(UUID(pid))
     with LOCK,_db() as db:
         row=db.execute("SELECT id,name,page_count,next_page,status,error FROM documents WHERE id=?",(pid,)).fetchone()
-    return dict(zip(("id","name","page_count","next_page","status","error"),row)) if row else None
+        counts=db.execute("SELECT SUM(method IN ('ocr_error','ocr_unavailable','no_text')),SUM(method IN ('ocr_error','ocr_unavailable')) FROM document_pages WHERE document_id=?",(pid,)).fetchone()
+    if not row:return None
+    return {**dict(zip(("id","name","page_count","next_page","status","error"),row)),"retry_pages":counts[0] or 0,"ocr_errors":counts[1] or 0}
 def list_documents():
     with LOCK,_db() as db:
         rows=db.execute("SELECT id,name,page_count,next_page,status,error FROM documents ORDER BY created_at DESC LIMIT 100").fetchall()
