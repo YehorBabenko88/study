@@ -5,13 +5,16 @@ class CompositeGenerationContract(unittest.TestCase):
  def test_opt_in_and_existing_routes(self):
   canvas=(ROOT/"canvas.html").read_text(encoding="utf-8")
   app=(ROOT/"web_app.py").read_text(encoding="utf-8")
-  for term in ('id="generateComposite"','window.confirm(', 'buildCompositePrompt(', '"/v1/comfy/generate"', '"/v1/comfy/jobs/"', '"/v1/board-assets"', 'original.disabled=true', 'original.disabled=false'):
+  flow=(ROOT/"composition-canvas.js").read_text(encoding="utf-8")
+  for term in ('id="generateComposite"','id="compositionPrompt"','id="saveCompositionRevision"','id="generateReviewedComposition"','id="cancelCompositionJob"','/composition-canvas.js'):
    self.assertIn(term,canvas)
-  self.assertIn('"/v1/comfy/generate"',app)
+  for term in ('/v1/compositions','/generate','/cancel','user_prompt','parameters','direction:'):
+   self.assertIn(term,flow)
+  self.assertIn('composition_dispatch',app)
  def test_non_destructive_graph(self):
-  canvas=(ROOT/"canvas.html").read_text(encoding="utf-8")
-  self.assertIn('edges.push({from:base.id,to:generated.id,relation:"association"})',canvas)
-  self.assertIn('image_assets:[saved.asset_id]',canvas)
+  flow=(ROOT/"composition-canvas.js").read_text(encoding="utf-8")
+  for term in ('generation_revision_id','generation_job_id','generation_provenance','image_assets:[item.asset_id]',"relation:'association'",'appliedOutputs'):
+   self.assertIn(term,flow)
  def test_comfy_is_opt_in(self):
   adapter=(ROOT/"comfy_adapter.py").read_text(encoding="utf-8")
   self.assertIn('STUDY_COMFYUI_ENABLED',adapter)

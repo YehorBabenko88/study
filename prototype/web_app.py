@@ -4,6 +4,7 @@ from urllib.parse import urlparse, parse_qs
 from pathlib import Path
 import json
 import base64
+from api_security import rejection as security_rejection, csrf_token, discard_rejected_body
 from study_core import LexicalItem, Anchor, build_scene, check_recall
 from visual_memory import save, list_scenes, get_scene, delete_scene, svg
 from ai_images import configured, generate, image_bytes, import_png
@@ -19,7 +20,7 @@ from pitch_shift import shift_wav
 from mesh_export import mesh as export_mesh
 from speech_projects import save as save_speech_project, get as get_speech_project, list_projects as list_speech_projects, save_audio as save_speech_audio, read_audio as read_speech_audio
 from document_import import create as create_document, process as process_document, status as document_status, page as document_page, list_documents
-from comfy_adapter import configured as comfy_configured, submit as comfy_submit, result as comfy_result, image_bytes as comfy_image
+from comfy_adapter import configured as comfy_configured, submit as comfy_submit, result as comfy_result, image_bytes as comfy_image, cancel as comfy_cancel, list_jobs as comfy_jobs, QueueFull
 
 SAMPLE = {
     "tasse": LexicalItem("Tasse", "de", "чашка", "die", "/ˈtasə/"),
@@ -29,7 +30,28 @@ SAMPLE = {
 MAX_BODY = 16384
 MAX_BOARD_BODY = 4_000_000
 
+def _html_page(name):
+    page = Path(__file__).with_name(name).read_bytes()
+    return page.replace(b"<head>", b'<head><script src="/study-fetch.js"></script>', 1)
+
+
+def composition_dispatch(method, path, data=None):
+    from composition_service import dispatch
+    return dispatch(method, path, data)
+
+
 class Handler(BaseHTTPRequestHandler):
+    def parse_request(self):
+        if not super().parse_request():
+            return False
+        error = security_rejection(self)
+        if error:
+            self.close_connection = True
+            discard_rejected_body(self)
+            self.respond(403, {"error": error})
+            return False
+        return True
+
     def respond(self, status, data):
         raw = json.dumps(data, ensure_ascii=False).encode("utf-8")
         self.send_response(status)
@@ -42,8 +64,25 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         parsed = urlparse(self.path)
+        if parsed.path.startswith("/v1/compositions"):
+            response = composition_dispatch("GET", parsed.path)
+            return self.respond(*(response or (404, {"error": "not_found"})))
+        if parsed.path == "/v1/security/bootstrap":
+            return self.respond(200, {"csrf_token": csrf_token(self.server)})
+        if parsed.path in ("/study-fetch.js", "/canvas-ux.js", "/composition-canvas.js"):
+            asset = Path(__file__).with_name(parsed.path[1:])
+            if not asset.is_file():
+                return self.respond(404, {"error": "not_found"})
+            raw = asset.read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type", "application/javascript; charset=utf-8")
+            self.send_header("Content-Length", str(len(raw)))
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.end_headers()
+            return self.wfile.write(raw)
         if parsed.path == "/workspace":
-            page=Path(__file__).with_name("workspace.html").read_bytes()
+            page=_html_page("workspace.html")
             self.send_response(200)
             self.send_header("Content-Type","text/html; charset=utf-8")
             self.send_header("Content-Length",str(len(page)))
@@ -51,7 +90,7 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
             return self.wfile.write(page)
         if parsed.path in ("/","/home"):
-            page=Path(__file__).with_name("home.html").read_bytes()
+            page=_html_page("home.html")
             self.send_response(200)
             self.send_header("Content-Type","text/html; charset=utf-8")
             self.send_header("Content-Length",str(len(page)))
@@ -72,6 +111,8 @@ class Handler(BaseHTTPRequestHandler):
             except ValueError:return self.respond(400,{"error":"invalid_document"})
         if parsed.path=="/v1/comfy/status":
             return self.respond(200,{"enabled":comfy_configured()})
+        if parsed.path == "/v1/comfy/jobs":
+            return self.respond(200,{"items":comfy_jobs()})
         if parsed.path.startswith("/v1/comfy/jobs/"):
             parts=parsed.path.strip("/").split("/")
             try:
@@ -84,6 +125,8 @@ class Handler(BaseHTTPRequestHandler):
                     self.send_header("Content-Length",str(len(raw)))
                     self.end_headers()
                     return self.wfile.write(raw)
+            except KeyError:return self.respond(404,{"error":"job_not_found"})
+            except ValueError as exc:return self.respond(400,{"error":"invalid_job","detail":str(exc)})
             except Exception:return self.respond(502,{"error":"comfy_result_unavailable"})
         if parsed.path == "/v1/speech-projects":
             return self.respond(200,{"items":list_speech_projects()})
@@ -118,7 +161,7 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
             return self.wfile.write(binary)
         if parsed.path in ("/acoustic-studio", "/phonovision-3d", "/spectral-relief"):
-            page = Path(__file__).with_name("acoustic_studio.html").read_bytes()
+            page = _html_page("acoustic_studio.html")
             self.send_response(200)
             self.send_header("Content-Type","text/html; charset=utf-8")
             self.send_header("Content-Length",str(len(page)))
@@ -127,7 +170,7 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
             return self.wfile.write(page)
         if parsed.path == "/legacy-spectral-relief":
-            page = Path(__file__).with_name("phonovision_3d.html").read_bytes()
+            page = _html_page("phonovision_3d.html")
             self.send_response(200)
             self.send_header("Content-Type","text/html; charset=utf-8")
             self.send_header("Content-Length",str(len(page)))
@@ -136,7 +179,7 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
             return self.wfile.write(page)
         if parsed.path == "/canvas":
-            page = Path(__file__).with_name("canvas.html").read_bytes()
+            page = _html_page("canvas.html")
             self.send_response(200)
             self.send_header("Content-Type","text/html; charset=utf-8")
             self.send_header("Content-Length",str(len(page)))
@@ -152,7 +195,7 @@ class Handler(BaseHTTPRequestHandler):
             except ValueError:
                 return self.respond(400,{"error":"invalid_board_id"})
         if parsed.path == "/legacy-board":
-            page = Path(__file__).with_name("board.html").read_bytes()
+            page = _html_page("board.html")
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.send_header("Content-Length", str(len(page)))
@@ -161,7 +204,7 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
             return self.wfile.write(page)
         if parsed.path == "/legacy-study":
-            page = Path(__file__).with_name("study.html").read_bytes()
+            page = _html_page("study.html")
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.send_header("Content-Length", str(len(page)))
@@ -300,6 +343,29 @@ class Handler(BaseHTTPRequestHandler):
             return self.respond(503, {"error": "pillow_not_installed"})
 
     def do_POST(self):
+        if urlparse(self.path).path.startswith("/v1/compositions"):
+            try:
+                length = int(self.headers.get("Content-Length", "0"))
+                if not 1 <= length <= MAX_BOARD_BODY:
+                    return self.respond(413, {"error": "invalid_body_length"})
+                data = json.loads(self.rfile.read(length))
+                if not isinstance(data, dict):
+                    raise ValueError("JSON object required")
+                response = composition_dispatch("POST", urlparse(self.path).path, data)
+                return self.respond(*(response or (404, {"error": "not_found"})))
+            except (ValueError, TypeError, UnicodeError) as exc:
+                return self.respond(400, {"error": "invalid_composition", "detail": str(exc)})
+            except KeyError:
+                return self.respond(404, {"error": "composition_not_found"})
+        parts=urlparse(self.path).path.strip("/").split("/")
+        if len(parts)==5 and parts[:3]==["v1","comfy","jobs"] and parts[4]=="cancel":
+            try:
+                length=int(self.headers.get("Content-Length","0"))
+                if not 0<=length<=MAX_BODY:return self.respond(413,{"error":"invalid_body_length"})
+                self.rfile.read(length)
+                return self.respond(200,comfy_cancel(parts[3]))
+            except KeyError:return self.respond(404,{"error":"job_not_found"})
+            except ValueError:return self.respond(400,{"error":"invalid_job"})
         if self.path not in ("/v1/mnemonics/preview", "/v1/mnemonics", "/v1/learning/check", "/v1/learning/submit", "/v1/skills/record", "/v1/translate", "/v1/boards", "/v1/phonovision/metaphor", "/v1/phonovision/mesh", "/v1/speech-projects", "/v1/comfy/generate") and not self.path.startswith("/v1/documents/") and not (self.path.startswith("/v1/mnemonics/") and self.path.endswith("/generate")):
             return self.respond(404, {"error": "not_found"})
         try:
@@ -311,9 +377,9 @@ class Handler(BaseHTTPRequestHandler):
             if not isinstance(data, dict):
                 raise ValueError("JSON object required")
             if self.path.startswith("/v1/documents/") and self.path.endswith("/process"):
-                return self.respond(200,process_document(self.path.split("/")[3],data.get("batch",2),bool(data.get("ocr",False))))
+                return self.respond(200,process_document(self.path.split("/")[3],data.get("batch",2),data.get("ocr",False),data.get("retry",False)))
             if self.path=="/v1/comfy/generate":
-                return self.respond(200,comfy_submit(data.get("prompt",""),data.get("seed",0)))
+                return self.respond(200,comfy_submit(data.get("prompt",""),data.get("seed",0),data.get("request_id")))
             if self.path == "/v1/speech-projects":
                 return self.respond(200,save_speech_project(data))
             if self.path == "/v1/phonovision/mesh":
@@ -392,6 +458,9 @@ class Handler(BaseHTTPRequestHandler):
                 raise ValueError("invalid recall fields")
             # A real assessment must retrieve the expected answer from a trusted server-side item ID.
             return self.respond(200, check_recall(expected, response, cues_shown=bool(data.get("cues_shown", False))))
+        except QueueFull:return self.respond(429,{"error":"comfy_queue_full","retryable":True})
+        except KeyError:
+            return self.respond(404, {"error": "not_found"})
         except (ValueError, TypeError, UnicodeError, json.JSONDecodeError) as exc:
             return self.respond(400, {"error": "invalid_request", "detail": str(exc)})
 
