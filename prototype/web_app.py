@@ -9,6 +9,7 @@ from ai_images import configured, generate, image_bytes, import_png
 from learning_memory import due_scenes, submit, stats
 from skill_memory import record as record_skill, overview as skill_overview
 from lexicon_store import search as lexicon_search, count as lexicon_count
+from sentence_translation import translate as translate_sentence, split_words
 
 SAMPLE = {
     "tasse": LexicalItem("Tasse", "de", "чашка", "die", "/ˈtasə/"),
@@ -125,7 +126,7 @@ class Handler(BaseHTTPRequestHandler):
             return self.respond(503, {"error": "pillow_not_installed"})
 
     def do_POST(self):
-        if self.path not in ("/v1/mnemonics/preview", "/v1/mnemonics", "/v1/learning/check", "/v1/learning/submit", "/v1/skills/record") and not (self.path.startswith("/v1/mnemonics/") and self.path.endswith("/generate")):
+        if self.path not in ("/v1/mnemonics/preview", "/v1/mnemonics", "/v1/learning/check", "/v1/learning/submit", "/v1/skills/record", "/v1/translate") and not (self.path.startswith("/v1/mnemonics/") and self.path.endswith("/generate")):
             return self.respond(404, {"error": "not_found"})
         try:
             length = int(self.headers.get("Content-Length", "0"))
@@ -134,6 +135,13 @@ class Handler(BaseHTTPRequestHandler):
             data = json.loads(self.rfile.read(length))
             if not isinstance(data, dict):
                 raise ValueError("JSON object required")
+            if self.path == "/v1/translate":
+                text = data.get("text")
+                source = data.get("source","de")
+                target = data.get("target","ru")
+                result = translate_sentence(text,source,target)
+                result["tokens"] = split_words(text)
+                return self.respond(200,result)
             if self.path.startswith("/v1/mnemonics/") and self.path.endswith("/generate"):
                 if not configured():
                     return self.respond(503, {"error": "image_provider_not_configured"})
