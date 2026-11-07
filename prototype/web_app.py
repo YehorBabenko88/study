@@ -3,6 +3,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, parse_qs
 from pathlib import Path
 import json
+import base64
 from study_core import LexicalItem, Anchor, build_scene, check_recall
 from visual_memory import save, list_scenes, get_scene, delete_scene, svg
 from ai_images import configured, generate, image_bytes, import_png
@@ -178,7 +179,7 @@ class Handler(BaseHTTPRequestHandler):
                 if self.path=="/v1/speech/transcribe":
                     return self.respond(200,offline_transcribe(data,self.headers.get("X-Language","de")))
                 if self.path=="/v1/speech/align":
-                    return self.respond(200,offline_align(data,self.headers.get("X-Transcript",""),self.headers.get("X-Language","de")))
+                    return self.respond(200,offline_align(data,base64.b64decode(self.headers.get("X-Transcript-B64",""),validate=True).decode("utf-8"),self.headers.get("X-Language","de")))
                 if self.path=="/v1/speech/pitch-shift":
                     result=shift_wav(data,float(self.headers.get("X-Semitones","0")))
                     if result is None:
@@ -196,8 +197,8 @@ class Handler(BaseHTTPRequestHandler):
                     return self.respond(200,store_board_image(data))
                 lang=self.headers.get("X-OCR-Language","deu")
                 return self.respond(200,recognize_page(data,lang))
-            except ValueError as exc:
-                return self.respond(400,{"error":"invalid_image","detail":str(exc)})
+            except (ValueError, UnicodeError, base64.binascii.Error) as exc:
+                return self.respond(400,{"error":"invalid_input","detail":str(exc)})
 
         parts = urlparse(self.path).path.strip("/").split("/")
         if len(parts) != 4 or parts[:2] != ["v1", "mnemonics"] or parts[3] != "import-image":
