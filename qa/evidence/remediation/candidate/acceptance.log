@@ -1,0 +1,641 @@
+test_api_mutation_security_matrix (__main__.Acceptance.test_api_mutation_security_matrix) ... 127.0.0.1 - - [07/Nov/2026 20:15:36] "POST /v1/boards HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "POST /v1/boards HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "POST /v1/boards HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "POST /v1/boards HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "POST /v1/boards HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "PUT /v1/board-assets HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "PUT /v1/board-assets HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "PUT /v1/board-assets HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "PUT /v1/board-assets HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "PUT /v1/board-assets HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "DELETE /v1/mnemonics/00000000-0000-4000-8000-000000000001 HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "DELETE /v1/mnemonics/00000000-0000-4000-8000-000000000001 HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "DELETE /v1/mnemonics/00000000-0000-4000-8000-000000000001 HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "DELETE /v1/mnemonics/00000000-0000-4000-8000-000000000001 HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "DELETE /v1/mnemonics/00000000-0000-4000-8000-000000000001 HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "POST /v1/future-generation HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "POST /v1/future-generation HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "POST /v1/future-generation HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "POST /v1/future-generation HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "POST /v1/future-generation HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "GET /v1/security/bootstrap HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "GET /v1/security/bootstrap HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "GET /v1/security/bootstrap HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "GET /v1/security/bootstrap HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "GET /v1/security/bootstrap HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "POST /v1/boards HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "POST /v1/boards HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "POST /v1/boards HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:36] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:37] "POST /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:37] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:37] "POST /v1/boards HTTP/1.1" 200 -
+ok
+test_api_rejects_foreign_origin_mutation (__main__.Acceptance.test_api_rejects_foreign_origin_mutation) ... 127.0.0.1 - - [07/Nov/2026 20:15:37] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:37] "POST /v1/boards HTTP/1.1" 403 -
+FOREIGN_ORIGIN_OR_HOST {'Origin': 'https://attacker.invalid'} 403 b'{"error": "untrusted_origin"}'
+127.0.0.1 - - [07/Nov/2026 20:15:37] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:37] "POST /v1/boards HTTP/1.1" 403 -
+FOREIGN_ORIGIN_OR_HOST {'Host': 'attacker.invalid'} 403 b'{"error": "untrusted_host"}'
+ok
+test_full_body_forgery_has_no_side_effects (__main__.Acceptance.test_full_body_forgery_has_no_side_effects) ... 127.0.0.1 - - [07/Nov/2026 20:15:37] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:37] "POST /v1/boards HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:37] "GET /v1/boards HTTP/1.1" 200 -
+FULL_BODY_REJECTION POST {} 403 no side effects
+127.0.0.1 - - [07/Nov/2026 20:15:37] "PUT /v1/board-assets HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:37] "GET /v1/boards HTTP/1.1" 200 -
+FULL_BODY_REJECTION PUT {} Windows early-rejection reset no side effects
+127.0.0.1 - - [07/Nov/2026 20:15:37] "DELETE /v1/mnemonics/8f7e73ca-2812-41be-9357-4a4755869ed4 HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:37] "GET /v1/boards HTTP/1.1" 200 -
+FULL_BODY_REJECTION DELETE {} 403 no side effects
+127.0.0.1 - - [07/Nov/2026 20:15:37] "POST /v1/boards HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:37] "GET /v1/boards HTTP/1.1" 200 -
+FULL_BODY_REJECTION POST {'Origin': 'https://attacker.invalid'} 403 no side effects
+127.0.0.1 - - [07/Nov/2026 20:15:37] "PUT /v1/board-assets HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:37] "GET /v1/boards HTTP/1.1" 200 -
+FULL_BODY_REJECTION PUT {'Origin': 'https://attacker.invalid'} Windows early-rejection reset no side effects
+127.0.0.1 - - [07/Nov/2026 20:15:37] "DELETE /v1/mnemonics/8f7e73ca-2812-41be-9357-4a4755869ed4 HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:37] "GET /v1/boards HTTP/1.1" 200 -
+FULL_BODY_REJECTION DELETE {'Origin': 'https://attacker.invalid'} 403 no side effects
+127.0.0.1 - - [07/Nov/2026 20:15:37] "POST /v1/boards HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:37] "GET /v1/boards HTTP/1.1" 200 -
+FULL_BODY_REJECTION POST {'Host': 'attacker.invalid'} 403 no side effects
+127.0.0.1 - - [07/Nov/2026 20:15:37] "PUT /v1/board-assets HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:37] "GET /v1/boards HTTP/1.1" 200 -
+FULL_BODY_REJECTION PUT {'Host': 'attacker.invalid'} Windows early-rejection reset no side effects
+127.0.0.1 - - [07/Nov/2026 20:15:37] "DELETE /v1/mnemonics/8f7e73ca-2812-41be-9357-4a4755869ed4 HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:15:37] "GET /v1/boards HTTP/1.1" 200 -
+FULL_BODY_REJECTION DELETE {'Host': 'attacker.invalid'} 403 no side effects
+ok
+test_gallery_bytes_persist_across_process (__main__.Acceptance.test_gallery_bytes_persist_across_process) ... 127.0.0.1 - - [07/Nov/2026 20:15:39] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:39] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:39] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:39] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:40] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:40] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:40] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:40] "GET /v1/boards/9231ab91-d748-4cfe-98ff-ac1c3f372cc4 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:40] "GET /v1/board-assets/2f6ee82c-4e43-41bf-b213-782a7807dc3f HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:40] "GET /v1/board-assets/b810dd4e-a82a-4b97-8dc7-e27bde70f272 HTTP/1.1" 200 -
+ok
+test_mock_comfy_http_roundtrip (__main__.Acceptance.test_mock_comfy_http_roundtrip) ... 127.0.0.1 - - [07/Nov/2026 20:15:40] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:40] "POST /v1/comfy/generate HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:40] "GET /v1/comfy/jobs/f4a3c139-e144-4299-b9fe-9f8b005aa610 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:40] "GET /v1/comfy/jobs/f4a3c139-e144-4299-b9fe-9f8b005aa610 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:40] "GET /v1/comfy/jobs/f4a3c139-e144-4299-b9fe-9f8b005aa610 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:40] "GET /v1/comfy/jobs/f4a3c139-e144-4299-b9fe-9f8b005aa610 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:40] "GET /v1/comfy/jobs/f4a3c139-e144-4299-b9fe-9f8b005aa610 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:40] "GET /v1/comfy/jobs/f4a3c139-e144-4299-b9fe-9f8b005aa610 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:40] "GET /v1/comfy/jobs/f4a3c139-e144-4299-b9fe-9f8b005aa610/image?filename=qa.png HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:41] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:41] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:41] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:41] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:41] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:41] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:41] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:42] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:42] "POST /v1/comfy/generate HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:44] "GET /v1/comfy/jobs/a329f21e-21ee-41b9-a112-725bac970a66 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:44] "GET /v1/comfy/jobs/a329f21e-21ee-41b9-a112-725bac970a66/image?filename=qa.png&subfolder= HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:44] "PUT /v1/board-assets HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:44] "GET /v1/board-assets/09c8c9ff-d3fd-4243-b63e-c95fc108145f HTTP/1.1" 200 -
+ok
+ACTUAL_OCR {'status': 'unavailable', 'reason': 'tesseract_or_language_data_missing', 'text': ''}
+test_ocr_missing_language (__main__.Acceptance.test_ocr_missing_language) ... ok
+test_pdf_150_process_restart (__main__.Acceptance.test_pdf_150_process_restart) ... C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\fitz\__init__.py:17: FutureWarning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+  warnings.warn(
+127.0.0.1 - - [07/Nov/2026 20:15:45] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:45] "PUT /v1/documents HTTP/1.1" 200 -
+INTERRUPTED_PDF {"id": "27b474f2-b010-40d7-842d-21f8f1d15bc9", "name": "acceptance150.pdf", "page_count": 150, "next_page": 8, "status": "processing", "error": "", "retry_pages": 0, "ocr_errors": 0}
+127.0.0.1 - - [07/Nov/2026 20:15:46] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:46] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:46] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:46] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:46] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:46] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:46] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:47] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:47] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:47] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:47] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:47] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:47] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:47] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:47] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:47] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:47] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:47] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:47] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:47] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:47] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:47] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:47] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:47] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:47] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:47] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:47] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:47] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:48] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:48] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:48] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:48] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:48] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:48] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:48] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:48] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:48] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:48] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:48] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:48] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:48] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:48] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:48] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:48] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:48] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:48] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:48] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:48] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:49] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:49] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:49] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:49] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:49] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:49] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:49] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:49] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:49] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:49] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:49] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:49] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:49] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:49] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:49] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:49] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:49] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:49] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:49] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:49] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:50] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:51] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:51] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:51] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:51] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:51] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:51] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:51] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:51] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:51] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:51] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:51] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:51] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:51] "GET /workspace HTTP/1.1" 200 -
+PDF_METRICS {"worker_tree_peak_sampled_rss": 65126400, "workspace_http_ms": [0.0, 16.00000000325963, 31.000000017229468, 30.999999988125637, 46.000000002095476, 14.999999984866008, 0.0, 16.00000000325963, 16.00000000325963, 15.999999974155799, 30.999999988125637, 15.000000013969839, 0.0, 0.0, 15.000000013969839, 14.999999984866008, 0.0, 0.0, 0.0, 0.0, 16.00000000325963, 16.00000000325963, 15.999999974155799, 16.00000000325963, 0.0, 15.999999974155799, 0.0, 0.0, 15.999999974155799, 0.0, 16.00000000325963, 15.000000013969839, 0.0, 0.0, 15.000000013969839, 14.999999984866008, 0.0, 15.000000013969839, 0.0, 16.00000000325963, 62.000000005355105, 15.000000013969839, 16.00000000325963, 16.00000000325963, 30.999999988125637, 47.0000000204891, 16.00000000325963, 16.00000000325963, 15.000000013969839, 0.0, 30.999999988125637, 30.999999988125637, 30.999999988125637, 30.999999988125637, 31.000000017229468, 16.00000000325963, 0.0, 0.0, 16.00000000325963, 15.999999974155799, 16.00000000325963, 16.00000000325963, 15.000000013969839, 0.0, 15.000000013969839, 16.00000000325963, 16.00000000325963, 0.0, 16.00000000325963, 0.0, 15.000000013969839, 16.00000000325963, 0.0, 0.0, 16.00000000325963, 16.00000000325963, 15.999999974155799, 0.0, 16.00000000325963, 0.0, 16.00000000325963, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 16.00000000325963, 0.0, 0.0, 0.0, 16.00000000325963, 0.0, 16.00000000325963, 0.0, 0.0, 16.00000000325963, 0.0, 31.000000017229468, 32.00000000651926, 15.000000013969839, 14.999999984866008, 15.000000013969839, 30.999999988125637, 15.000000013969839, 30.999999988125637]}
+127.0.0.1 - - [07/Nov/2026 20:15:52] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:52] "POST /v1/documents/27b474f2-b010-40d7-842d-21f8f1d15bc9/process HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:52] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:52] "POST /v1/documents/27b474f2-b010-40d7-842d-21f8f1d15bc9/process HTTP/1.1" 200 -
+ok
+PDF_OCR_MISSING {"state": {"id": "a8698d9f-8044-4425-bbff-9828e804e48c", "name": "missing-language.pdf", "page_count": 1, "next_page": 0, "status": "ocr_error", "error": "OCR unavailable or failed; check Tesseract and deu language data, then Retry. TesseractError", "retry_pages": 1, "ocr_errors": 1}, "page": {"document_id": "a8698d9f-8044-4425-bbff-9828e804e48c", "page_number": 0, "text": "", "method": "ocr_error"}}
+test_pdf_ocr_missing_language_remains_retryable (__main__.Acceptance.test_pdf_ocr_missing_language_remains_retryable) ... ok
+test_pdf_retry_button_live_server (__main__.Acceptance.test_pdf_retry_button_live_server) ... 127.0.0.1 - - [07/Nov/2026 20:15:52] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:52] "PUT /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:52] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:52] "POST /v1/documents/0744dd0b-7e5b-4e7a-8400-0740b7048a68/process HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:54] "GET /canvas?document=0744dd0b-7e5b-4e7a-8400-0740b7048a68 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:54] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:54] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:54] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:54] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:54] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:54] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:54] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:54] "POST /v1/documents/0744dd0b-7e5b-4e7a-8400-0740b7048a68/process HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:54] "GET /v1/documents HTTP/1.1" 200 -
+ok
+test_pointer_fling_workspace (__main__.Acceptance.test_pointer_fling_workspace) ... 127.0.0.1 - - [07/Nov/2026 20:15:59] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:59] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:15:59] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:00] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:00] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:00] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:00] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:00] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:00] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:00] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:00] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:00] "GET /v1/speech-projects HTTP/1.1" 200 -
+POINTER_FLING {"before": 2, "after": 0}
+ok
+test_sqlite_windows_rename_after_use (__main__.Acceptance.test_sqlite_windows_rename_after_use) ... ok
+test_ui_500_cards_measurement (__main__.Acceptance.test_ui_500_cards_measurement) ... 127.0.0.1 - - [07/Nov/2026 20:16:02] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:02] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:02] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:02] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:02] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:02] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:02] "GET /v1/speech-projects HTTP/1.1" 200 -
+UI_METRICS {"draw_500_ms": [3.9000000059604645, 2.2000000178813934, 2.5], "child_rss_before": 394211328, "child_rss_after": 416731136, "dom_cards": 56}
+ok
+test_upload_limits (__main__.Acceptance.test_upload_limits) ... 127.0.0.1 - - [07/Nov/2026 20:16:03] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:03] "PUT /v1/documents HTTP/1.1" 413 -
+127.0.0.1 - - [07/Nov/2026 20:16:03] "PUT /v1/board-assets HTTP/1.1" 413 -
+127.0.0.1 - - [07/Nov/2026 20:16:03] "POST /v1/boards HTTP/1.1" 413 -
+127.0.0.1 - - [07/Nov/2026 20:16:03] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:03] "PUT /v1/board-assets HTTP/1.1" 400 -
+ok
+test_card_drag_to_lab (test_browser_gestures.GestureBrowserTests.test_card_drag_to_lab) ... 127.0.0.1 - - [07/Nov/2026 20:16:03] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:05] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:05] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:05] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:05] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:05] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:05] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:05] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:05] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:05] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:05] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:05] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:05] "GET /v1/speech-projects HTTP/1.1" 200 -
+ok
+test_fling_detaches_outward_only (test_browser_gestures.GestureBrowserTests.test_fling_detaches_outward_only) ... 127.0.0.1 - - [07/Nov/2026 20:16:07] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:08] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:08] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:08] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:08] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:08] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:08] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:08] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:08] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:08] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:08] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:08] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:08] "GET /v1/speech-projects HTTP/1.1" 200 -
+ok
+test_gallery_and_composition (test_browser_gestures.GestureBrowserTests.test_gallery_and_composition) ... 127.0.0.1 - - [07/Nov/2026 20:16:09] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:11] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:12] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:12] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:12] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:12] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:12] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:12] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:12] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:12] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:12] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:12] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:12] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:12] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:12] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+ok
+test_sphere_to_existing_word_card (test_browser_gestures.GestureBrowserTests.test_sphere_to_existing_word_card) ... 127.0.0.1 - - [07/Nov/2026 20:16:12] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:14] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:14] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:14] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:14] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:14] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:14] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:14] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:14] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:14] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:14] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:14] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:14] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:15] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:15] "PUT /v1/board-assets HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:15] "GET /v1/board-assets/8f5a0868-5d2f-4be3-8d1f-3592feb3bbfd HTTP/1.1" 200 -
+ok
+test_toggle_split_view (test_browser_gestures.GestureBrowserTests.test_toggle_split_view) ... 127.0.0.1 - - [07/Nov/2026 20:16:17] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:18] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:18] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:18] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:18] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:18] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:18] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:19] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:19] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:19] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:19] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:19] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:19] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:19] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:19] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:19] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:19] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:19] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:19] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:19] "GET /v1/speech-projects HTTP/1.1" 200 -
+ok
+test_autosave_reload_restore_gallery_and_title (test_canvas_ux_browser.CanvasUXBrowserTests.test_autosave_reload_restore_gallery_and_title) ... 127.0.0.1 - - [07/Nov/2026 20:16:23] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:23] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:23] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:23] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:23] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:23] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:23] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:23] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:23] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:24] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:24] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:24] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:24] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:24] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:24] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:24] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:24] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:24] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+ok
+test_corrupt_draft_not_overwritten (test_canvas_ux_browser.CanvasUXBrowserTests.test_corrupt_draft_not_overwritten) ... 127.0.0.1 - - [07/Nov/2026 20:16:26] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:26] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:26] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:26] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:26] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:26] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:26] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:26] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:26] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:26] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:26] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:26] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:26] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:26] "GET /v1/speech-projects HTTP/1.1" 200 -
+ok
+test_cross_tab_conflict_preserves_other_draft (test_canvas_ux_browser.CanvasUXBrowserTests.test_cross_tab_conflict_preserves_other_draft) ... 127.0.0.1 - - [07/Nov/2026 20:16:29] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:29] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:29] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:29] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:29] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:29] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:29] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:29] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:29] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:30] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:30] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:30] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:30] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:30] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:30] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:30] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:30] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:30] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+ok
+test_drag_escape_and_keyboard_move_history (test_canvas_ux_browser.CanvasUXBrowserTests.test_drag_escape_and_keyboard_move_history) ... 127.0.0.1 - - [07/Nov/2026 20:16:32] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:32] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:32] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:33] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:33] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:33] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:33] "GET /v1/speech-projects HTTP/1.1" 200 -
+ok
+test_exact_hover_uses_rendered_bounds (test_canvas_ux_browser.CanvasUXBrowserTests.test_exact_hover_uses_rendered_bounds) ... 127.0.0.1 - - [07/Nov/2026 20:16:35] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:35] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:35] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:35] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:35] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:35] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:35] "GET /v1/speech-projects HTTP/1.1" 200 -
+ok
+test_fit_measures_offscreen_tall_card (test_canvas_ux_browser.CanvasUXBrowserTests.test_fit_measures_offscreen_tall_card) ... 127.0.0.1 - - [07/Nov/2026 20:16:37] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:37] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:37] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:37] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:37] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:37] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:37] "GET /v1/speech-projects HTTP/1.1" 200 -
+ok
+test_gallery_pointer_reorder (test_canvas_ux_browser.CanvasUXBrowserTests.test_gallery_pointer_reorder) ... 127.0.0.1 - - [07/Nov/2026 20:16:38] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:39] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:39] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:39] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:39] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:39] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:39] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:39] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:39] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:39] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:39] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:39] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+ok
+test_gallery_reorder_remove_undo_redo_and_preview (test_canvas_ux_browser.CanvasUXBrowserTests.test_gallery_reorder_remove_undo_redo_and_preview) ... 127.0.0.1 - - [07/Nov/2026 20:16:40] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:41] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:41] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:41] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:41] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:41] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:41] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:41] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:41] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:41] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:41] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:41] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:41] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:41] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:41] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:41] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+ok
+test_image_card_drop_inside_board (test_canvas_ux_browser.CanvasUXBrowserTests.test_image_card_drop_inside_board) ... 127.0.0.1 - - [07/Nov/2026 20:16:42] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:42] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:42] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:43] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:43] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:43] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:43] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:43] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:43] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:43] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+ok
+test_keyboard_transfer_both_directions (test_canvas_ux_browser.CanvasUXBrowserTests.test_keyboard_transfer_both_directions) ... 127.0.0.1 - - [07/Nov/2026 20:16:44] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:44] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:44] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:44] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:44] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:44] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:44] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:44] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:44] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:44] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:44] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:44] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:44] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:44] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:44] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:44] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:44] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:45] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:45] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:45] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:45] "PUT /v1/board-assets HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:45] "GET /v1/board-assets/0f686a6a-7a3a-44f1-bf4c-ba522e2466a0 HTTP/1.1" 200 -
+ok
+test_mobile_keyboard_fit (test_canvas_ux_browser.CanvasUXBrowserTests.test_mobile_keyboard_fit) ... 127.0.0.1 - - [07/Nov/2026 20:16:46] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:46] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:46] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:46] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:46] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:46] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:46] "GET /v1/documents HTTP/1.1" 200 -
+ok
+test_pdf_ocr_retry_and_no_text_states (test_canvas_ux_browser.CanvasUXBrowserTests.test_pdf_ocr_retry_and_no_text_states) ... 127.0.0.1 - - [07/Nov/2026 20:16:48] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:48] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:48] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:48] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:48] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:48] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:48] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:48] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+ok
+test_pointer_move_undo_redo (test_canvas_ux_browser.CanvasUXBrowserTests.test_pointer_move_undo_redo) ... 127.0.0.1 - - [07/Nov/2026 20:16:50] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:50] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:50] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:50] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:50] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:50] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:50] "GET /v1/speech-projects HTTP/1.1" 200 -
+ok
+test_restore_copy_survives_reload (test_canvas_ux_browser.CanvasUXBrowserTests.test_restore_copy_survives_reload) ... 127.0.0.1 - - [07/Nov/2026 20:16:52] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:52] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:52] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:53] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:53] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:53] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:53] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:53] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:53] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:53] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:53] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:53] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:53] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:53] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:53] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:53] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:53] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:53] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:54] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:54] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:54] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:54] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:54] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:54] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:54] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:54] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:54] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+ok
+test_saved_board_gallery_roundtrip (test_canvas_ux_browser.CanvasUXBrowserTests.test_saved_board_gallery_roundtrip) ... 127.0.0.1 - - [07/Nov/2026 20:16:56] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:56] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:56] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:56] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:56] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:56] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:56] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:56] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:56] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:56] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:56] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:16:56] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:56] "POST /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:56] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:56] "GET /v1/boards/8baaa6ee-33eb-4985-9949-f01acd01bc4e HTTP/1.1" 200 -
+ok
+test_split_hover_and_cancel (test_canvas_ux_browser.CanvasUXBrowserTests.test_split_hover_and_cancel) ... 127.0.0.1 - - [07/Nov/2026 20:16:58] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:58] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:58] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:58] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:58] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:58] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:58] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:59] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:59] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:59] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:59] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:59] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:59] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:59] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:59] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:59] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:59] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:59] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:16:59] "GET /v1/speech-projects HTTP/1.1" 200 -
+ok
+test_split_image_card_drop_inside_board (test_canvas_ux_browser.CanvasUXBrowserTests.test_split_image_card_drop_inside_board) ... 127.0.0.1 - - [07/Nov/2026 20:17:01] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:01] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:02] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:02] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:02] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:02] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:02] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:02] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:02] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:02] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:02] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:02] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:02] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:02] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:02] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:02] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:02] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:02] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:02] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:02] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:17:02] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:17:03] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+ok
+test_storage_quota_keeps_last_good_draft (test_canvas_ux_browser.CanvasUXBrowserTests.test_storage_quota_keeps_last_good_draft) ... 127.0.0.1 - - [07/Nov/2026 20:17:06] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:06] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:06] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:07] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:07] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:07] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:17:07] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:17:07] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:07] "GET /v1/mnemonics HTTP/1.1" 200 -
+ok
+test_unlink_undo_and_image_add_history (test_canvas_ux_browser.CanvasUXBrowserTests.test_unlink_undo_and_image_add_history) ... 127.0.0.1 - - [07/Nov/2026 20:17:10] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:10] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:10] "GET /canvas-ux.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:10] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:10] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:10] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:10] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:17:11] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:17:11] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:17:11] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:17:11] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:17:11] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:17:11] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:17:11] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:17:11] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:17:11] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+ok
+test_mutations_include_csrf_and_preserve_request_body (test_study_fetch_browser.StudyFetchBrowserTests.test_mutations_include_csrf_and_preserve_request_body) ... ok
+
+----------------------------------------------------------------------
+Ran 38 tests in 98.551s
+
+OK

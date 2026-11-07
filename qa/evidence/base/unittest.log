@@ -1,0 +1,106 @@
+test_controls_and_local_audio (test_acoustic_studio.AcousticStudioTests.test_controls_and_local_audio) ... ok
+test_explicit_speech_privacy_consent (test_acoustic_studio.AcousticStudioTests.test_explicit_speech_privacy_consent) ... ok
+test_instruction_length (test_ai_images.ImageProviderTests.test_instruction_length) ... ok
+test_no_cloud_without_configuration (test_ai_images.ImageProviderTests.test_no_cloud_without_configuration) ... ok
+test_prompt_includes_all_links (test_ai_images.ImageProviderTests.test_prompt_includes_all_links) ... ok
+test_board_has_four_lanes_and_safe_dom (test_board.BoardTests.test_board_has_four_lanes_and_safe_dom) ... ok
+test_bad_lang (test_board_assets.BoardAssetTests.test_bad_lang) ... ok
+test_invalid (test_board_assets.BoardAssetTests.test_invalid) ... ok
+test_png (test_board_assets.BoardAssetTests.test_png) ... ok
+test_card_drag_to_lab (test_browser_gestures.GestureBrowserTests.test_card_drag_to_lab) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_fling_detaches_outward_only (test_browser_gestures.GestureBrowserTests.test_fling_detaches_outward_only) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_gallery_and_composition (test_browser_gestures.GestureBrowserTests.test_gallery_and_composition) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_sphere_to_existing_word_card (test_browser_gestures.GestureBrowserTests.test_sphere_to_existing_word_card) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_toggle_split_view (test_browser_gestures.GestureBrowserTests.test_toggle_split_view) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_canvas_core_controls (test_canvas.CanvasTests.test_canvas_core_controls) ... ok
+test_reject_invalid_scene_ref (test_canvas_v2.CanvasV2Tests.test_reject_invalid_scene_ref) ... ok
+test_reject_nan (test_canvas_v2.CanvasV2Tests.test_reject_nan) ... ok
+test_valid_scene_ref (test_canvas_v2.CanvasV2Tests.test_valid_scene_ref) ... ok
+test_disabled (test_comfy_adapter.ComfyTests.test_disabled) ... ok
+test_reject_prompt (test_comfy_adapter.ComfyTests.test_reject_prompt) ... ok
+test_workflow (test_comfy_adapter.ComfyTests.test_workflow) ... ok
+test_comfy_is_opt_in (test_composite_generation_ui.CompositeGenerationContract.test_comfy_is_opt_in) ... ok
+test_non_destructive_graph (test_composite_generation_ui.CompositeGenerationContract.test_non_destructive_graph) ... ok
+test_opt_in_and_existing_routes (test_composite_generation_ui.CompositeGenerationContract.test_opt_in_and_existing_routes) ... ok
+test_inline_edit_and_drag (test_cross_panel.CrossPanelTests.test_inline_edit_and_drag) ... ok
+test_lab_composer (test_cross_panel.CrossPanelTests.test_lab_composer) ... ok
+test_workspace (test_cross_panel.CrossPanelTests.test_workspace) ... ok
+test_reject_nonpdf (test_document_import.PDFImportTests.test_reject_nonpdf) ... ok
+test_text_pdf_pages_resume (test_document_import.PDFImportTests.test_text_pdf_pages_resume) ... C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\fitz\__init__.py:17: FutureWarning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+  warnings.warn(
+ok
+test_any_card_can_hold_image (test_gesture_contracts.CrossPanelGestureContracts.test_any_card_can_hold_image) ... ok
+test_canvas_drag_and_fling (test_gesture_contracts.CrossPanelGestureContracts.test_canvas_drag_and_fling) ... ok
+test_lab_sphere_and_images (test_gesture_contracts.CrossPanelGestureContracts.test_lab_sphere_and_images) ... ok
+test_overlay_and_messages (test_gesture_contracts.CrossPanelGestureContracts.test_overlay_and_messages) ... ok
+test_duplicate_rejected (test_image_gallery.ImageGalleryTests.test_duplicate_rejected) ... ok
+test_invalid_id_rejected (test_image_gallery.ImageGalleryTests.test_invalid_id_rejected) ... ok
+test_multiple_images_on_word (test_image_gallery.ImageGalleryTests.test_multiple_images_on_word) ... ok
+test_too_many_rejected (test_image_gallery.ImageGalleryTests.test_too_many_rejected) ... ok
+test_invalid_png_rejected (test_image_import.ImportImageTests.test_invalid_png_rejected) ... ok
+test_missing_scene_rejected (test_image_import.ImportImageTests.test_missing_scene_rejected) ... ok
+test_valid_png_roundtrip (test_image_import.ImportImageTests.test_valid_png_roundtrip) ... ok
+test_bad_relation (test_language_graph.LanguageGraphTests.test_bad_relation) ... ok
+test_image_graph_roundtrip (test_language_graph.LanguageGraphTests.test_image_graph_roundtrip) ... ok
+test_invalid_response (test_learning_memory.LearningMemoryTests.test_invalid_response) ... ok
+test_recall_schedule_persists (test_learning_memory.LearningMemoryTests.test_recall_schedule_persists) ... ok
+test_wrong_answer_resets (test_learning_memory.LearningMemoryTests.test_wrong_answer_resets) ... ok
+test_filters_and_preserves_unreviewed (test_lexicon_import.ImportPreviewTests.test_filters_and_preserves_unreviewed) ... ok
+test_gzip (test_lexicon_import.ImportPreviewTests.test_gzip) ... ok
+test_invalid_json_rejected (test_lexicon_import.ImportPreviewTests.test_invalid_json_rejected) ... ok
+test_import_and_search (test_lexicon_store.LexiconTests.test_import_and_search) ... ok
+test_like_injection_escaped (test_lexicon_store.LexiconTests.test_like_injection_escaped) ... ok
+test_requires_provenance (test_lexicon_store.LexiconTests.test_requires_provenance) ... ok
+test_bad_input (test_local_speech.LocalSpeechTests.test_bad_input) ... ok
+test_requires_aligner (test_local_speech.LocalSpeechTests.test_requires_aligner) ... ok
+test_requires_local_model (test_local_speech.LocalSpeechTests.test_requires_local_model) ... ok
+test_bad_shape (test_mesh_export.MeshTests.test_bad_shape) ... ok
+test_gltf (test_mesh_export.MeshTests.test_gltf) ... ok
+test_profile (test_mesh_export.MeshTests.test_profile) ... ok
+test_current_primary_routes (test_navigation.NavigationTests.test_current_primary_routes) ... ok
+test_recording_on_3d_lab_and_legacy_relief (test_navigation.NavigationTests.test_recording_on_3d_lab_and_legacy_relief) ... ok
+test_canvas (test_pdf_comfy_ui.PDFComfyUITests.test_canvas) ... ok
+test_comfy_ui (test_pdf_comfy_ui.PDFComfyUITests.test_comfy_ui) ... ok
+test_routes (test_pdf_comfy_ui.PDFComfyUITests.test_routes) ... ok
+test_invalid (test_phonovision.PhonoVisionTests.test_invalid) ... ok
+test_metaphor_is_not_science (test_phonovision.PhonoVisionTests.test_metaphor_is_not_science) ... ok
+test_signal (test_phonovision.PhonoVisionTests.test_signal) ... ok
+test_ui_contract (test_phonovision_3d.PhonoVision3DTests.test_ui_contract) ... ok
+test_reject_invalid (test_pitch_shift.PitchShiftTests.test_reject_invalid) ... ok
+test_api_routes (test_scientific_studio.ScientificStudioTests.test_api_routes) ... ok
+test_ui_has_scientific_controls (test_scientific_studio.ScientificStudioTests.test_ui_has_scientific_controls) ... ok
+test_no_fake_translation_when_missing_backend (test_sentence_translation.SentenceTests.test_no_fake_translation_when_missing_backend) ... ok
+test_tokenization (test_sentence_translation.SentenceTests.test_tokenization) ... ok
+test_validation (test_sentence_translation.SentenceTests.test_validation) ... ok
+test_every_view_has_speech_project (test_shared_speech_ui.SharedSpeechUITests.test_every_view_has_speech_project) ... ok
+test_server_routes (test_shared_speech_ui.SharedSpeechUITests.test_server_routes) ... ok
+test_invalid_self_report (test_skill_memory.SkillTests.test_invalid_self_report) ... ok
+test_meaning (test_skill_memory.SkillTests.test_meaning) ... ok
+test_self_report_not_pronunciation_score (test_skill_memory.SkillTests.test_self_report_not_pronunciation_score) ... ok
+test_separate_word_and_article (test_skill_memory.SkillTests.test_separate_word_and_article) ... ok
+test_duplicate_id (test_spatial_board.SpatialBoardTests.test_duplicate_id) ... ok
+test_invalid_link (test_spatial_board.SpatialBoardTests.test_invalid_link) ... ok
+test_roundtrip (test_spatial_board.SpatialBoardTests.test_roundtrip) ... ok
+test_connections_are_explicitly_closed (test_speech_projects.SpeechProjectsTests.test_connections_are_explicitly_closed) ... ok
+test_invalid_segment (test_speech_projects.SpeechProjectsTests.test_invalid_segment) ... ok
+test_roundtrip (test_speech_projects.SpeechProjectsTests.test_roundtrip) ... ok
+test_composite_scene (test_study_core.StudyCoreTests.test_composite_scene) ... ok
+test_empty_anchors_rejected (test_study_core.StudyCoreTests.test_empty_anchors_rejected) ... ok
+test_empty_sound_fragment_rejected (test_study_core.StudyCoreTests.test_empty_sound_fragment_rejected) ... ok
+test_unaided_recall (test_study_core.StudyCoreTests.test_unaided_recall) ... ok
+test_home_actions (test_three_tabs.ThreeTabTests.test_home_actions) ... ok
+test_lab_has_spectral_panel (test_three_tabs.ThreeTabTests.test_lab_has_spectral_panel) ... ok
+test_old_features_not_deleted (test_three_tabs.ThreeTabTests.test_old_features_not_deleted) ... ok
+test_tabs (test_three_tabs.ThreeTabTests.test_tabs) ... ok
+test_explicit_consent_required (test_translation_models.TranslationModelsTests.test_explicit_consent_required) ... ok
+test_no_argos (test_translation_models.TranslationModelsTests.test_no_argos) ... ok
+test_reject_non_model (test_translation_models.TranslationModelsTests.test_reject_non_model) ... ok
+test_canvas_visual_feedback (test_visible_drag.VisibleDragTests.test_canvas_visual_feedback) ... ok
+test_floating_preview (test_visible_drag.VisibleDragTests.test_floating_preview) ... ok
+test_save_list_get_delete (test_visual_memory.VisualMemoryTests.test_save_list_get_delete) ... ok
+test_svg_escapes_untrusted_text (test_visual_memory.VisualMemoryTests.test_svg_escapes_untrusted_text) ... ok
+
+----------------------------------------------------------------------
+Ran 99 tests in 1.214s
+
+OK (skipped=5)

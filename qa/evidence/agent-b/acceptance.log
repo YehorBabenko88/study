@@ -1,0 +1,153 @@
+test_api_rejects_foreign_origin_mutation (__main__.Acceptance.test_api_rejects_foreign_origin_mutation) ... 127.0.0.1 - - [07/Nov/2026 19:57:08] "POST /v1/boards HTTP/1.1" 200 -
+FOREIGN_ORIGIN_OR_HOST {'Origin': 'https://attacker.invalid'} 200 b'{"id": "4de66707-9b39-41c8-9264-4eb4a0f90b4b", "title": "Origin audit"}'
+
+  test_api_rejects_foreign_origin_mutation (__main__.Acceptance.test_api_rejects_foreign_origin_mutation) (headers={'Origin': 'https://attacker.invalid'}) ... FAIL
+127.0.0.1 - - [07/Nov/2026 19:57:08] "POST /v1/boards HTTP/1.1" 200 -
+FOREIGN_ORIGIN_OR_HOST {'Host': 'attacker.invalid'} 200 b'{"id": "59c3ab65-8bf7-499d-9395-5d2ef844fe69", "title": "Origin audit"}'
+  test_api_rejects_foreign_origin_mutation (__main__.Acceptance.test_api_rejects_foreign_origin_mutation) (headers={'Host': 'attacker.invalid'}) ... FAIL
+test_gallery_bytes_persist_across_process (__main__.Acceptance.test_gallery_bytes_persist_across_process) ... 127.0.0.1 - - [07/Nov/2026 19:57:10] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:10] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:10] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:10] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:10] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:10] "GET /v1/boards/7f0da9fb-1fa6-4d12-a104-b85d6192871f HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:10] "GET /v1/board-assets/06e9043d-3143-40db-af37-9451bcaa26f4 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:10] "GET /v1/board-assets/94a6ad9b-8d84-41bf-a292-dda039b0b5dd HTTP/1.1" 200 -
+ok
+test_mock_comfy_http_roundtrip (__main__.Acceptance.test_mock_comfy_http_roundtrip) ... 127.0.0.1 - - [07/Nov/2026 19:57:10] "POST /v1/comfy/generate HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:10] "GET /v1/comfy/jobs/00000000-0000-4000-8000-000000000099 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:10] "GET /v1/comfy/jobs/00000000-0000-4000-8000-000000000099/image?filename=qa.png HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:11] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:11] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:11] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:11] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:11] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:11] "POST /v1/comfy/generate HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:13] "GET /v1/comfy/jobs/00000000-0000-4000-8000-000000000099 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:13] "GET /v1/comfy/jobs/00000000-0000-4000-8000-000000000099/image?filename=qa.png&subfolder= HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:13] "PUT /v1/board-assets HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:13] "GET /v1/board-assets/51b66b67-0d92-489d-9a9a-fa83280ab428 HTTP/1.1" 200 -
+ok
+ACTUAL_OCR {'status': 'unavailable', 'reason': 'tesseract_or_language_data_missing', 'text': ''}
+test_ocr_missing_language (__main__.Acceptance.test_ocr_missing_language) ... ok
+test_pdf_150_process_restart (__main__.Acceptance.test_pdf_150_process_restart) ... C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\fitz\__init__.py:17: FutureWarning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+  warnings.warn(
+C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\fitz\__init__.py:17: FutureWarning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+  warnings.warn(
+INTERRUPTED_PDF {"id": "be584e11-0b91-4187-a48d-c59098bc4ffe", "name": "acceptance150.pdf", "page_count": 150, "next_page": 13, "status": "processing", "error": ""}
+C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\fitz\__init__.py:17: FutureWarning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+  warnings.warn(
+ok
+PDF_OCR_MISSING {"state": {"id": "b7a81c17-f22f-49f0-809a-a468a353651b", "name": "missing-language.pdf", "page_count": 1, "next_page": 1, "status": "complete", "error": ""}, "page": {"document_id": "b7a81c17-f22f-49f0-809a-a468a353651b", "page_number": 0, "text": "", "method": "ocr_unavailable"}}
+test_pdf_ocr_missing_language_remains_retryable (__main__.Acceptance.test_pdf_ocr_missing_language_remains_retryable) ... FAIL
+test_pointer_fling_workspace (__main__.Acceptance.test_pointer_fling_workspace) ... 127.0.0.1 - - [07/Nov/2026 19:57:20] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:20] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:20] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:20] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:20] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:20] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:20] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:20] "GET /v1/speech-projects HTTP/1.1" 200 -
+POINTER_FLING {"before": 2, "after": 0}
+ok
+test_sqlite_windows_rename_after_use (__main__.Acceptance.test_sqlite_windows_rename_after_use) ... ok
+test_ui_500_cards_measurement (__main__.Acceptance.test_ui_500_cards_measurement) ... 127.0.0.1 - - [07/Nov/2026 19:57:22] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:22] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:22] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:22] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:22] "GET /v1/speech-projects HTTP/1.1" 200 -
+UI_METRICS {"draw_500_ms": [1.5999999940395355, 1.4000000059604645, 1.5], "child_rss_before": 445202432, "child_rss_after": 476766208, "dom_cards": 56}
+ok
+test_upload_limits (__main__.Acceptance.test_upload_limits) ... 127.0.0.1 - - [07/Nov/2026 19:57:23] "PUT /v1/documents HTTP/1.1" 413 -
+127.0.0.1 - - [07/Nov/2026 19:57:23] "PUT /v1/board-assets HTTP/1.1" 413 -
+127.0.0.1 - - [07/Nov/2026 19:57:23] "POST /v1/boards HTTP/1.1" 413 -
+127.0.0.1 - - [07/Nov/2026 19:57:23] "PUT /v1/board-assets HTTP/1.1" 400 -
+ok
+test_card_drag_to_lab (test_browser_gestures.GestureBrowserTests.test_card_drag_to_lab) ... 127.0.0.1 - - [07/Nov/2026 19:57:23] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:24] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:24] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:24] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:25] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:25] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:25] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:25] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:25] "GET /v1/speech-projects HTTP/1.1" 200 -
+ok
+test_fling_detaches_outward_only (test_browser_gestures.GestureBrowserTests.test_fling_detaches_outward_only) ... 127.0.0.1 - - [07/Nov/2026 19:57:26] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:27] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:27] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:27] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:27] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:27] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:27] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:27] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:27] "GET /v1/speech-projects HTTP/1.1" 200 -
+ok
+test_gallery_and_composition (test_browser_gestures.GestureBrowserTests.test_gallery_and_composition) ... 127.0.0.1 - - [07/Nov/2026 19:57:28] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:29] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:29] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:29] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:29] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:29] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:29] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:29] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:29] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:29] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 19:57:29] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+ok
+test_sphere_to_existing_word_card (test_browser_gestures.GestureBrowserTests.test_sphere_to_existing_word_card) ... 127.0.0.1 - - [07/Nov/2026 19:57:29] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:30] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:30] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:30] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:30] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:30] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:30] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:30] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:30] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:31] "PUT /v1/board-assets HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:31] "GET /v1/board-assets/97b83853-9755-4917-8cd2-25908b84cba5 HTTP/1.1" 200 -
+ok
+test_toggle_split_view (test_browser_gestures.GestureBrowserTests.test_toggle_split_view) ... 127.0.0.1 - - [07/Nov/2026 19:57:31] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:32] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:32] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:32] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:32] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:32] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:32] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:32] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:32] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:33] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:33] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:33] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:33] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 19:57:33] "GET /v1/speech-projects HTTP/1.1" 200 -
+ok
+
+======================================================================
+FAIL: test_api_rejects_foreign_origin_mutation (__main__.Acceptance.test_api_rejects_foreign_origin_mutation) (headers={'Origin': 'https://attacker.invalid'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\agent-b\snapshot\qa\windows_audit.py", line 54, in test_api_rejects_foreign_origin_mutation
+    self.assertIn(status,(400,403),'Untrusted Origin/Host accepted a state-changing request')
+AssertionError: 200 not found in (400, 403) : Untrusted Origin/Host accepted a state-changing request
+
+======================================================================
+FAIL: test_api_rejects_foreign_origin_mutation (__main__.Acceptance.test_api_rejects_foreign_origin_mutation) (headers={'Host': 'attacker.invalid'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\agent-b\snapshot\qa\windows_audit.py", line 54, in test_api_rejects_foreign_origin_mutation
+    self.assertIn(status,(400,403),'Untrusted Origin/Host accepted a state-changing request')
+AssertionError: 200 not found in (400, 403) : Untrusted Origin/Host accepted a state-changing request
+
+======================================================================
+FAIL: test_pdf_ocr_missing_language_remains_retryable (__main__.Acceptance.test_pdf_ocr_missing_language_remains_retryable)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\agent-b\snapshot\qa\windows_audit.py", line 158, in test_pdf_ocr_missing_language_remains_retryable
+    self.assertNotEqual(state['status'],'complete','Missing OCR marked blank page complete; normal resume cannot retry it')
+AssertionError: 'complete' == 'complete' : Missing OCR marked blank page complete; normal resume cannot retry it
+
+----------------------------------------------------------------------
+Ran 15 tests in 25.079s
+
+FAILED (failures=3)

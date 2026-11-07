@@ -1,0 +1,192 @@
+test_controls_and_local_audio (test_acoustic_studio.AcousticStudioTests.test_controls_and_local_audio) ... ok
+test_explicit_speech_privacy_consent (test_acoustic_studio.AcousticStudioTests.test_explicit_speech_privacy_consent) ... ok
+test_instruction_length (test_ai_images.ImageProviderTests.test_instruction_length) ... ok
+test_no_cloud_without_configuration (test_ai_images.ImageProviderTests.test_no_cloud_without_configuration) ... ok
+test_prompt_includes_all_links (test_ai_images.ImageProviderTests.test_prompt_includes_all_links) ... ok
+test_absent_origin_and_missing_token_cannot_mutate (test_api_security.APISecurityTests.test_absent_origin_and_missing_token_cannot_mutate) ... 127.0.0.1 - - [07/Nov/2026 20:11:55] "POST /v1/mnemonics/id HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:11:55] "PUT /v1/mnemonics/id HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:11:55] "DELETE /v1/mnemonics/id HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:11:55] "PATCH /v1/mnemonics/id HTTP/1.1" 403 -
+ok
+test_ambiguous_headers_wrong_ports_and_absolute_targets_rejected (test_api_security.APISecurityTests.test_ambiguous_headers_wrong_ports_and_absolute_targets_rejected) ... 127.0.0.1 - - [07/Nov/2026 20:11:56] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:11:56] "DELETE /v1/mnemonics/id HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:11:56] "DELETE /v1/mnemonics/id HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:11:56] "DELETE /v1/mnemonics/id HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:11:56] "DELETE /v1/mnemonics/id HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:11:56] "DELETE /v1/mnemonics/id HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:11:56] "DELETE /v1/mnemonics/id HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:11:56] "DELETE /v1/mnemonics/id HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:11:56] "DELETE /v1/mnemonics/id HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:11:56] "GET http://evil.example/health HTTP/1.1" 403 -
+ok
+test_foreign_host_blocks_reads_and_mutations_before_dispatch (test_api_security.APISecurityTests.test_foreign_host_blocks_reads_and_mutations_before_dispatch) ... 127.0.0.1 - - [07/Nov/2026 20:11:56] "GET /health HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:11:56] "GET /v1/security/bootstrap HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:11:56] "DELETE /v1/mnemonics/id HTTP/1.1" 403 -
+ok
+test_loopback_alias_read_and_cross_site_bootstrap (test_api_security.APISecurityTests.test_loopback_alias_read_and_cross_site_bootstrap) ... 127.0.0.1 - - [07/Nov/2026 20:11:57] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:11:57] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:11:57] "GET /v1/security/bootstrap HTTP/1.1" 403 -
+ok
+test_pdf_retry_route_preserves_typed_values_for_validation (test_api_security.APISecurityTests.test_pdf_retry_route_preserves_typed_values_for_validation) ... 127.0.0.1 - - [07/Nov/2026 20:11:57] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:11:57] "POST /v1/documents/id/process HTTP/1.1" 200 -
+ok
+test_token_and_same_origin_allow_mutation (test_api_security.APISecurityTests.test_token_and_same_origin_allow_mutation) ... 127.0.0.1 - - [07/Nov/2026 20:11:58] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:11:58] "DELETE /v1/mnemonics/id HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:11:58] "DELETE /v1/mnemonics/id HTTP/1.1" 200 -
+ok
+test_untrusted_origin_cannot_use_valid_token (test_api_security.APISecurityTests.test_untrusted_origin_cannot_use_valid_token) ... 127.0.0.1 - - [07/Nov/2026 20:11:59] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:11:59] "DELETE /v1/mnemonics/id HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:11:59] "DELETE /v1/mnemonics/id HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:11:59] "DELETE /v1/mnemonics/id HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:11:59] "DELETE /v1/mnemonics/id HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:11:59] "DELETE /v1/mnemonics/id HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:11:59] "DELETE /v1/mnemonics/id HTTP/1.1" 403 -
+ok
+test_board_has_four_lanes_and_safe_dom (test_board.BoardTests.test_board_has_four_lanes_and_safe_dom) ... ok
+test_bad_lang (test_board_assets.BoardAssetTests.test_bad_lang) ... ok
+test_invalid (test_board_assets.BoardAssetTests.test_invalid) ... ok
+test_png (test_board_assets.BoardAssetTests.test_png) ... ok
+test_card_drag_to_lab (test_browser_gestures.GestureBrowserTests.test_card_drag_to_lab) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_fling_detaches_outward_only (test_browser_gestures.GestureBrowserTests.test_fling_detaches_outward_only) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_gallery_and_composition (test_browser_gestures.GestureBrowserTests.test_gallery_and_composition) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_sphere_to_existing_word_card (test_browser_gestures.GestureBrowserTests.test_sphere_to_existing_word_card) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_toggle_split_view (test_browser_gestures.GestureBrowserTests.test_toggle_split_view) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_canvas_core_controls (test_canvas.CanvasTests.test_canvas_core_controls) ... ok
+test_autosave_reload_restore_gallery_and_title (test_canvas_ux_browser.CanvasUXBrowserTests.test_autosave_reload_restore_gallery_and_title) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_corrupt_draft_not_overwritten (test_canvas_ux_browser.CanvasUXBrowserTests.test_corrupt_draft_not_overwritten) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_cross_tab_conflict_preserves_other_draft (test_canvas_ux_browser.CanvasUXBrowserTests.test_cross_tab_conflict_preserves_other_draft) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_drag_escape_and_keyboard_move_history (test_canvas_ux_browser.CanvasUXBrowserTests.test_drag_escape_and_keyboard_move_history) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_exact_hover_uses_rendered_bounds (test_canvas_ux_browser.CanvasUXBrowserTests.test_exact_hover_uses_rendered_bounds) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_fit_measures_offscreen_tall_card (test_canvas_ux_browser.CanvasUXBrowserTests.test_fit_measures_offscreen_tall_card) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_gallery_pointer_reorder (test_canvas_ux_browser.CanvasUXBrowserTests.test_gallery_pointer_reorder) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_gallery_reorder_remove_undo_redo_and_preview (test_canvas_ux_browser.CanvasUXBrowserTests.test_gallery_reorder_remove_undo_redo_and_preview) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_image_card_drop_inside_board (test_canvas_ux_browser.CanvasUXBrowserTests.test_image_card_drop_inside_board) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_keyboard_transfer_both_directions (test_canvas_ux_browser.CanvasUXBrowserTests.test_keyboard_transfer_both_directions) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_mobile_keyboard_fit (test_canvas_ux_browser.CanvasUXBrowserTests.test_mobile_keyboard_fit) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_pdf_ocr_retry_and_no_text_states (test_canvas_ux_browser.CanvasUXBrowserTests.test_pdf_ocr_retry_and_no_text_states) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_pointer_move_undo_redo (test_canvas_ux_browser.CanvasUXBrowserTests.test_pointer_move_undo_redo) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_restore_copy_survives_reload (test_canvas_ux_browser.CanvasUXBrowserTests.test_restore_copy_survives_reload) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_saved_board_gallery_roundtrip (test_canvas_ux_browser.CanvasUXBrowserTests.test_saved_board_gallery_roundtrip) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_split_hover_and_cancel (test_canvas_ux_browser.CanvasUXBrowserTests.test_split_hover_and_cancel) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_split_image_card_drop_inside_board (test_canvas_ux_browser.CanvasUXBrowserTests.test_split_image_card_drop_inside_board) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_storage_quota_keeps_last_good_draft (test_canvas_ux_browser.CanvasUXBrowserTests.test_storage_quota_keeps_last_good_draft) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_unlink_undo_and_image_add_history (test_canvas_ux_browser.CanvasUXBrowserTests.test_unlink_undo_and_image_add_history) ... skipped 'Requires Playwright and STUDY_E2E_URL'
+test_reject_invalid_scene_ref (test_canvas_v2.CanvasV2Tests.test_reject_invalid_scene_ref) ... ok
+test_reject_nan (test_canvas_v2.CanvasV2Tests.test_reject_nan) ... ok
+test_valid_scene_ref (test_canvas_v2.CanvasV2Tests.test_valid_scene_ref) ... ok
+test_disabled (test_comfy_adapter.ComfyTests.test_disabled) ... ok
+test_reject_prompt (test_comfy_adapter.ComfyTests.test_reject_prompt) ... ok
+test_workflow (test_comfy_adapter.ComfyTests.test_workflow) ... ok
+test_cancel_does_not_complete (test_comfy_jobs.FakeComfyTests.test_cancel_does_not_complete) ... ok
+test_capacity_and_validation (test_comfy_jobs.FakeComfyTests.test_capacity_and_validation) ... ok
+test_complete_and_request_binding (test_comfy_jobs.FakeComfyTests.test_complete_and_request_binding) ... ok
+test_deadline (test_comfy_jobs.FakeComfyTests.test_deadline) ... ok
+test_execution_failure (test_comfy_jobs.FakeComfyTests.test_execution_failure) ... ok
+test_parameters_reach_comfy_and_are_bound_to_request_id (test_comfy_jobs.FakeComfyTests.test_parameters_reach_comfy_and_are_bound_to_request_id) ... ok
+test_recovery (test_comfy_jobs.FakeComfyTests.test_recovery) ... ok
+test_versioned_request_rejects_workflows_and_image_conditioning (test_comfy_jobs.FakeComfyTests.test_versioned_request_rejects_workflows_and_image_conditioning) ... ok
+test_png_validation (test_comfy_jobs.HttpContractTests.test_png_validation) ... ok
+test_routes_and_unknown_job (test_comfy_jobs.HttpContractTests.test_routes_and_unknown_job) ... 127.0.0.1 - - [07/Nov/2026 20:12:04] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:04] "POST /v1/comfy/generate HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:04] "GET /v1/comfy/jobs/38ef2784-f338-4b3d-b0b6-adf3453fd6c5 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:04] "POST /v1/comfy/jobs/38ef2784-f338-4b3d-b0b6-adf3453fd6c5/cancel HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:04] "GET /v1/comfy/jobs/12345678-1234-1234-1234-123456789012 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:12:04] "POST /v1/comfy/generate HTTP/1.1" 400 -
+127.0.0.1 - - [07/Nov/2026 20:12:04] "POST /v1/comfy/generate HTTP/1.1" 400 -
+127.0.0.1 - - [07/Nov/2026 20:12:04] "POST /v1/comfy/generate HTTP/1.1" 400 -
+ok
+test_one_worker_keeps_second_job_queued (test_comfy_jobs.RecoveryQueueTests.test_one_worker_keeps_second_job_queued) ... ok
+test_queued_job_survives_restart (test_comfy_jobs.RecoveryQueueTests.test_queued_job_survives_restart) ... ok
+test_redirect_is_rejected (test_comfy_jobs.RedirectTests.test_redirect_is_rejected) ... ok
+test_registry_exists (test_comfy_jobs.RegistryTests.test_registry_exists) ... ok
+test_comfy_is_opt_in (test_composite_generation_ui.CompositeGenerationContract.test_comfy_is_opt_in) ... ok
+test_non_destructive_graph (test_composite_generation_ui.CompositeGenerationContract.test_non_destructive_graph) ... ok
+test_opt_in_and_existing_routes (test_composite_generation_ui.CompositeGenerationContract.test_opt_in_and_existing_routes) ... ok
+test_inline_edit_and_drag (test_cross_panel.CrossPanelTests.test_inline_edit_and_drag) ... ok
+test_lab_composer (test_cross_panel.CrossPanelTests.test_lab_composer) ... ok
+test_workspace (test_cross_panel.CrossPanelTests.test_workspace) ... ok
+test_reject_nonpdf (test_document_import.PDFImportTests.test_reject_nonpdf) ... ok
+test_text_pdf_pages_resume (test_document_import.PDFImportTests.test_text_pdf_pages_resume) ... C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\fitz\__init__.py:17: FutureWarning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+  warnings.warn(
+ok
+test_any_card_can_hold_image (test_gesture_contracts.CrossPanelGestureContracts.test_any_card_can_hold_image) ... ok
+test_canvas_drag_and_fling (test_gesture_contracts.CrossPanelGestureContracts.test_canvas_drag_and_fling) ... ok
+test_lab_sphere_and_images (test_gesture_contracts.CrossPanelGestureContracts.test_lab_sphere_and_images) ... ok
+test_overlay_and_messages (test_gesture_contracts.CrossPanelGestureContracts.test_overlay_and_messages) ... ok
+test_duplicate_rejected (test_image_gallery.ImageGalleryTests.test_duplicate_rejected) ... ok
+test_invalid_id_rejected (test_image_gallery.ImageGalleryTests.test_invalid_id_rejected) ... ok
+test_multiple_images_on_word (test_image_gallery.ImageGalleryTests.test_multiple_images_on_word) ... ok
+test_too_many_rejected (test_image_gallery.ImageGalleryTests.test_too_many_rejected) ... ok
+test_invalid_png_rejected (test_image_import.ImportImageTests.test_invalid_png_rejected) ... ok
+test_missing_scene_rejected (test_image_import.ImportImageTests.test_missing_scene_rejected) ... ok
+test_valid_png_roundtrip (test_image_import.ImportImageTests.test_valid_png_roundtrip) ... ok
+test_bad_relation (test_language_graph.LanguageGraphTests.test_bad_relation) ... ok
+test_image_graph_roundtrip (test_language_graph.LanguageGraphTests.test_image_graph_roundtrip) ... ok
+test_invalid_response (test_learning_memory.LearningMemoryTests.test_invalid_response) ... ok
+test_recall_schedule_persists (test_learning_memory.LearningMemoryTests.test_recall_schedule_persists) ... ok
+test_wrong_answer_resets (test_learning_memory.LearningMemoryTests.test_wrong_answer_resets) ... ok
+test_filters_and_preserves_unreviewed (test_lexicon_import.ImportPreviewTests.test_filters_and_preserves_unreviewed) ... ok
+test_gzip (test_lexicon_import.ImportPreviewTests.test_gzip) ... ok
+test_invalid_json_rejected (test_lexicon_import.ImportPreviewTests.test_invalid_json_rejected) ... ok
+test_import_and_search (test_lexicon_store.LexiconTests.test_import_and_search) ... ok
+test_like_injection_escaped (test_lexicon_store.LexiconTests.test_like_injection_escaped) ... ok
+test_requires_provenance (test_lexicon_store.LexiconTests.test_requires_provenance) ... ok
+test_bad_input (test_local_speech.LocalSpeechTests.test_bad_input) ... ok
+test_requires_aligner (test_local_speech.LocalSpeechTests.test_requires_aligner) ... ok
+test_requires_local_model (test_local_speech.LocalSpeechTests.test_requires_local_model) ... ok
+test_bad_shape (test_mesh_export.MeshTests.test_bad_shape) ... ok
+test_gltf (test_mesh_export.MeshTests.test_gltf) ... ok
+test_profile (test_mesh_export.MeshTests.test_profile) ... ok
+test_current_primary_routes (test_navigation.NavigationTests.test_current_primary_routes) ... ok
+test_recording_on_3d_lab_and_legacy_relief (test_navigation.NavigationTests.test_recording_on_3d_lab_and_legacy_relief) ... ok
+test_canvas (test_pdf_comfy_ui.PDFComfyUITests.test_canvas) ... ok
+test_comfy_ui (test_pdf_comfy_ui.PDFComfyUITests.test_comfy_ui) ... ok
+test_routes (test_pdf_comfy_ui.PDFComfyUITests.test_routes) ... ok
+test_legacy_completed_unavailable_page_can_be_retried (test_pdf_ocr_retry.PDFOCRRetryTests.test_legacy_completed_unavailable_page_can_be_retried) ... ok
+test_missing_language_stops_then_explicit_retry_recovers (test_pdf_ocr_retry.PDFOCRRetryTests.test_missing_language_stops_then_explicit_retry_recovers) ... ok
+test_no_text_is_distinct_from_ocr_error_and_retryable (test_pdf_ocr_retry.PDFOCRRetryTests.test_no_text_is_distinct_from_ocr_error_and_retryable) ... ok
+test_ocr_retry_requires_explicit_ocr_flag (test_pdf_ocr_retry.PDFOCRRetryTests.test_ocr_retry_requires_explicit_ocr_flag) ... ok
+test_retry_batches_do_not_starve_later_empty_pages (test_pdf_ocr_retry.PDFOCRRetryTests.test_retry_batches_do_not_starve_later_empty_pages) ... ok
+test_invalid (test_phonovision.PhonoVisionTests.test_invalid) ... ok
+test_metaphor_is_not_science (test_phonovision.PhonoVisionTests.test_metaphor_is_not_science) ... ok
+test_signal (test_phonovision.PhonoVisionTests.test_signal) ... ok
+test_ui_contract (test_phonovision_3d.PhonoVision3DTests.test_ui_contract) ... ok
+test_reject_invalid (test_pitch_shift.PitchShiftTests.test_reject_invalid) ... ok
+test_api_routes (test_scientific_studio.ScientificStudioTests.test_api_routes) ... ok
+test_ui_has_scientific_controls (test_scientific_studio.ScientificStudioTests.test_ui_has_scientific_controls) ... ok
+test_no_fake_translation_when_missing_backend (test_sentence_translation.SentenceTests.test_no_fake_translation_when_missing_backend) ... ok
+test_tokenization (test_sentence_translation.SentenceTests.test_tokenization) ... ok
+test_validation (test_sentence_translation.SentenceTests.test_validation) ... ok
+test_every_view_has_speech_project (test_shared_speech_ui.SharedSpeechUITests.test_every_view_has_speech_project) ... ok
+test_server_routes (test_shared_speech_ui.SharedSpeechUITests.test_server_routes) ... ok
+test_invalid_self_report (test_skill_memory.SkillTests.test_invalid_self_report) ... ok
+test_meaning (test_skill_memory.SkillTests.test_meaning) ... ok
+test_self_report_not_pronunciation_score (test_skill_memory.SkillTests.test_self_report_not_pronunciation_score) ... ok
+test_separate_word_and_article (test_skill_memory.SkillTests.test_separate_word_and_article) ... ok
+test_duplicate_id (test_spatial_board.SpatialBoardTests.test_duplicate_id) ... ok
+test_invalid_link (test_spatial_board.SpatialBoardTests.test_invalid_link) ... ok
+test_roundtrip (test_spatial_board.SpatialBoardTests.test_roundtrip) ... ok
+test_connections_are_explicitly_closed (test_speech_projects.SpeechProjectsTests.test_connections_are_explicitly_closed) ... ok
+test_invalid_segment (test_speech_projects.SpeechProjectsTests.test_invalid_segment) ... ok
+test_roundtrip (test_speech_projects.SpeechProjectsTests.test_roundtrip) ... ok
+test_composite_scene (test_study_core.StudyCoreTests.test_composite_scene) ... ok
+test_empty_anchors_rejected (test_study_core.StudyCoreTests.test_empty_anchors_rejected) ... ok
+test_empty_sound_fragment_rejected (test_study_core.StudyCoreTests.test_empty_sound_fragment_rejected) ... ok
+test_unaided_recall (test_study_core.StudyCoreTests.test_unaided_recall) ... ok
+test_mutations_include_csrf_and_preserve_request_body (test_study_fetch_browser.StudyFetchBrowserTests.test_mutations_include_csrf_and_preserve_request_body) ... skipped 'Requires live browser acceptance'
+test_home_actions (test_three_tabs.ThreeTabTests.test_home_actions) ... ok
+test_lab_has_spectral_panel (test_three_tabs.ThreeTabTests.test_lab_has_spectral_panel) ... ok
+test_old_features_not_deleted (test_three_tabs.ThreeTabTests.test_old_features_not_deleted) ... ok
+test_tabs (test_three_tabs.ThreeTabTests.test_tabs) ... ok
+test_explicit_consent_required (test_translation_models.TranslationModelsTests.test_explicit_consent_required) ... ok
+test_no_argos (test_translation_models.TranslationModelsTests.test_no_argos) ... ok
+test_reject_non_model (test_translation_models.TranslationModelsTests.test_reject_non_model) ... ok
+test_canvas_visual_feedback (test_visible_drag.VisibleDragTests.test_canvas_visual_feedback) ... ok
+test_floating_preview (test_visible_drag.VisibleDragTests.test_floating_preview) ... ok
+test_save_list_get_delete (test_visual_memory.VisualMemoryTests.test_save_list_get_delete) ... ok
+test_svg_escapes_untrusted_text (test_visual_memory.VisualMemoryTests.test_svg_escapes_untrusted_text) ... ok
+
+----------------------------------------------------------------------
+Ran 145 tests in 11.445s
+
+OK (skipped=25)

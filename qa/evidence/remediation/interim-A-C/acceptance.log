@@ -1,0 +1,1113 @@
+test_api_mutation_security_matrix (__main__.Acceptance.test_api_mutation_security_matrix) ... 127.0.0.1 - - [07/Nov/2026 20:12:07] "POST /v1/boards HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "POST /v1/boards HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "POST /v1/boards HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "POST /v1/boards HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "POST /v1/boards HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "PUT /v1/board-assets HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "PUT /v1/board-assets HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "PUT /v1/board-assets HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "PUT /v1/board-assets HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "PUT /v1/board-assets HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "DELETE /v1/mnemonics/00000000-0000-4000-8000-000000000001 HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "DELETE /v1/mnemonics/00000000-0000-4000-8000-000000000001 HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "DELETE /v1/mnemonics/00000000-0000-4000-8000-000000000001 HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "DELETE /v1/mnemonics/00000000-0000-4000-8000-000000000001 HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "DELETE /v1/mnemonics/00000000-0000-4000-8000-000000000001 HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "POST /v1/future-generation HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "POST /v1/future-generation HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "POST /v1/future-generation HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "POST /v1/future-generation HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "POST /v1/future-generation HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "GET /v1/security/bootstrap HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "GET /v1/security/bootstrap HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "GET /v1/security/bootstrap HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "GET /v1/security/bootstrap HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "GET /v1/security/bootstrap HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "POST /v1/boards HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "POST /v1/boards HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "POST /v1/boards HTTP/1.1" 403 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "POST /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "POST /v1/boards HTTP/1.1" 200 -
+ok
+test_api_rejects_foreign_origin_mutation (__main__.Acceptance.test_api_rejects_foreign_origin_mutation) ... 127.0.0.1 - - [07/Nov/2026 20:12:07] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "POST /v1/boards HTTP/1.1" 403 -
+FOREIGN_ORIGIN_OR_HOST {'Origin': 'https://attacker.invalid'} 403 b'{"error": "untrusted_origin"}'
+127.0.0.1 - - [07/Nov/2026 20:12:07] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:07] "POST /v1/boards HTTP/1.1" 403 -
+FOREIGN_ORIGIN_OR_HOST {'Host': 'attacker.invalid'} 403 b'{"error": "untrusted_host"}'
+ok
+test_gallery_bytes_persist_across_process (__main__.Acceptance.test_gallery_bytes_persist_across_process) ... 127.0.0.1 - - [07/Nov/2026 20:12:08] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:09] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:12:09] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:09] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:09] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:09] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:09] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:09] "GET /v1/boards/e328d22a-29f2-4e98-9241-e3586e31154d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:09] "GET /v1/board-assets/402c0f6c-527b-47fa-b56f-9c26536e1540 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:09] "GET /v1/board-assets/d464e599-aeab-49f4-90dd-d14e68415b1e HTTP/1.1" 200 -
+ok
+test_mock_comfy_http_roundtrip (__main__.Acceptance.test_mock_comfy_http_roundtrip) ... 127.0.0.1 - - [07/Nov/2026 20:12:09] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:09] "POST /v1/comfy/generate HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:09] "GET /v1/comfy/jobs/36c7f37d-3b12-4a61-85c6-82c1906c7e04 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:09] "GET /v1/comfy/jobs/36c7f37d-3b12-4a61-85c6-82c1906c7e04 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:09] "GET /v1/comfy/jobs/36c7f37d-3b12-4a61-85c6-82c1906c7e04 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:09] "GET /v1/comfy/jobs/36c7f37d-3b12-4a61-85c6-82c1906c7e04 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:09] "GET /v1/comfy/jobs/36c7f37d-3b12-4a61-85c6-82c1906c7e04 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:09] "GET /v1/comfy/jobs/36c7f37d-3b12-4a61-85c6-82c1906c7e04 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:09] "GET /v1/comfy/jobs/36c7f37d-3b12-4a61-85c6-82c1906c7e04/image?filename=qa.png HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:10] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:10] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:10] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:12:10] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:10] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:10] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:10] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:10] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:10] "POST /v1/comfy/generate HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:12] "GET /v1/comfy/jobs/aad45e59-7be4-4c02-b7ff-1a0da3a20fba HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:12] "GET /v1/comfy/jobs/aad45e59-7be4-4c02-b7ff-1a0da3a20fba/image?filename=qa.png&subfolder= HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:12] "PUT /v1/board-assets HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:12] "GET /v1/board-assets/6022c546-21e8-449b-9425-86cb28e692d4 HTTP/1.1" 200 -
+ok
+ACTUAL_OCR {'status': 'unavailable', 'reason': 'tesseract_or_language_data_missing', 'text': ''}
+test_ocr_missing_language (__main__.Acceptance.test_ocr_missing_language) ... ok
+test_pdf_150_process_restart (__main__.Acceptance.test_pdf_150_process_restart) ... C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\fitz\__init__.py:17: FutureWarning: The `fitz` API is deprecated and will be removed in future. Use `import pymupdf` instead.
+  warnings.warn(
+127.0.0.1 - - [07/Nov/2026 20:12:13] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:13] "PUT /v1/documents HTTP/1.1" 200 -
+INTERRUPTED_PDF {"id": "3e71e162-6365-4636-9ab5-2856834802c8", "name": "acceptance150.pdf", "page_count": 150, "next_page": 5, "status": "processing", "error": "", "retry_pages": 0, "ocr_errors": 0}
+127.0.0.1 - - [07/Nov/2026 20:12:14] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:14] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:14] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:14] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:14] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:14] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:14] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:14] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:14] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:14] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:14] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:14] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:15] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:16] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:16] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:16] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:16] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:16] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:16] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:16] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:16] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:16] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:16] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:16] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:16] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:16] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:16] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:16] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:16] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:16] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:16] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:16] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:16] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:16] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:16] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:17] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:17] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:17] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:17] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:17] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:17] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:17] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:17] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:17] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:17] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:17] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:17] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:17] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:17] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:17] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:17] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:17] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:17] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:17] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:17] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:18] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:18] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:18] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:18] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:18] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:18] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:18] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:18] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:18] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:18] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:18] "GET /workspace HTTP/1.1" 200 -
+PDF_METRICS {"worker_tree_peak_sampled_rss": 64929792, "workspace_http_ms": [16.00000000325963, 0.0, 0.0, 31.000000017229468, 0.0, 15.000000013969839, 0.0, 0.0, 0.0, 0.0, 16.00000000325963, 0.0, 15.999999974155799, 0.0, 16.00000000325963, 15.999999974155799, 0.0, 16.00000000325963, 0.0, 16.00000000325963, 0.0, 0.0, 15.000000013969839, 0.0, 16.00000000325963, 15.000000013969839, 14.999999984866008, 15.000000013969839, 16.00000000325963, 47.0000000204891, 0.0, 16.00000000325963, 15.999999974155799, 0.0, 16.00000000325963, 77.9999999795109, 0.0, 32.00000000651926, 0.0, 0.0, 16.00000000325963, 0.0, 0.0, 0.0, 16.00000000325963, 0.0, 16.00000000325963, 0.0, 15.999999974155799, 16.00000000325963, 16.00000000325963, 15.000000013969839, 14.999999984866008, 0.0, 15.000000013969839, 0.0, 16.00000000325963, 0.0, 16.00000000325963, 0.0, 15.999999974155799, 0.0, 0.0, 15.000000013969839, 0.0, 0.0, 0.0, 0.0, 0.0, 16.00000000325963, 30.999999988125637, 0.0, 0.0, 16.00000000325963, 16.00000000325963, 47.0000000204891, 0.0, 125.0, 16.00000000325963, 15.000000013969839, 32.00000000651926, 0.0, 0.0, 14.999999984866008, 15.000000013969839, 16.00000000325963, 32.00000000651926, 15.000000013969839]}
+127.0.0.1 - - [07/Nov/2026 20:12:18] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:18] "POST /v1/documents/3e71e162-6365-4636-9ab5-2856834802c8/process HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:18] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:19] "POST /v1/documents/3e71e162-6365-4636-9ab5-2856834802c8/process HTTP/1.1" 200 -
+ok
+PDF_OCR_MISSING {"state": {"id": "e50c225d-000b-4a63-9075-e3262b19d13a", "name": "missing-language.pdf", "page_count": 1, "next_page": 0, "status": "ocr_error", "error": "OCR unavailable or failed; check Tesseract and deu language data, then Retry. TesseractError", "retry_pages": 1, "ocr_errors": 1}, "page": {"document_id": "e50c225d-000b-4a63-9075-e3262b19d13a", "page_number": 0, "text": "", "method": "ocr_error"}}
+test_pdf_ocr_missing_language_remains_retryable (__main__.Acceptance.test_pdf_ocr_missing_language_remains_retryable) ... ok
+test_pdf_retry_button_live_server (__main__.Acceptance.test_pdf_retry_button_live_server) ... 127.0.0.1 - - [07/Nov/2026 20:12:19] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:19] "PUT /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:19] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:19] "POST /v1/documents/41171cb8-b163-4365-9948-92a8c0452505/process HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:20] "GET /canvas?document=41171cb8-b163-4365-9948-92a8c0452505 HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:20] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:12:20] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:20] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:20] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:20] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:20] "GET /v1/mnemonics HTTP/1.1" 200 -
+ERROR
+test_pointer_fling_workspace (__main__.Acceptance.test_pointer_fling_workspace) ... 127.0.0.1 - - [07/Nov/2026 20:12:51] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:51] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:51] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:51] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:51] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:52] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:12:52] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:52] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:52] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:52] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:52] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:52] "GET /v1/speech-projects HTTP/1.1" 200 -
+POINTER_FLING {"before": 2, "after": 2}
+FAIL
+test_sqlite_windows_rename_after_use (__main__.Acceptance.test_sqlite_windows_rename_after_use) ... ok
+test_ui_500_cards_measurement (__main__.Acceptance.test_ui_500_cards_measurement) ... 127.0.0.1 - - [07/Nov/2026 20:12:54] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:54] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:54] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:12:54] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:54] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:54] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:54] "GET /v1/documents HTTP/1.1" 200 -
+UI_METRICS {"draw_500_ms": [1.600000023841858, 1.800000011920929, 1.5999999940395355], "child_rss_before": 375869440, "child_rss_after": 407359488, "dom_cards": 56}
+ok
+test_upload_limits (__main__.Acceptance.test_upload_limits) ... 127.0.0.1 - - [07/Nov/2026 20:12:55] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:55] "PUT /v1/documents HTTP/1.1" 413 -
+127.0.0.1 - - [07/Nov/2026 20:12:55] "PUT /v1/board-assets HTTP/1.1" 413 -
+127.0.0.1 - - [07/Nov/2026 20:12:55] "POST /v1/boards HTTP/1.1" 413 -
+127.0.0.1 - - [07/Nov/2026 20:12:55] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:55] "PUT /v1/board-assets HTTP/1.1" 400 -
+ok
+test_card_drag_to_lab (test_browser_gestures.GestureBrowserTests.test_card_drag_to_lab) ... 127.0.0.1 - - [07/Nov/2026 20:12:55] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:56] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:56] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:56] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:56] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:56] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:12:56] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:56] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:57] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:57] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:57] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:57] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:57] "GET /v1/speech-projects HTTP/1.1" 200 -
+ok
+test_fling_detaches_outward_only (test_browser_gestures.GestureBrowserTests.test_fling_detaches_outward_only) ... 127.0.0.1 - - [07/Nov/2026 20:12:58] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:59] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:59] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:59] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:12:59] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:00] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:00] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:00] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:00] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:00] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:00] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:00] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:00] "GET /v1/speech-projects HTTP/1.1" 200 -
+ok
+test_gallery_and_composition (test_browser_gestures.GestureBrowserTests.test_gallery_and_composition) ... 127.0.0.1 - - [07/Nov/2026 20:13:02] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:03] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:03] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:03] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:03] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:03] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:03] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:03] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:03] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:03] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:03] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:03] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:03] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:04] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:04] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+ok
+test_sphere_to_existing_word_card (test_browser_gestures.GestureBrowserTests.test_sphere_to_existing_word_card) ... 127.0.0.1 - - [07/Nov/2026 20:13:04] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:05] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:05] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:05] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:05] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:05] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:05] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:05] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:05] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:05] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:05] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:05] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:05] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:06] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:06] "PUT /v1/board-assets HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:06] "GET /v1/board-assets/f1f32d23-3b6a-4410-9bb4-a0334a45fb0e HTTP/1.1" 200 -
+ok
+test_toggle_split_view (test_browser_gestures.GestureBrowserTests.test_toggle_split_view) ... 127.0.0.1 - - [07/Nov/2026 20:13:06] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:07] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:07] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:07] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:07] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:07] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:07] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:07] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:07] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:07] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:07] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:07] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:07] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:08] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:08] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:08] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:08] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:08] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:08] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:08] "GET /v1/speech-projects HTTP/1.1" 200 -
+ok
+test_autosave_reload_restore_gallery_and_title (test_canvas_ux_browser.CanvasUXBrowserTests.test_autosave_reload_restore_gallery_and_title) ... 127.0.0.1 - - [07/Nov/2026 20:13:09] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:09] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:09] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:09] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:09] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:09] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:09] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:09] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:09] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+ERROR
+test_corrupt_draft_not_overwritten (test_canvas_ux_browser.CanvasUXBrowserTests.test_corrupt_draft_not_overwritten) ... 127.0.0.1 - - [07/Nov/2026 20:13:15] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:15] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:15] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:15] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:15] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:15] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:15] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:15] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:15] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:15] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:15] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:15] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:15] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:15] "GET /v1/speech-projects HTTP/1.1" 200 -
+ERROR
+test_cross_tab_conflict_preserves_other_draft (test_canvas_ux_browser.CanvasUXBrowserTests.test_cross_tab_conflict_preserves_other_draft) ... 127.0.0.1 - - [07/Nov/2026 20:13:22] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:22] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:22] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:22] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:22] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:22] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:22] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:22] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:22] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+ERROR
+test_drag_escape_and_keyboard_move_history (test_canvas_ux_browser.CanvasUXBrowserTests.test_drag_escape_and_keyboard_move_history) ... 127.0.0.1 - - [07/Nov/2026 20:13:30] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:30] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:30] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:30] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:30] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:30] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:30] "GET /v1/speech-projects HTTP/1.1" 200 -
+FAIL
+test_exact_hover_uses_rendered_bounds (test_canvas_ux_browser.CanvasUXBrowserTests.test_exact_hover_uses_rendered_bounds) ... 127.0.0.1 - - [07/Nov/2026 20:13:31] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:31] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:31] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:31] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:31] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:31] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:31] "GET /v1/speech-projects HTTP/1.1" 200 -
+FAIL
+test_fit_measures_offscreen_tall_card (test_canvas_ux_browser.CanvasUXBrowserTests.test_fit_measures_offscreen_tall_card) ... 127.0.0.1 - - [07/Nov/2026 20:13:33] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:33] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:33] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:33] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:33] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:33] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:33] "GET /v1/speech-projects HTTP/1.1" 200 -
+ERROR
+test_gallery_pointer_reorder (test_canvas_ux_browser.CanvasUXBrowserTests.test_gallery_pointer_reorder) ... 127.0.0.1 - - [07/Nov/2026 20:13:34] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:34] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:35] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:35] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:35] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:35] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:35] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:35] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:35] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+ERROR
+test_gallery_reorder_remove_undo_redo_and_preview (test_canvas_ux_browser.CanvasUXBrowserTests.test_gallery_reorder_remove_undo_redo_and_preview) ... 127.0.0.1 - - [07/Nov/2026 20:13:41] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:41] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:41] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:41] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:41] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:41] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:41] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:41] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:41] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+ERROR
+test_image_card_drop_inside_board (test_canvas_ux_browser.CanvasUXBrowserTests.test_image_card_drop_inside_board) ... 127.0.0.1 - - [07/Nov/2026 20:13:47] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:47] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:47] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:47] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:47] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:47] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:47] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:47] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+ERROR
+test_keyboard_transfer_both_directions (test_canvas_ux_browser.CanvasUXBrowserTests.test_keyboard_transfer_both_directions) ... 127.0.0.1 - - [07/Nov/2026 20:13:54] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:54] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:54] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:54] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:54] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:54] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:54] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:54] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:54] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:54] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:54] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:54] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:54] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:54] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:54] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:54] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:54] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:54] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:54] "GET /v1/speech-projects HTTP/1.1" 200 -
+FAIL
+test_mobile_keyboard_fit (test_canvas_ux_browser.CanvasUXBrowserTests.test_mobile_keyboard_fit) ... 127.0.0.1 - - [07/Nov/2026 20:13:55] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:55] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:55] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:55] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:55] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:55] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:55] "GET /v1/speech-projects HTTP/1.1" 200 -
+FAIL
+test_pdf_ocr_retry_and_no_text_states (test_canvas_ux_browser.CanvasUXBrowserTests.test_pdf_ocr_retry_and_no_text_states) ... 127.0.0.1 - - [07/Nov/2026 20:13:57] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:57] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:57] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:13:57] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:57] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:57] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:57] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:13:57] "GET /v1/security/bootstrap HTTP/1.1" 200 -
+ERROR
+test_pointer_move_undo_redo (test_canvas_ux_browser.CanvasUXBrowserTests.test_pointer_move_undo_redo) ... 127.0.0.1 - - [07/Nov/2026 20:14:03] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:03] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:03] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:14:03] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:03] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:03] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:03] "GET /v1/speech-projects HTTP/1.1" 200 -
+FAIL
+test_restore_copy_survives_reload (test_canvas_ux_browser.CanvasUXBrowserTests.test_restore_copy_survives_reload) ... 127.0.0.1 - - [07/Nov/2026 20:14:04] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:04] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:14:04] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:04] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:04] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:04] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:04] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:04] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:14:04] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+ERROR
+test_saved_board_gallery_roundtrip (test_canvas_ux_browser.CanvasUXBrowserTests.test_saved_board_gallery_roundtrip) ... 127.0.0.1 - - [07/Nov/2026 20:14:10] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:10] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:10] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:14:10] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:10] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:10] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:10] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:11] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:14:11] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+ERROR
+test_split_hover_and_cancel (test_canvas_ux_browser.CanvasUXBrowserTests.test_split_hover_and_cancel) ... 127.0.0.1 - - [07/Nov/2026 20:14:16] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:16] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:16] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:14:17] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:17] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:17] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:17] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:17] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:17] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:17] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:17] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:17] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:17] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:14:17] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:17] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:17] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:17] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:17] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:17] "GET /v1/speech-projects HTTP/1.1" 200 -
+ok
+test_split_image_card_drop_inside_board (test_canvas_ux_browser.CanvasUXBrowserTests.test_split_image_card_drop_inside_board) ... 127.0.0.1 - - [07/Nov/2026 20:14:18] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:18] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:18] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:14:18] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:18] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:18] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:18] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:18] "GET /workspace HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:18] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:18] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:18] "GET /phonovision-3d HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:18] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:18] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:14:18] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:19] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:19] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:19] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:19] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:19] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:19] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+ERROR
+test_storage_quota_keeps_last_good_draft (test_canvas_ux_browser.CanvasUXBrowserTests.test_storage_quota_keeps_last_good_draft) ... 127.0.0.1 - - [07/Nov/2026 20:14:25] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:25] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:25] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:14:25] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:25] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:25] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:25] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:26] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:14:26] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+ERROR
+test_unlink_undo_and_image_add_history (test_canvas_ux_browser.CanvasUXBrowserTests.test_unlink_undo_and_image_add_history) ... 127.0.0.1 - - [07/Nov/2026 20:14:32] "GET /canvas HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:32] "GET /study-fetch.js HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:32] "GET /canvas-ux.js HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:14:32] "GET /v1/boards HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:32] "GET /v1/mnemonics HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:32] "GET /v1/documents HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:32] "GET /v1/speech-projects HTTP/1.1" 200 -
+127.0.0.1 - - [07/Nov/2026 20:14:32] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:14:32] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:14:32] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:14:32] "GET /v1/board-assets/00000000-0000-4000-8000-000000000001 HTTP/1.1" 404 -
+127.0.0.1 - - [07/Nov/2026 20:14:32] "GET /v1/board-assets/00000000-0000-4000-8000-000000000002 HTTP/1.1" 404 -
+ERROR
+test_mutations_include_csrf_and_preserve_request_body (test_study_fetch_browser.StudyFetchBrowserTests.test_mutations_include_csrf_and_preserve_request_body) ... ok
+
+======================================================================
+ERROR: test_pdf_retry_button_live_server (__main__.Acceptance.test_pdf_retry_button_live_server)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\reaccept-A-C\snapshot\qa\windows_audit.py", line 238, in test_pdf_retry_button_live_server
+    page.locator('#pdfRetry').click()
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\sync_api\_generated.py", line 11021, in click
+    self._sync(
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_sync_base.py", line 111, in _sync
+    return task.result()
+           ^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_locator.py", line 174, in click
+    return await self._frame._click(self._selector, strict=True, **params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_frame.py", line 598, in _click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 78, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 636, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TimeoutError: Locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator("#pdfRetry")
+
+
+======================================================================
+ERROR: test_autosave_reload_restore_gallery_and_title (test_canvas_ux_browser.CanvasUXBrowserTests.test_autosave_reload_restore_gallery_and_title)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\reaccept-A-C\snapshot\prototype\test_canvas_ux_browser.py", line 75, in test_autosave_reload_restore_gallery_and_title
+    await self.page.wait_for_function("localStorage.getItem('study.canvas.draft.v1:new')?.includes('Recovery example')")
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\async_api\_generated.py", line 21121, in wait_for_function
+    await self._impl_obj.wait_for_function(
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_page.py", line 1158, in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_frame.py", line 945, in wait_for_function
+    await self._channel.send("waitForFunction", self._timeout, params)
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 78, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 636, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 5000ms exceeded.
+
+======================================================================
+ERROR: test_corrupt_draft_not_overwritten (test_canvas_ux_browser.CanvasUXBrowserTests.test_corrupt_draft_not_overwritten)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\reaccept-A-C\snapshot\prototype\test_canvas_ux_browser.py", line 84, in test_corrupt_draft_not_overwritten
+    await self.page.locator('#draftRecovery').wait_for(state='visible')
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\async_api\_generated.py", line 13591, in wait_for
+    await self._impl_obj.wait_for(state=state, timeout=to_milliseconds(timeout))
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_locator.py", line 767, in wait_for
+    await self._frame.wait_for_selector(
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_frame.py", line 395, in wait_for_selector
+    await self._channel.send(
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 78, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 636, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.
+Call log:
+  - waiting for locator("#draftRecovery") to be visible
+
+
+======================================================================
+ERROR: test_cross_tab_conflict_preserves_other_draft (test_canvas_ux_browser.CanvasUXBrowserTests.test_cross_tab_conflict_preserves_other_draft)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\reaccept-A-C\snapshot\prototype\test_canvas_ux_browser.py", line 147, in test_cross_tab_conflict_preserves_other_draft
+    await self.page.wait_for_function("localStorage.getItem('study.canvas.draft.v1:new')!==null")
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\async_api\_generated.py", line 21121, in wait_for_function
+    await self._impl_obj.wait_for_function(
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_page.py", line 1158, in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_frame.py", line 945, in wait_for_function
+    await self._channel.send("waitForFunction", self._timeout, params)
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 78, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 636, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 5000ms exceeded.
+
+======================================================================
+ERROR: test_fit_measures_offscreen_tall_card (test_canvas_ux_browser.CanvasUXBrowserTests.test_fit_measures_offscreen_tall_card)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\reaccept-A-C\snapshot\prototype\test_canvas_ux_browser.py", line 252, in test_fit_measures_offscreen_tall_card
+    await self.page.evaluate('''()=>{
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\async_api\_generated.py", line 16684, in evaluate
+    await self._impl_obj.evaluate(
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_page.py", line 476, in evaluate
+    return await self._main_frame.evaluate(expression, arg)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_frame.py", line 346, in evaluate
+    await self._channel.send(
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 78, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 636, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.Error: Page.evaluate: ReferenceError: fitBoard is not defined
+    at eval (eval at evaluate (:370:30), <anonymous>:3:29)
+    at UtilityScript.evaluate (<anonymous>:377:18)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+
+======================================================================
+ERROR: test_gallery_pointer_reorder (test_canvas_ux_browser.CanvasUXBrowserTests.test_gallery_pointer_reorder)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\reaccept-A-C\snapshot\prototype\test_canvas_ux_browser.py", line 65, in test_gallery_pointer_reorder
+    a, b = await items.nth(0).bounding_box(), await items.nth(1).bounding_box()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\async_api\_generated.py", line 10815, in bounding_box
+    await self._impl_obj.bounding_box(timeout=to_milliseconds(timeout))
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_locator.py", line 142, in bounding_box
+    return await self._with_element(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_locator.py", line 123, in _with_element
+    handle = await self.element_handle(timeout=timeout)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_locator.py", line 334, in element_handle
+    handle = await self._frame.wait_for_selector(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_frame.py", line 395, in wait_for_selector
+    await self._channel.send(
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 78, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 636, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TimeoutError: Locator.bounding_box: Timeout 5000ms exceeded.
+Call log:
+  - waiting for locator(".node.word .gallery-item").first
+
+
+======================================================================
+ERROR: test_gallery_reorder_remove_undo_redo_and_preview (test_canvas_ux_browser.CanvasUXBrowserTests.test_gallery_reorder_remove_undo_redo_and_preview)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\reaccept-A-C\snapshot\prototype\test_canvas_ux_browser.py", line 49, in test_gallery_reorder_remove_undo_redo_and_preview
+    await card.get_by_role('button', name='\u041f\u0435\u0440\u0435\u043c\u0435\u0441\u0442\u0438\u0442\u044c \u043e\u0431\u0440\u0430\u0437 2 \u0432\u043b\u0435\u0432\u043e', exact=True).click()
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\async_api\_generated.py", line 11018, in click
+    await self._impl_obj.click(
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_locator.py", line 174, in click
+    return await self._frame._click(self._selector, strict=True, **params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_frame.py", line 598, in _click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 78, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 636, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TimeoutError: Locator.click: Timeout 5000ms exceeded.
+Call log:
+  - waiting for locator(".node.word").first.get_by_role("button", name="\u041f\u0435\u0440\u0435\u043c\u0435\u0441\u0442\u0438\u0442\u044c \u043e\u0431\u0440\u0430\u0437 2 \u0432\u043b\u0435\u0432\u043e", exact=True)
+
+
+======================================================================
+ERROR: test_image_card_drop_inside_board (test_canvas_ux_browser.CanvasUXBrowserTests.test_image_card_drop_inside_board)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\reaccept-A-C\snapshot\prototype\test_canvas_ux_browser.py", line 229, in test_image_card_drop_inside_board
+    await self.page.locator('.node.word.drop-target').wait_for()
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\async_api\_generated.py", line 13591, in wait_for
+    await self._impl_obj.wait_for(state=state, timeout=to_milliseconds(timeout))
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_locator.py", line 767, in wait_for
+    await self._frame.wait_for_selector(
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_frame.py", line 395, in wait_for_selector
+    await self._channel.send(
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 78, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 636, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.
+Call log:
+  - waiting for locator(".node.word.drop-target") to be visible
+
+
+======================================================================
+ERROR: test_pdf_ocr_retry_and_no_text_states (test_canvas_ux_browser.CanvasUXBrowserTests.test_pdf_ocr_retry_and_no_text_states)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\reaccept-A-C\snapshot\prototype\test_canvas_ux_browser.py", line 273, in test_pdf_ocr_retry_and_no_text_states
+    await self.page.wait_for_function("document.getElementById('pdfStatus').textContent.includes('\u041e\u0448\u0438\u0431\u043a\u0430 OCR')")
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\async_api\_generated.py", line 21121, in wait_for_function
+    await self._impl_obj.wait_for_function(
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_page.py", line 1158, in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_frame.py", line 945, in wait_for_function
+    await self._channel.send("waitForFunction", self._timeout, params)
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 78, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 636, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 5000ms exceeded.
+
+======================================================================
+ERROR: test_restore_copy_survives_reload (test_canvas_ux_browser.CanvasUXBrowserTests.test_restore_copy_survives_reload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\reaccept-A-C\snapshot\prototype\test_canvas_ux_browser.py", line 187, in test_restore_copy_survives_reload
+    await self.page.wait_for_function("localStorage.getItem('study.canvas.draft.v1:new')?.includes('Copy recovery')")
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\async_api\_generated.py", line 21121, in wait_for_function
+    await self._impl_obj.wait_for_function(
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_page.py", line 1158, in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_frame.py", line 945, in wait_for_function
+    await self._channel.send("waitForFunction", self._timeout, params)
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 78, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 636, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 5000ms exceeded.
+
+======================================================================
+ERROR: test_saved_board_gallery_roundtrip (test_canvas_ux_browser.CanvasUXBrowserTests.test_saved_board_gallery_roundtrip)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\reaccept-A-C\snapshot\prototype\test_canvas_ux_browser.py", line 175, in test_saved_board_gallery_roundtrip
+    await self.page.locator('.node.word').first.get_by_role('button',name='\u041f\u0435\u0440\u0435\u043c\u0435\u0441\u0442\u0438\u0442\u044c \u043e\u0431\u0440\u0430\u0437 2 \u0432\u043b\u0435\u0432\u043e',exact=True).click()
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\async_api\_generated.py", line 11018, in click
+    await self._impl_obj.click(
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_locator.py", line 174, in click
+    return await self._frame._click(self._selector, strict=True, **params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_frame.py", line 598, in _click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 78, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 636, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TimeoutError: Locator.click: Timeout 5000ms exceeded.
+Call log:
+  - waiting for locator(".node.word").first.get_by_role("button", name="\u041f\u0435\u0440\u0435\u043c\u0435\u0441\u0442\u0438\u0442\u044c \u043e\u0431\u0440\u0430\u0437 2 \u0432\u043b\u0435\u0432\u043e", exact=True)
+
+
+======================================================================
+ERROR: test_split_image_card_drop_inside_board (test_canvas_ux_browser.CanvasUXBrowserTests.test_split_image_card_drop_inside_board)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\reaccept-A-C\snapshot\prototype\test_canvas_ux_browser.py", line 248, in test_split_image_card_drop_inside_board
+    await board.locator('.node.word img').first.wait_for()
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\async_api\_generated.py", line 13591, in wait_for
+    await self._impl_obj.wait_for(state=state, timeout=to_milliseconds(timeout))
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_locator.py", line 767, in wait_for
+    await self._frame.wait_for_selector(
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_frame.py", line 395, in wait_for_selector
+    await self._channel.send(
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 78, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 636, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.
+Call log:
+  - waiting for locator("iframe[src=\"/canvas\"]").content_frame.locator(".node.word img").first to be visible
+
+
+======================================================================
+ERROR: test_storage_quota_keeps_last_good_draft (test_canvas_ux_browser.CanvasUXBrowserTests.test_storage_quota_keeps_last_good_draft)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\reaccept-A-C\snapshot\prototype\test_canvas_ux_browser.py", line 200, in test_storage_quota_keeps_last_good_draft
+    await self.page.wait_for_function("localStorage.getItem('study.canvas.draft.v1:new')!==null")
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\async_api\_generated.py", line 21121, in wait_for_function
+    await self._impl_obj.wait_for_function(
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_page.py", line 1158, in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_frame.py", line 945, in wait_for_function
+    await self._channel.send("waitForFunction", self._timeout, params)
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 78, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 636, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 5000ms exceeded.
+
+======================================================================
+ERROR: test_unlink_undo_and_image_add_history (test_canvas_ux_browser.CanvasUXBrowserTests.test_unlink_undo_and_image_add_history)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\reaccept-A-C\snapshot\prototype\test_canvas_ux_browser.py", line 215, in test_unlink_undo_and_image_add_history
+    await self.page.get_by_role('button',name='\u0423\u0431\u0440\u0430\u0442\u044c \u0441\u0432\u044f\u0437\u0438 \u0432\u044b\u0431\u0440\u0430\u043d\u043d\u043e\u0439 \u043a\u0430\u0440\u0442\u043e\u0447\u043a\u0438',exact=True).click()
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\async_api\_generated.py", line 11018, in click
+    await self._impl_obj.click(
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_locator.py", line 174, in click
+    return await self._frame._click(self._selector, strict=True, **params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_frame.py", line 598, in _click
+    await self._channel.send("click", self._timeout, locals_to_params(locals()))
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 78, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\qa-venv\Lib\site-packages\playwright\_impl\_connection.py", line 636, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TimeoutError: Locator.click: Timeout 5000ms exceeded.
+Call log:
+  - waiting for get_by_role("button", name="\u0423\u0431\u0440\u0430\u0442\u044c \u0441\u0432\u044f\u0437\u0438 \u0432\u044b\u0431\u0440\u0430\u043d\u043d\u043e\u0439 \u043a\u0430\u0440\u0442\u043e\u0447\u043a\u0438", exact=True)
+
+
+======================================================================
+FAIL: test_pointer_fling_workspace (__main__.Acceptance.test_pointer_fling_workspace)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\reaccept-A-C\snapshot\qa\windows_audit.py", line 318, in test_pointer_fling_workspace
+    self.assertEqual(frame.evaluate('edges.length'),0)
+AssertionError: 2 != 0
+
+======================================================================
+FAIL: test_drag_escape_and_keyboard_move_history (test_canvas_ux_browser.CanvasUXBrowserTests.test_drag_escape_and_keyboard_move_history)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\reaccept-A-C\snapshot\prototype\test_canvas_ux_browser.py", line 99, in test_drag_escape_and_keyboard_move_history
+    self.assertEqual(await self.page.evaluate("JSON.stringify({nodes,edges})"), before)
+AssertionError: '{"no[202 chars],"x":145,"y":245},{"id":"6610d449-974d-4661-a1[348 chars]"}]}' != '{"no[202 chars],"x":50,"y":190},{"id":"6610d449-974d-4661-a1a[347 chars]"}]}'
+Diff is 1663 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_exact_hover_uses_rendered_bounds (test_canvas_ux_browser.CanvasUXBrowserTests.test_exact_hover_uses_rendered_bounds)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\reaccept-A-C\snapshot\prototype\test_canvas_ux_browser.py", line 44, in test_exact_hover_uses_rendered_bounds
+    self.assertEqual(result, {'inside': True, 'outside': False})
+AssertionError: {'inside': False, 'outside': True} != {'inside': True, 'outside': False}
+- {'inside': False, 'outside': True}
+?            ^^^^              ^^^
+
++ {'inside': True, 'outside': False}
+?            ^^^              ^^^^
+
+
+======================================================================
+FAIL: test_keyboard_transfer_both_directions (test_canvas_ux_browser.CanvasUXBrowserTests.test_keyboard_transfer_both_directions)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\reaccept-A-C\snapshot\prototype\test_canvas_ux_browser.py", line 166, in test_keyboard_transfer_both_directions
+    self.assertIn('Tasse',await lab.locator('#imagePrompt').input_value())
+AssertionError: 'Tasse' not found in ''
+
+======================================================================
+FAIL: test_mobile_keyboard_fit (test_canvas_ux_browser.CanvasUXBrowserTests.test_mobile_keyboard_fit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\reaccept-A-C\snapshot\prototype\test_canvas_ux_browser.py", line 128, in test_mobile_keyboard_fit
+    self.assertEqual(await self.page.locator('#stage').get_attribute('tabindex'), '0')
+AssertionError: None != '0'
+
+======================================================================
+FAIL: test_pointer_move_undo_redo (test_canvas_ux_browser.CanvasUXBrowserTests.test_pointer_move_undo_redo)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 90, in _callTestMethod
+    if self._callMaybeAsync(method) is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\unittest\async_case.py", line 112, in _callMaybeAsync
+    return self._asyncioRunner.run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python312\Lib\asyncio\base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\outputs\reaccept-A-C\snapshot\prototype\test_canvas_ux_browser.py", line 141, in test_pointer_move_undo_redo
+    self.assertEqual(await self.page.evaluate("nodes.find(n=>n.type==='word').x"),before)
+AssertionError: 130 != 50
+
+----------------------------------------------------------------------
+Ran 37 tests in 151.991s
+
+FAILED (failures=6, errors=14)
