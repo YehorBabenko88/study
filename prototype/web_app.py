@@ -164,6 +164,15 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("X-Content-Type-Options","nosniff")
             self.end_headers()
             return self.wfile.write(page)
+        if parsed.path == "/canvas-ux.js":
+            script = Path(__file__).with_name("canvas_ux.js").read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type", "text/javascript; charset=utf-8")
+            self.send_header("Content-Length", str(len(script)))
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.end_headers()
+            return self.wfile.write(script)
         if parsed.path == "/canvas":
             page = Path(__file__).with_name("canvas.html").read_bytes()
             self.send_response(200)
