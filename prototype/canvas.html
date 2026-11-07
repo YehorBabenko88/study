@@ -40,7 +40,7 @@ function startStudyDrag(e,payload){
 }
 document.addEventListener("pointermove",e=>{if(e.buttons&1&&window.parent!==window&&window.parent.studyTransferBridge)window.parent.studyTransferBridge.move(window,e.clientX,e.clientY)},true);
 document.addEventListener("pointerup",e=>{if(window.parent!==window&&window.parent.studyTransferBridge)window.parent.studyTransferBridge.end(window,e.clientX,e.clientY)},true);
-document.addEventListener("pointercancel",()=>{if(window.parent!==window&&window.parent.studyTransferBridge)window.parent.studyTransferBridge.cancel()},true);
+// Pointer cancellation in a child iframe may occur when the parent overlay appears; the parent owns cancellation.
 function nodeAtCanvas(x,y,exclude){const p=screenToWorld(x,y);return [...nodes].reverse().find(n=>n.id!==exclude&&p.x>=n.x&&p.x<=n.x+240&&p.y>=n.y&&p.y<=n.y+160)}
 function attachImage(target,assetId){if(!/^[0-9a-f-]{36}$/i.test(assetId))return false;snapshot();target.asset_id=assetId;draw();status("Изображение прикреплено к карточке "+target.text);return true}
 function detachOnFling(node,dx,dy,elapsed){const distance=Math.hypot(dx,dy);if(elapsed>320||distance<145||distance/Math.max(1,elapsed)<.65)return false;const connected=edges.filter(e=>e.from===node.id||e.to===node.id);if(!connected.length)return false;const movedAway=connected.some(e=>{const other=nodes.find(n=>n.id===(e.from===node.id?e.to:e.from));if(!other)return false;const before=Math.hypot(node.x-dx-other.x,node.y-dy-other.y),after=Math.hypot(node.x-other.x,node.y-other.y);return after-before>75});if(!movedAway)return false;edges=edges.filter(e=>e.from!==node.id&&e.to!==node.id);return true}
