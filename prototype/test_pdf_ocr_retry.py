@@ -1,5 +1,7 @@
 import tempfile
 import threading
+import subprocess
+import sys
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -105,6 +107,24 @@ class PDFOCRRetryTests(unittest.TestCase):
         self.assertFalse(first.is_alive() or second.is_alive());self.assertEqual(errors,[])
         self.assertEqual(d.page(self.job,1)['text'],'Recovered result must survive')
         self.assertEqual(d.status(self.job)['status'],'complete')
+
+    def test_retry_survives_application_restart_after_language_failure(self):
+        with patch.object(pytesseract,'image_to_string',side_effect=pytesseract.TesseractNotFoundError()):
+            d.process(self.job,batch=2,ocr=True)
+        code='''import sys
+from pathlib import Path
+from unittest.mock import patch
+import document_import as d
+import pytesseract
+d.DB=Path(sys.argv[1]);d.ROOT=Path(sys.argv[2])
+with patch.object(pytesseract,'image_to_string',return_value='Recovered in restarted app'):
+    result=d.process(sys.argv[3],ocr=True,retry=True)
+assert result['status']=='complete',result
+'''
+        result=subprocess.run([sys.executable,'-c',code,str(d.DB),str(d.ROOT),self.job],cwd=Path(__file__).parent,capture_output=True,text=True,timeout=15)
+        self.assertEqual(result.returncode,0,result.stderr)
+        self.assertEqual(d.page(self.job,1)['text'],'Recovered in restarted app')
+        self.assertEqual((d.ROOT/(self.job+'.pdf')).read_bytes(),self.raw)
 
 
 if __name__ == '__main__':
