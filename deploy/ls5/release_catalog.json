@@ -1,0 +1,586 @@
+{
+  "schema_version": 1,
+  "catalog_type": "candidate_metadata_only",
+  "release_ready": false,
+  "researched_at_utc": "2026-11-07T19:53:13.125789+00:00",
+  "target_hardware_status": "UNKNOWN_AUTHENTICATION_BLOCKED",
+  "bootstrap_python_artifact_id": "python-3.13.12-embed-win-amd64",
+  "bootstrap_python": {
+    "id": "python-3.13.12-embed-win-amd64",
+    "url": "https://www.python.org/ftp/python/3.13.12/python-3.13.12-embed-amd64.zip",
+    "sha256": "76f238f606250c87c6beac75dccd35ee99070a13490555936abb6cb64ecce3d0",
+    "size": 10941233,
+    "size_bytes": 10941233,
+    "version": "3.13.12",
+    "filename": "python-3.13.12-embed-amd64.zip",
+    "kind": "python",
+    "component": "bootstrap",
+    "runtime_kind": "embedded",
+    "python_executable": "python.exe",
+    "license_id": "PSF-2.0",
+    "license": "PSF-2.0",
+    "platform": "win_amd64",
+    "python_tag": "cp313",
+    "digest_evidence": "https://www.python.org/ftp/python/3.13.12/python-3.13.12-embed-amd64.zip.sigstore"
+  },
+  "allowed_hosts": [
+    "www.python.org",
+    "files.pythonhosted.org",
+    "download.pytorch.org",
+    "download-r2.pytorch.org",
+    "github.com",
+    "huggingface.co",
+    "codeload.github.com",
+    "us.aws.cdn.hf.co"
+  ],
+  "artifacts": [
+    {
+      "id": "python-3.13.12-embed-win-amd64",
+      "url": "https://www.python.org/ftp/python/3.13.12/python-3.13.12-embed-amd64.zip",
+      "sha256": "76f238f606250c87c6beac75dccd35ee99070a13490555936abb6cb64ecce3d0",
+      "size": 10941233,
+      "size_bytes": 10941233,
+      "version": "3.13.12",
+      "filename": "python-3.13.12-embed-amd64.zip",
+      "kind": "python",
+      "component": "bootstrap",
+      "runtime_kind": "embedded",
+      "python_executable": "python.exe",
+      "license_id": "PSF-2.0",
+      "license": "PSF-2.0",
+      "platform": "win_amd64",
+      "python_tag": "cp313",
+      "digest_evidence": "https://www.python.org/ftp/python/3.13.12/python-3.13.12-embed-amd64.zip.sigstore"
+    },
+    {
+      "id": "pip-25.3-python3-any",
+      "url": "https://files.pythonhosted.org/packages/44/3c/d717024885424591d5376220b5e836c2d5293ce2011523c9de23ff7bf068/pip-25.3-py3-none-any.whl",
+      "sha256": "9655943313a94722b7774661c21049070f6bbb0a1516bf02f7c8d5d9201514cd",
+      "size": 1778622,
+      "kind": "wheel",
+      "component": "bootstrap",
+      "distribution": "pip",
+      "version": "25.3",
+      "license_id": "MIT",
+      "python_tag": "py3",
+      "platform": "any",
+      "requires_python": ">=3.9",
+      "digest_evidence": "https://pypi.org/pypi/pip/25.3/json"
+    },
+    {
+      "id": "torch-2.10.0-cu128-cp313-win-amd64",
+      "url": "https://download-r2.pytorch.org/whl/cu128/torch-2.10.0%2Bcu128-cp313-cp313-win_amd64.whl",
+      "sha256": "4d1b0b49c54223c7c04050b49eac141d77b6edbc34aea1dfc74a6fdb661baa8c",
+      "size": 2867408009,
+      "kind": "wheel",
+      "component": "comfy",
+      "distribution": "torch",
+      "version": "2.10.0+cu128",
+      "python_tag": "cp313",
+      "platform": "win_amd64",
+      "variant": "cu128",
+      "license_id": "BSD-3-Clause",
+      "digest_evidence": "https://download.pytorch.org/whl/cu128/torch/",
+      "dependency_closure_audited": false
+    },
+    {
+      "id": "torchvision-0.25.0-cu128-cp313-win-amd64",
+      "url": "https://download-r2.pytorch.org/whl/cu128/torchvision-0.25.0%2Bcu128-cp313-cp313-win_amd64.whl",
+      "sha256": "e2e0317e3861bba1b5aeba7c1cb4bcd50937cf0bffdbea478619d1f5f73e9050",
+      "size": 9651102,
+      "kind": "wheel",
+      "component": "comfy",
+      "distribution": "torchvision",
+      "version": "0.25.0+cu128",
+      "python_tag": "cp313",
+      "platform": "win_amd64",
+      "variant": "cu128",
+      "license_id": "BSD-3-Clause",
+      "digest_evidence": "https://download.pytorch.org/whl/cu128/torchvision/",
+      "dependency_closure_audited": false
+    },
+    {
+      "id": "torchaudio-2.10.0-cu128-cp313-win-amd64",
+      "url": "https://download-r2.pytorch.org/whl/cu128/torchaudio-2.10.0%2Bcu128-cp313-cp313-win_amd64.whl",
+      "sha256": "7c819ba73bdad53008238bdf7609c6f0807effe344f7bdc51a9cab397d988766",
+      "size": 1952082,
+      "kind": "wheel",
+      "component": "comfy",
+      "distribution": "torchaudio",
+      "version": "2.10.0+cu128",
+      "python_tag": "cp313",
+      "platform": "win_amd64",
+      "variant": "cu128",
+      "license_id": "BSD-2-Clause",
+      "digest_evidence": "https://download.pytorch.org/whl/cu128/torchaudio/",
+      "dependency_closure_audited": false
+    },
+    {
+      "id": "torch-2.10.0-cpu-cp313-win-amd64",
+      "url": "https://download-r2.pytorch.org/whl/cpu/torch-2.10.0%2Bcpu-cp313-cp313-win_amd64.whl",
+      "sha256": "b719da5af01b59126ac13eefd6ba3dd12d002dc0e8e79b8b365e55267a8189d3",
+      "size": 113670411,
+      "kind": "wheel",
+      "component": "comfy",
+      "distribution": "torch",
+      "version": "2.10.0+cpu",
+      "python_tag": "cp313",
+      "platform": "win_amd64",
+      "variant": "cpu",
+      "license_id": "BSD-3-Clause",
+      "digest_evidence": "https://download.pytorch.org/whl/cpu/torch/",
+      "dependency_closure_audited": false
+    },
+    {
+      "id": "torchvision-0.25.0-cpu-cp313-win-amd64",
+      "url": "https://download-r2.pytorch.org/whl/cpu/torchvision-0.25.0%2Bcpu-cp313-cp313-win_amd64.whl",
+      "sha256": "783c8fc580bbfc159bff52f4f72cdd538e42b32956e70dffa42b940db114e151",
+      "size": 4322022,
+      "kind": "wheel",
+      "component": "comfy",
+      "distribution": "torchvision",
+      "version": "0.25.0+cpu",
+      "python_tag": "cp313",
+      "platform": "win_amd64",
+      "variant": "cpu",
+      "license_id": "BSD-3-Clause",
+      "digest_evidence": "https://download.pytorch.org/whl/cpu/torchvision/",
+      "dependency_closure_audited": false
+    },
+    {
+      "id": "torchaudio-2.10.0-cpu-cp313-win-amd64",
+      "url": "https://download-r2.pytorch.org/whl/cpu/torchaudio-2.10.0%2Bcpu-cp313-cp313-win_amd64.whl",
+      "sha256": "ef9a3bc9c0dcbb766775f60bb4e1f5dc02801db0367bc45a6c76e98e041968af",
+      "size": 473216,
+      "kind": "wheel",
+      "component": "comfy",
+      "distribution": "torchaudio",
+      "version": "2.10.0+cpu",
+      "python_tag": "cp313",
+      "platform": "win_amd64",
+      "variant": "cpu",
+      "license_id": "BSD-2-Clause",
+      "digest_evidence": "https://download.pytorch.org/whl/cpu/torchaudio/",
+      "dependency_closure_audited": false
+    },
+    {
+      "id": "comfy-v0.43.0-portable-nvidia",
+      "url": "https://github.com/Comfy-Org/ComfyUI/releases/download/v0.43.0/ComfyUI_windows_portable_nvidia.7z",
+      "sha256": "4928f88e6a8407c4574d4f7d92cfeba020d782edba4a076b7d107ecc98955e50",
+      "size": 2039673203,
+      "kind": "7z",
+      "component": "comfy",
+      "version": "0.43.0",
+      "release_tag_commit": "426f5eea52a7ece1dd599fff4cb6cd1f352ddd24",
+      "archive_root": "ComfyUI_windows_portable",
+      "license_id": "GPL-3.0",
+      "digest_evidence": "https://api.github.com/repos/Comfy-Org/ComfyUI/releases/tags/v0.43.0",
+      "archive_contents_audited": false
+    },
+    {
+      "id": "sd15-emaonly",
+      "url": "https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5/resolve/451f4fe16113bff5a5d2269ed5ad43b0592e9a14/v1-5-pruned-emaonly.safetensors",
+      "sha256": "6ce0161689b3853acaa03779ec93eafe75a02f4ced659bee03f50797806fa2fa",
+      "size": 4265146304,
+      "kind": "model",
+      "component": "comfy",
+      "license_id": "creativeml-openrail-m",
+      "source_revision": "451f4fe16113bff5a5d2269ed5ad43b0592e9a14",
+      "workflow_family": "sd1",
+      "workflow": "allowlisted_text_to_image",
+      "format": "safetensors",
+      "hardware_requirements_reviewed": false,
+      "digest_evidence": "https://huggingface.co/api/models/stable-diffusion-v1-5/stable-diffusion-v1-5/revision/451f4fe16113bff5a5d2269ed5ad43b0592e9a14?blobs=true",
+      "redirect_hosts": [
+        "us.aws.cdn.hf.co"
+      ],
+      "redirect_review": {
+        "method": "HEAD_ONLY",
+        "host_chain": [
+          "huggingface.co",
+          "us.aws.cdn.hf.co"
+        ],
+        "final_status": 200,
+        "signed_locations_retained": false,
+        "model_payload_read": false
+      }
+    },
+    {
+      "id": "sdxl-base-1.0",
+      "url": "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/462165984030d82259a11f4367a4eed129e94a7b/sd_xl_base_1.0.safetensors",
+      "sha256": "31e35c80fc4829d14f90153f4c74cd59c90b779f6afe05a74cd6120b893f7e5b",
+      "size": 6938078334,
+      "kind": "model",
+      "component": "comfy",
+      "license_id": "openrail++",
+      "source_revision": "462165984030d82259a11f4367a4eed129e94a7b",
+      "workflow_family": "sdxl",
+      "workflow": "allowlisted_text_to_image",
+      "format": "safetensors",
+      "hardware_requirements_reviewed": false,
+      "digest_evidence": "https://huggingface.co/api/models/stabilityai/stable-diffusion-xl-base-1.0/revision/462165984030d82259a11f4367a4eed129e94a7b?blobs=true",
+      "redirect_hosts": [
+        "us.aws.cdn.hf.co"
+      ],
+      "redirect_review": {
+        "method": "HEAD_ONLY",
+        "host_chain": [
+          "huggingface.co",
+          "us.aws.cdn.hf.co"
+        ],
+        "final_status": 200,
+        "signed_locations_retained": false,
+        "model_payload_read": false
+      }
+    },
+    {
+      "id": "pillow-12.1.0-win-amd64",
+      "url": "https://files.pythonhosted.org/packages/e5/07/74a9d941fa45c90a0d9465098fe1ec85de3e2afbdc15cc4766622d516056/pillow-12.1.0-cp313-cp313-win_amd64.whl",
+      "sha256": "461f9dfdafa394c59cd6d818bdfdbab4028b83b02caadaff0ffd433faf4c9a7a",
+      "size": 7040087,
+      "kind": "wheel",
+      "component": "study",
+      "distribution": "pillow",
+      "version": "12.1.0",
+      "python_tag": "cp313",
+      "platform": "win_amd64",
+      "requires_python": ">=3.10",
+      "requires_dist_metadata": [
+        "furo; extra == \"docs\"",
+        "olefile; extra == \"docs\"",
+        "sphinx>=8.2; extra == \"docs\"",
+        "sphinx-autobuild; extra == \"docs\"",
+        "sphinx-copybutton; extra == \"docs\"",
+        "sphinx-inline-tabs; extra == \"docs\"",
+        "sphinxext-opengraph; extra == \"docs\"",
+        "olefile; extra == \"fpx\"",
+        "olefile; extra == \"mic\"",
+        "arro3-compute; extra == \"test-arrow\"",
+        "arro3-core; extra == \"test-arrow\"",
+        "nanoarrow; extra == \"test-arrow\"",
+        "pyarrow; extra == \"test-arrow\"",
+        "check-manifest; extra == \"tests\"",
+        "coverage>=7.4.2; extra == \"tests\"",
+        "defusedxml; extra == \"tests\"",
+        "markdown2; extra == \"tests\"",
+        "olefile; extra == \"tests\"",
+        "packaging; extra == \"tests\"",
+        "pyroma>=5; extra == \"tests\"",
+        "pytest; extra == \"tests\"",
+        "pytest-cov; extra == \"tests\"",
+        "pytest-timeout; extra == \"tests\"",
+        "pytest-xdist; extra == \"tests\"",
+        "trove-classifiers>=2024.10.12; extra == \"tests\"",
+        "defusedxml; extra == \"xmp\""
+      ],
+      "digest_evidence": "https://pypi.org/pypi/Pillow/12.1.0/json",
+      "license_id": "MIT-CMU"
+    },
+    {
+      "id": "pymupdf-1.26.7-win-amd64",
+      "url": "https://files.pythonhosted.org/packages/dd/c3/d0047678146c294469c33bae167c8ace337deafb736b0bf97b9bc481aa65/pymupdf-1.26.7-cp310-abi3-win_amd64.whl",
+      "sha256": "425b1befe40d41b72eb0fe211711c7ae334db5eb60307e9dd09066ed060cceba",
+      "size": 18405952,
+      "kind": "wheel",
+      "component": "study",
+      "distribution": "pymupdf",
+      "version": "1.26.7",
+      "python_tag": "cp310-abi3",
+      "platform": "win_amd64",
+      "requires_python": ">=3.10",
+      "requires_dist_metadata": [],
+      "digest_evidence": "https://pypi.org/pypi/PyMuPDF/1.26.7/json",
+      "license_id": "AGPL-3.0-or-later"
+    },
+    {
+      "id": "pytesseract-0.3.13-any",
+      "url": "https://files.pythonhosted.org/packages/7a/33/8312d7ce74670c9d39a532b2c246a853861120486be9443eebf048043637/pytesseract-0.3.13-py3-none-any.whl",
+      "sha256": "7a99c6c2ac598360693d83a416e36e0b33a67638bb9d77fdcac094a3589d4b34",
+      "size": 14705,
+      "kind": "wheel",
+      "component": "study",
+      "distribution": "pytesseract",
+      "version": "0.3.13",
+      "python_tag": "py3",
+      "platform": "any",
+      "requires_python": ">=3.8",
+      "requires_dist_metadata": [
+        "packaging>=21.3",
+        "Pillow>=8.0.0"
+      ],
+      "digest_evidence": "https://pypi.org/pypi/pytesseract/0.3.13/json",
+      "license_id": "Apache-2.0"
+    },
+    {
+      "id": "packaging-25.0-any",
+      "url": "https://files.pythonhosted.org/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl",
+      "sha256": "29572ef2b1f17581046b3a2227d5c611fb25ec70ca1ba8554b24b0e69331a484",
+      "size": 66469,
+      "kind": "wheel",
+      "component": "study",
+      "distribution": "packaging",
+      "version": "25.0",
+      "python_tag": "py3",
+      "platform": "any",
+      "requires_python": ">=3.8",
+      "requires_dist_metadata": [],
+      "digest_evidence": "https://pypi.org/pypi/packaging/25.0/json",
+      "license_id": "Apache-2.0 OR BSD-2-Clause"
+    },
+    {
+      "id": "comfy-v0.43.0-source",
+      "url": "https://codeload.github.com/Comfy-Org/ComfyUI/zip/426f5eea52a7ece1dd599fff4cb6cd1f352ddd24",
+      "sha256": "01f381c8330f5c5bec9bd3d4c651e8b53b45ffb70020b9e1e947fc63f93a1548",
+      "size": 13595371,
+      "kind": "zip",
+      "component": "comfy",
+      "version": "0.43.0",
+      "source_revision": "426f5eea52a7ece1dd599fff4cb6cd1f352ddd24",
+      "archive_root": "ComfyUI-426f5eea52a7ece1dd599fff4cb6cd1f352ddd24",
+      "license_id": "GPL-3.0",
+      "digest_evidence": "Actual bounded source ZIP byte stream SHA-256;13,595,371bytes read,discarded; no extraction or execution."
+    },
+    {
+      "id": "torch-2.10.0-cu130-cp313-win-amd64",
+      "url": "https://download-r2.pytorch.org/whl/cu130/torch-2.10.0%2Bcu130-cp313-cp313-win_amd64.whl",
+      "sha256": "48af94af745a9dd9b42be81ea15b56aba981666bcfe10394dceca6d9476a50fa",
+      "size": 1867401616,
+      "kind": "wheel",
+      "component": "comfy",
+      "distribution": "torch",
+      "version": "2.10.0+cu130",
+      "python_tag": "cp313",
+      "platform": "win_amd64",
+      "variant": "cu130",
+      "license_id": "BSD-3-Clause",
+      "digest_evidence": "https://download.pytorch.org/whl/cu130/torch/",
+      "dependency_closure_audited": false
+    },
+    {
+      "id": "torchvision-0.25.0-cu130-cp313-win-amd64",
+      "url": "https://download-r2.pytorch.org/whl/cu130/torchvision-0.25.0%2Bcu130-cp313-cp313-win_amd64.whl",
+      "sha256": "f4ac532eee577ce712fb013e16da0174567f59fa472256e2aa37197e0117e7c5",
+      "size": 8948942,
+      "kind": "wheel",
+      "component": "comfy",
+      "distribution": "torchvision",
+      "version": "0.25.0+cu130",
+      "python_tag": "cp313",
+      "platform": "win_amd64",
+      "variant": "cu130",
+      "license_id": "BSD-3-Clause",
+      "digest_evidence": "https://download.pytorch.org/whl/cu130/torchvision/",
+      "dependency_closure_audited": false
+    },
+    {
+      "id": "torchaudio-2.10.0-cu130-cp313-win-amd64",
+      "url": "https://download-r2.pytorch.org/whl/cu130/torchaudio-2.10.0%2Bcu130-cp313-cp313-win_amd64.whl",
+      "sha256": "3909d4e9065f30a06e0885dc2a3bda9448859544306b13487212e0eae80231d3",
+      "size": 2008531,
+      "kind": "wheel",
+      "component": "comfy",
+      "distribution": "torchaudio",
+      "version": "2.10.0+cu130",
+      "python_tag": "cp313",
+      "platform": "win_amd64",
+      "variant": "cu130",
+      "license_id": "BSD-2-Clause",
+      "digest_evidence": "https://download.pytorch.org/whl/cu130/torchaudio/",
+      "dependency_closure_audited": false
+    }
+  ],
+  "licenses": [
+    {
+      "id": "creativeml-openrail-m",
+      "url": "https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5/blob/451f4fe16113bff5a5d2269ed5ad43b0592e9a14/README.md",
+      "acceptance_required": true,
+      "review_status": "maintainer_model_card_identifies_license_but_no_LICENSE_file_in_repository; exact_acceptance_document_still_required"
+    },
+    {
+      "id": "openrail++",
+      "url": "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/462165984030d82259a11f4367a4eed129e94a7b/LICENSE.md",
+      "sha256": "19b6998b569b53ac1fc2158a8a3202c8699a9a4605b47075715d9c96be7fb6d0",
+      "size": 14109,
+      "acceptance_required": true
+    }
+  ],
+  "components": {
+    "study": {
+      "artifact_ids": [],
+      "python_artifact_id": "python-3.13.12-embed-win-amd64",
+      "runtime_kind": "embedded",
+      "pip_artifact_id": "pip-25.3-python3-any",
+      "wheel_ids": [
+        "pillow-12.1.0-win-amd64",
+        "pymupdf-1.26.7-win-amd64",
+        "pytesseract-0.3.13-any",
+        "packaging-25.0-any"
+      ],
+      "requirements_lock": [
+        {
+          "distribution": "pillow",
+          "version": "12.1.0",
+          "artifact_id": "pillow-12.1.0-win-amd64",
+          "requires": []
+        },
+        {
+          "distribution": "pymupdf",
+          "version": "1.26.7",
+          "artifact_id": "pymupdf-1.26.7-win-amd64",
+          "requires": []
+        },
+        {
+          "distribution": "pytesseract",
+          "version": "0.3.13",
+          "artifact_id": "pytesseract-0.3.13-any",
+          "requires": [
+            "packaging",
+            "pillow"
+          ]
+        },
+        {
+          "distribution": "packaging",
+          "version": "25.0",
+          "artifact_id": "packaging-25.0-any",
+          "requires": []
+        }
+      ],
+      "dependency_lock_complete": true,
+      "dependency_lock_audited": true,
+      "release_gates": [
+        "bundler_must_bind_exact_built_Study_source_ZIP"
+      ],
+      "entrypoint": "deploy/ls5/study_service.py",
+      "lock_target": {
+        "python": "3.13",
+        "platform": "win_amd64",
+        "extras": []
+      },
+      "dependency_audit_note": "Pillow base requires no dependencies; PyMuPDF and packaging metadata requires none; pytesseract requires packaging>=21.3 and Pillow>=8.0.0, satisfied by25.0/12.1.0. Extras not selected. Tesseract executable/language data not bundled; OCR remains unavailable until approved external runtime exists.",
+      "application_entrypoint": "prototype/web_app.py"
+    },
+    "comfy": {
+      "artifact_ids": [
+        "comfy-v0.43.0-source"
+      ],
+      "python_artifact_id": "python-3.13.12-embed-win-amd64",
+      "runtime_kind": "embedded",
+      "pip_artifact_id": "pip-25.3-python3-any",
+      "wheel_ids": [],
+      "requirements_lock": [],
+      "dependency_lock_complete": false,
+      "dependency_lock_audited": false,
+      "release_gates": [
+        "closed_dependency_wheel_lock_not_audited",
+        "LS5_hardware_fit_not_reviewed"
+      ],
+      "entrypoint": "main.py",
+      "dependency_resolution_attempts": [
+        {
+          "profile": "cpu",
+          "attempt": "initial",
+          "status": "FAILED_METADATA_ONLY",
+          "elapsed_seconds": 29.401,
+          "allowed_metadata_or_index_requests": 185,
+          "blocked_before_request": [
+            {
+              "method": "GET",
+              "host": "download.pytorch.org",
+              "path": "/whl/colorama-0.4.6-py2.py3-none-any.whl",
+              "classification": "FORBIDDEN_PAYLOAD"
+            }
+          ],
+          "package_payload_requests_performed": 0
+        },
+        {
+          "profile": "cu130",
+          "attempt": "initial",
+          "status": "FAILED_METADATA_ONLY",
+          "elapsed_seconds": 25.709,
+          "allowed_metadata_or_index_requests": 185,
+          "blocked_before_request": [
+            {
+              "method": "GET",
+              "host": "download.pytorch.org",
+              "path": "/whl/colorama-0.4.6-py2.py3-none-any.whl",
+              "classification": "FORBIDDEN_PAYLOAD"
+            }
+          ],
+          "package_payload_requests_performed": 0
+        },
+        {
+          "profile": "cpu",
+          "attempt": "pypi-priority",
+          "status": "FAILED_METADATA_ONLY",
+          "elapsed_seconds": 35.134,
+          "allowed_metadata_or_index_requests": 258,
+          "blocked_before_request": [
+            {
+              "method": "GET",
+              "host": "files.pythonhosted.org",
+              "path": "/packages/2c/f3/a7f851e2bfab98b312e54e9f3ea50e677b0e6f28deb06b0ac23e409546f3/comfyui_frontend_package-1.57.4-py3-none-any.whl",
+              "classification": "FORBIDDEN_PAYLOAD"
+            }
+          ],
+          "package_payload_requests_performed": 0
+        },
+        {
+          "profile": "cu130",
+          "attempt": "pypi-priority",
+          "status": "FAILED_METADATA_ONLY",
+          "elapsed_seconds": 32.926,
+          "allowed_metadata_or_index_requests": 258,
+          "blocked_before_request": [
+            {
+              "method": "GET",
+              "host": "files.pythonhosted.org",
+              "path": "/packages/2c/f3/a7f851e2bfab98b312e54e9f3ea50e677b0e6f28deb06b0ac23e409546f3/comfyui_frontend_package-1.57.4-py3-none-any.whl",
+              "classification": "FORBIDDEN_PAYLOAD"
+            }
+          ],
+          "package_payload_requests_performed": 0
+        }
+      ]
+    }
+  },
+  "candidates": [
+    {
+      "id": "comfy-source-v0.43.0",
+      "version": "0.43.0",
+      "commit": "426f5eea52a7ece1dd599fff4cb6cd1f352ddd24",
+      "source_url": "https://github.com/Comfy-Org/ComfyUI/tree/426f5eea52a7ece1dd599fff4cb6cd1f352ddd24",
+      "requirements_url": "https://raw.githubusercontent.com/Comfy-Org/ComfyUI/426f5eea52a7ece1dd599fff4cb6cd1f352ddd24/requirements.txt",
+      "requirements_sha256": "770c7d9b768e267016d7ca6ef178f730c5559b1515b8887018b43b555812c9b9",
+      "source_archive_installable": true,
+      "reason": "Source ZIP hash/size verified from bounded source-only fetch; Managed remains blocked by missing closed dependency lock and LS5fit.",
+      "source_artifact_id": "comfy-v0.43.0-source"
+    }
+  ],
+  "compatibility": {
+    "python": "3.13 Windows x86-64 cp313",
+    "torch_cpu": "2.10.0+cpu / torchvision0.25.0+cpu / torchaudio2.10.0+cpu exact published cp313 Windows wheels",
+    "torch_cuda": "2.10.0+cu128 / torchvision0.25.0+cu128 / torchaudio2.10.0+cu128 exact published cp313 Windows wheels",
+    "cuda_driver_certification": "UNREVIEWED for LS5; CUDA minor-version family table is insufficient for full GPU architecture/driver acceptance",
+    "gpu_selection": "NONE",
+    "cpu_requires_explicit_opt_in": true,
+    "torch_cuda130": "2.10.0+cu130 / torchvision0.25.0+cu130 / torchaudio2.10.0+cu130 exact published cp313Windows wheels; no LS5 fit selection"
+  },
+  "release_gates": [
+    "LS5_hardware_audit_unavailable",
+    "closed_dependency_wheel_set_and_lock_not_audited",
+    "Managed_runtime_and_model_fit_not_certified",
+    "model_license_acceptance_required",
+    "7z_extractor_and_archive_contents_not_audited",
+    "SD1.5_exact_licence_acceptance_document_not_pinned"
+  ],
+  "download_policy": "Metadata/HEAD/small license documents plus root-authorized bounded13.6MBComfy sourceZIP stream only; source discarded afterhash. No Python runtime, portable archive, wheel or checkpoint payload downloaded.",
+  "sources": [
+    "https://www.python.org/downloads/release/python-31312/",
+    "https://docs.python.org/3.13/using/windows.html#the-embeddable-package",
+    "https://docs.comfy.org/installation/comfyui_portable_windows",
+    "https://pytorch.org/get-started/previous-versions/",
+    "https://docs.nvidia.com/deploy/cuda-compatibility/minor-version-compatibility.html"
+  ],
+  "metadata_resolution_report": "docs/COMFY_METADATA_RESOLUTION_REPORT.json",
+  "metadata_resolution_status": "FAILED_METADATA_ONLY_FINAL_NO_FURTHER_RETRY"
+}

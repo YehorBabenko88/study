@@ -4,11 +4,12 @@ from contextlib import contextmanager
 import json
 import sqlite3
 from pathlib import Path
+from runtime_paths import data_path
 from threading import Lock
 from uuid import uuid4
 from datetime import datetime, timezone
 
-DB = Path(__file__).with_name("study_local.sqlite3")
+DB = data_path(__file__,"study_local.sqlite3")
 LOCK = Lock()
 
 @contextmanager

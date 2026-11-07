@@ -8,12 +8,13 @@ import json
 import os
 import struct
 from pathlib import Path
+from runtime_paths import data_path
 from urllib.request import Request, urlopen
 from urllib.parse import urlparse
 from uuid import UUID
 from visual_memory import get_scene
 
-MEDIA = Path(__file__).with_name("generated_media")
+MEDIA = data_path(__file__,"generated_media")
 MAX_IMAGE_BYTES = 8_000_000
 
 def configured():

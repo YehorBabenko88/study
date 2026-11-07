@@ -7,13 +7,14 @@ import json
 import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
+from runtime_paths import data_path
 from uuid import uuid4,UUID
 from datetime import datetime,timezone
 from visual_memory import DB,LOCK
 from threading import Lock
 from weakref import WeakValueDictionary
 
-ROOT=Path(__file__).with_name("document_uploads")
+ROOT=data_path(__file__,"document_uploads")
 MAX_UPLOAD=100_000_000
 MAX_OCR_PIXELS=16_000_000
 _PROCESS_GUARD=Lock()

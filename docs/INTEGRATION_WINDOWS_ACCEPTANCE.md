@@ -1,6 +1,6 @@
-# Windows integration acceptance
+# Windows integration acceptance — LS5 deployment target
 
-Status: MERGE_NO-GO until owner approval. A mock image is not real ComfyUI acceptance.
+Status: MERGE_NO-GO until owner approval. PC1 is development only; installation, permanent operation, and physical acceptance target LS5 (Windows 11 Pro). A mock image on PC1 is not real ComfyUI or LS5 acceptance.
 
 ## Automated checks on one committed HEAD
 
@@ -14,10 +14,10 @@ $env:PLAYWRIGHT_BROWSERS_PATH = '<existing reviewed Playwright browser directory
 
 Both commands print the exact git HEAD and actual PASS/SKIP/failure counts. Unit discovery intentionally skips browser tests. The browser phase must have zero skips and runs real Chromium. All application databases/media paths are redirected to a fixture directory. Mock-Comfy tests start explicitly fake loopback servers; they exercise transport and preservation, not GPU inference or model quality.
 
-## Physical Windows test with existing local software
+## Physical Windows test on LS5 only, after explicit deployment approval
 
-1. Record `git rev-parse HEAD`, Python/browser versions and the reviewed existing ComfyUI/checkpoint configuration. Keep existing learner databases, PDF uploads, speech audio and media intact. Use a separate test checkout and copied fixture data; do not run reset/delete/cleanup commands against learner paths.
-2. Start Study on loopback using existing dependencies. Open `/canvas`, `/workspace` and `/phonovision-3d`. Confirm existing boards, galleries and sound projects can reopen. Record file hashes for copied PDF/audio/images before testing.
+1. On LS5, after a read-only hardware/software audit and explicit approval for installation/downloads, record `git rev-parse HEAD`, Python/browser versions and the reviewed existing ComfyUI/checkpoint configuration. Keep existing learner databases, PDF uploads, speech audio and media intact. Use a separate test checkout and copied fixture data; do not run reset/delete/cleanup commands against learner paths.
+2. Start the independent LS5 Study service on 127.0.0.1:8766 using its own Python environment; ComfyUI uses a separate environment and 127.0.0.1:8188. Open `/canvas`, `/workspace` and `/phonovision-3d`. Confirm existing boards, galleries and sound projects can reopen. Record file hashes for copied PDF/audio/images before testing.
 3. Select a word with typed connections. Build the scene, inspect selected sources and description, edit the prompt/seed/size/steps and save a child revision. Confirm the older revision remains selectable and source nodes/text/images are unchanged.
 4. Only if an existing reviewed local ComfyUI and checkpoint are available, explicitly enable the adapter. Do not install/download a model as part of this test. Generate from the saved revision; record local job ID, upstream ComfyUI ID, workflow/checkpoint identity, exact parameters, stored PNG SHA-256, revision ID and source fingerprint. Inspect the real image. References are provenance only; text-to-image must not claim pixel conditioning.
 5. Reload during a queued/running job. Reopen the saved revision/job; verify one result and one PNG asset, without a second submission. Cancel another job; confirm local cancellation is terminal and that the UI states upstream work may continue. Restart Study during a job and verify the interrupted outcome/history and explicit retry to a new job.
@@ -26,3 +26,5 @@ Both commands print the exact git HEAD and actual PASS/SKIP/failure counts. Unit
 8. Run the security tests: foreign Host/Origin and missing/wrong CSRF tokens must produce no mutations for POST/PUT/DELETE; legitimate same-origin UI and token-bearing local clients must work. Do not expose Study on a public interface to test this.
 
 Accept real ComfyUI only with logs and an actual produced/reopened PNG at the exact tested integration SHA. Record physical microphone, touch/high-DPI, real OCR accuracy and GPU inference separately from automated Chromium fixtures. No merge follows automatically from passing tests.
+
+LS5 access/hardware audit is currently blocked by existing-key SSH authorization. Do not infer LS5 GPU/VRAM from PC1, select a model before that audit, or install any application/model on PC1. Portable LS5 preparation under deploy/ls5 is reviewable code, not evidence of deployment.

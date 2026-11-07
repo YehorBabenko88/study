@@ -9,6 +9,7 @@ from contextlib import contextmanager
 import wave
 from datetime import datetime, timezone
 from pathlib import Path
+from runtime_paths import data_path
 from uuid import uuid4, UUID
 from visual_memory import DB, LOCK
 
@@ -23,7 +24,7 @@ def connection():
     finally:
         db.close()
 
-AUDIO_DIR=Path(__file__).with_name("speech_audio")
+AUDIO_DIR=data_path(__file__,"speech_audio")
 MAX_AUDIO=2_000_000
 def init(db):
     db.execute("""CREATE TABLE IF NOT EXISTS speech_projects(

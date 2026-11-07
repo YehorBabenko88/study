@@ -4,8 +4,9 @@ import json
 import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
+from runtime_paths import data_path
 
-DB = Path(__file__).with_name("study_lexicon.sqlite3")
+DB = data_path(__file__,"study_lexicon.sqlite3")
 @contextmanager
 def connect():
     db = sqlite3.connect(DB,timeout=30)

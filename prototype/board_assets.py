@@ -1,12 +1,13 @@
 """Local board assets and opt-in OCR. Only on loopback, not multi-user secure."""
 from pathlib import Path
+from runtime_paths import data_path
 from uuid import uuid4, UUID
 from io import BytesIO
 import os
 import tempfile
 from PIL import Image, ImageOps, UnidentifiedImageError
 
-ROOT=Path(__file__).with_name("board_assets")
+ROOT=data_path(__file__,"board_assets")
 MAX_BYTES=8_000_000
 MAX_PIXELS=16_000_000
 
