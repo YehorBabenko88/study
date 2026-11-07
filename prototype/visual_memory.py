@@ -1,5 +1,6 @@
 """Offline visual mnemonic renderer and SQLite persistence, no third-party dependencies."""
 import html
+from contextlib import contextmanager
 import json
 import sqlite3
 from pathlib import Path
@@ -10,13 +11,18 @@ from datetime import datetime, timezone
 DB = Path(__file__).with_name("study_local.sqlite3")
 LOCK = Lock()
 
+@contextmanager
 def connection():
+    """Close SQLite handles deterministically, including on Windows and errors."""
     db = sqlite3.connect(DB, timeout=10)
-    db.execute("PRAGMA foreign_keys=ON")
-    db.execute("""CREATE TABLE IF NOT EXISTS scenes(
-        id TEXT PRIMARY KEY, word TEXT NOT NULL, payload TEXT NOT NULL,
-        created_at TEXT NOT NULL)""")
-    return db
+    try:
+        db.execute("PRAGMA foreign_keys=ON")
+        db.execute("""CREATE TABLE IF NOT EXISTS scenes(
+            id TEXT PRIMARY KEY, word TEXT NOT NULL, payload TEXT NOT NULL,
+            created_at TEXT NOT NULL)""")
+        yield db
+    finally:
+        db.close()
 
 def save(scene):
     sid = str(uuid4())
