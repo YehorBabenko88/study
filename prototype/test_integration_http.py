@@ -52,4 +52,3 @@ class IntegrationHTTPTests(unittest.TestCase):
             status, _ = self.request('POST', '/v1/documents/test/process', {'batch': 2, 'ocr': True, 'retry': True})
             self.assertEqual(status, 200)
             process.assert_called_once_with('test', 2, True, True)
-
