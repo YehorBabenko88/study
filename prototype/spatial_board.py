@@ -35,7 +35,7 @@ def validate(doc):
             except ValueError as exc:
                 raise ValueError("invalid scene reference") from exc
         if "asset_id" in n:
-            if n["type"]!="image" or not isinstance(n["asset_id"],str):
+            if not isinstance(n["asset_id"],str):
                 raise ValueError("asset reference only allowed on image nodes")
             try:
                 UUID(n["asset_id"])
