@@ -16,28 +16,57 @@ function finishTransfer(e){if(!transfer)return;const dest=frameAt(e.clientX,e.cl
  document.getElementById("transferStatus").textContent=dest.kind===src?"Элемент перемещён внутри панели":"Элемент перенесён в "+(dest.kind==="canvas"?"доску":"3D Lab");
  }else document.getElementById("transferStatus").textContent="Перенос отменён";
  clearTransfer()}
+// Same-origin direct bridge: synchronous activation during pointerdown avoids
+// racing a queued postMessage against pointer capture in the source iframe.
+window.studyTransferBridge={
+ start(sourceWindow,source,payload,x,y){
+  if(transfer||!["canvas","lab"].includes(source)||!payload||!["node","image"].includes(payload.kind))return false;
+  const frame=[left,right].map(p=>p.querySelector("iframe")).find(f=>f.contentWindow===sourceWindow);
+  if(!frame)return false;
+  const r=frame.getBoundingClientRect();
+  startTransfer(sourceWindow,source,payload,r.left+x,r.top+y);
+  return true;
+ },
+ move(sourceWindow,x,y){
+  if(!transfer)return;
+  const frame=[left,right].map(p=>p.querySelector("iframe")).find(f=>f.contentWindow===sourceWindow);
+  if(!frame)return;
+  const r=frame.getBoundingClientRect();
+  moveTransfer({clientX:r.left+x,clientY:r.top+y});
+ },
+ end(sourceWindow,x,y){
+  if(!transfer)return;
+  const frame=[left,right].map(p=>p.querySelector("iframe")).find(f=>f.contentWindow===sourceWindow);
+  if(!frame)return;
+  const r=frame.getBoundingClientRect();
+  finishTransfer({clientX:r.left+x,clientY:r.top+y});
+ },
+ cancel(){clearTransfer()}
+};
+function startTransfer(sourceWindow,source,payload,x,y){
+ transfer={payload,source,x,y};
+ shield=document.createElement("div");shield.className="transfer-shield";document.body.append(shield);
+ hint=document.createElement("div");hint.className="drag-hint";
+ const label=document.createElement("span");label.textContent=(payload.text||"Изображение").slice(0,90);hint.append(label);
+ const tag=document.createElement("span");tag.className="ghost-label";tag.textContent=payload.kind==="image"?"Изображение":"Карточка";hint.append(tag);
+ if(payload.kind==="image"&&typeof payload.data_url==="string"&&payload.data_url.startsWith("data:image/png;base64,")){const img=document.createElement("img");img.src=payload.data_url;hint.replaceChildren(img,tag)}
+ document.body.append(hint);document.body.style.userSelect="none";
+ moveTransfer({clientX:x,clientY:y});
+ shield.addEventListener("pointermove",moveTransfer);
+ shield.addEventListener("pointerup",finishTransfer);
+ shield.addEventListener("pointercancel",clearTransfer);
+ document.addEventListener("pointermove",moveTransfer);
+ document.addEventListener("pointerup",finishTransfer);
+ cancelKey=e=>{if(e.key==="Escape")clearTransfer()};document.addEventListener("keydown",cancelKey);
+}
 window.addEventListener("message",event=>{
  if(event.origin!==location.origin||![left,right].some(p=>p.querySelector("iframe").contentWindow===event.source))return;
  const d=event.data;
  if(!d||d.kind!=="study-transfer-start"||transfer||!["canvas","lab"].includes(d.source))return;
  if(!d.payload||!["node","image"].includes(d.payload.kind))return;
- transfer={payload:d.payload,source:d.source,x:0,y:0};
- shield=document.createElement("div");shield.className="transfer-shield";document.body.append(shield);
- hint=document.createElement("div");hint.className="drag-hint";
-const label=document.createElement("span");label.textContent=(d.payload.text||"Изображение").slice(0,90);hint.append(label);
-const tag=document.createElement("span");tag.className="ghost-label";tag.textContent=d.payload.kind==="image"?"Изображение":"Карточка";hint.append(tag);
-if(d.payload.kind==="image"&&typeof d.payload.data_url==="string"&&d.payload.data_url.startsWith("data:image/png;base64,")){const img=document.createElement("img");img.src=d.payload.data_url;hint.replaceChildren(img,tag)}
-document.body.append(hint);document.body.style.userSelect="none";
- const originFrame=[left,right].map(p=>p.querySelector("iframe")).find(frame=>frame.contentWindow===event.source);
- const r=originFrame.getBoundingClientRect();const x=r.left+(Number(d.clientX)||0),y=r.top+(Number(d.clientY)||0);
- moveTransfer({clientX:x,clientY:y});
- shield.addEventListener("pointermove",moveTransfer);
- document.addEventListener("pointermove",moveTransfer);
- shield.addEventListener("pointerup",finishTransfer);
- document.addEventListener("pointerup",finishTransfer,{once:true});
- shield.addEventListener("pointercancel",clearTransfer);
- shield.addEventListener("pointerdown",e=>{e.preventDefault()});
- cancelKey=e=>{if(e.key==="Escape")clearTransfer()};document.addEventListener("keydown",cancelKey);
+ const frame=[left,right].map(p=>p.querySelector("iframe")).find(f=>f.contentWindow===event.source);
+ const rect=frame.getBoundingClientRect();
+ startTransfer(event.source,d.source,d.payload,rect.left+(Number(d.clientX)||0),rect.top+(Number(d.clientY)||0));
 },false);
 document.getElementById("swap").onclick=()=>{const a=left.querySelector("iframe"),b=right.querySelector("iframe"),u=a.src;a.src=b.src;b.src=u};layout();
 </script></body></html>
