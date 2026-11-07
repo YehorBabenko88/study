@@ -104,10 +104,47 @@ class HttpContractTests(unittest.TestCase):
             def __init__(self,data):self.data=data
             def __enter__(self):return self
             def __exit__(self,*a):pass
-            def read(self,*a):return self.data
+            def read1(self,size):
+                chunk=self.data[:size];self.data=self.data[size:];return chunk
         with patch.object(c,'result',return_value=info):
-            with patch.object(c.urllib.request,'urlopen',return_value=Response(output.getvalue())):
+            with patch.object(c,'_open',return_value=Response(output.getvalue())):
                 self.assertEqual(c.image_bytes('id','ok.png'),output.getvalue())
-            with patch.object(c.urllib.request,'urlopen',return_value=Response(b'<html>bad</html>')):
+            with patch.object(c,'_open',return_value=Response(b'<html>bad</html>')):
                 with self.assertRaises(ValueError):c.image_bytes('id','ok.png')
             with self.assertRaises(ValueError):c.image_bytes('id','other.png')
+
+class RecoveryQueueTests(unittest.TestCase):
+    def test_queued_job_survives_restart(self):
+        with tempfile.TemporaryDirectory() as d, patch.dict(os.environ,{'STUDY_COMFYUI_CHECKPOINT':'test.safetensors'}):
+            registry=c.JobRegistry(d+'/jobs.sqlite',start_workers=False)
+            job=registry.submit('cup');registry.close()
+            registry=c.JobRegistry(d+'/jobs.sqlite',start_workers=False)
+            try:self.assertEqual(registry.result(job['prompt_id'])['status'],'queued')
+            finally:registry.close()
+
+    def test_one_worker_keeps_second_job_queued(self):
+        gate=threading.Event();entered=threading.Event()
+        def request(path,payload=None,timeout=15):
+            entered.set();gate.wait(1)
+            return {'prompt_id':'12345678-1234-1234-1234-123456789012'}
+        with tempfile.TemporaryDirectory() as d, patch.dict(os.environ,{'STUDY_COMFYUI_CHECKPOINT':'test.safetensors'}),patch.object(c,'_request',side_effect=request):
+            registry=c.JobRegistry(d+'/jobs.sqlite',poll=.01)
+            try:
+                first=registry.submit('cup');self.assertTrue(entered.wait(1))
+                second=registry.submit('house');self.assertEqual(registry.result(second['prompt_id'])['status'],'queued')
+                registry.cancel(first['prompt_id']);registry.cancel(second['prompt_id'])
+            finally:gate.set();registry.close()
+
+class RedirectTests(unittest.TestCase):
+    def test_redirect_is_rejected(self):
+        class Redirect(BaseHTTPRequestHandler):
+            def log_message(self,*args):pass
+            def do_GET(self):
+                self.send_response(302);self.send_header('Location','http://example.com/escape');self.end_headers()
+        server=ThreadingHTTPServer(('127.0.0.1',0),Redirect)
+        thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
+        try:
+            with self.assertRaisesRegex(ValueError,'redirects are forbidden'):
+                c._open('http://127.0.0.1:'+str(server.server_port),timeout=1)
+            with self.assertRaises(ValueError):c._open('http://example.com',timeout=1)
+        finally:server.shutdown();server.server_close();thread.join()
