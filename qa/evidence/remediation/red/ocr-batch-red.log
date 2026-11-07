@@ -1,0 +1,14 @@
+test_retry_batches_do_not_starve_later_empty_pages (test_pdf_ocr_retry.PDFOCRRetryTests.test_retry_batches_do_not_starve_later_empty_pages) ... FAIL
+
+======================================================================
+FAIL: test_retry_batches_do_not_starve_later_empty_pages (test_pdf_ocr_retry.PDFOCRRetryTests.test_retry_batches_do_not_starve_later_empty_pages)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\study\prototype\test_pdf_ocr_retry.py", line 75, in test_retry_batches_do_not_starve_later_empty_pages
+    self.assertEqual(engine.call_count,6)
+AssertionError: 10 != 6
+
+----------------------------------------------------------------------
+Ran 1 test in 0.516s
+
+FAILED (failures=1)

@@ -1,0 +1,302 @@
+[
+  {
+    "sha256": "BC86B2CF6CE7233E8B59F61089AC6B3FE8AD82430B08AEB2D9A80F1FFF4F6A23",
+    "path": "prototype\\acoustic_studio.html"
+  },
+  {
+    "sha256": "60D3802EB5F322BD948E2E3F3696D01AC778D2F6E2B61DF729D314107B6CE63D",
+    "path": "prototype\\ai_images.py"
+  },
+  {
+    "sha256": "0F313C494B9C2717A368DE875F6BD62B4EB54FE1B496D6448B02641D49048457",
+    "path": "prototype\\api_security.py"
+  },
+  {
+    "sha256": "27A83B0981AEEE0004D0C3509F73EE953B2050F2F8D1DADD830951601AA20F32",
+    "path": "prototype\\board_assets.py"
+  },
+  {
+    "sha256": "8AE2FB1BB506E19E062E73F0CB43E585B992AA2523C89053935B48CA2BF72663",
+    "path": "prototype\\board.html"
+  },
+  {
+    "sha256": "AD7EA1B760F6A7FDBEBB1AA4A5B7F5C398FB3A8A1D11C0813A05B94024C28E60",
+    "path": "prototype\\canvas_ux.js"
+  },
+  {
+    "sha256": "E73232BC2752D043FDE7C87C1CF0AB2BC2382910E03EEF16DD705417E3F86CAC",
+    "path": "prototype\\canvas.html"
+  },
+  {
+    "sha256": "A7C2AA8E2C3B0E06EE91E57B631059A65A9B6D7148ABEFD08563BDF0AAC2DCEB",
+    "path": "prototype\\comfy_adapter.py"
+  },
+  {
+    "sha256": "59E0DB88E0267AE4506248ACB2F4AA1F8BE5368C280DC0248BD3439574C24B9A",
+    "path": "prototype\\document_import.py"
+  },
+  {
+    "sha256": "B12D742EF1605AF491319E07B9C38EA4C1C8E12177197F78D3951ECAB8A17C91",
+    "path": "prototype\\home.html"
+  },
+  {
+    "sha256": "EF5283CCC193E2CF079972CC242CD69D7B3E537865765E7EF6FEA0155C6AF17E",
+    "path": "prototype\\install_pivot_models.py"
+  },
+  {
+    "sha256": "ECB1AA9398AD300B3B427810550F43AA4616CEF114D9B6415E53936802318A6E",
+    "path": "prototype\\learning_memory.py"
+  },
+  {
+    "sha256": "42E6BEC8BB940F1A62A0470E9CCA2E1AAA7BB3E137F07FB4A921957336BF1E90",
+    "path": "prototype\\lexicon_import.py"
+  },
+  {
+    "sha256": "ED92F3B2058D4C4CCD48910D4915D524D8F990CD3ED7110E60F30BB1ACCDF942",
+    "path": "prototype\\lexicon_store.py"
+  },
+  {
+    "sha256": "F60ED020FC28FF2836A5340D6EF04FB953A2EA8A051E993E727E73A801D8AC5B",
+    "path": "prototype\\local_speech.py"
+  },
+  {
+    "sha256": "FF32785EC2CAF6F7A32462F03EAD6C6D7F7CC1AF9DAB739CDF8D26688EE3B197",
+    "path": "prototype\\mesh_export.py"
+  },
+  {
+    "sha256": "E3733D54F2FDED5DC63A16D0084DE8800D3F17C420A617669E01910D5CC2E3D2",
+    "path": "prototype\\phonovision_3d.html"
+  },
+  {
+    "sha256": "90F0FB974108BFFAAABDC6A6A6AAB14E4765827BEF1C11857C500D1E5872F577",
+    "path": "prototype\\phonovision.py"
+  },
+  {
+    "sha256": "BA5696EF7567DC0199EA3BD6B3D51702B527E71801D34EF6EFEA9561F62D94F5",
+    "path": "prototype\\pitch_shift.py"
+  },
+  {
+    "sha256": "F73269EBFEA4D6B348C0495FF063B1C271835422FCCDEAAADE4FAA35508FEF46",
+    "path": "prototype\\semantic_composer.py"
+  },
+  {
+    "sha256": "DB0DFB5BAF0824F2FFB107386833E5A989BA5475619CC3D4EF13AC316D14B2AB",
+    "path": "prototype\\sentence_translation.py"
+  },
+  {
+    "sha256": "47D0255FD490CDFECB0F6008F0FB2D6C92651D0B75AFF26C1D0D9343F590E6DE",
+    "path": "prototype\\skill_memory.py"
+  },
+  {
+    "sha256": "94C5A0E2A525079D1A4899BD255A4FA1D5F99E49F361BAF4188D16D8E3C15FA0",
+    "path": "prototype\\spatial_board.py"
+  },
+  {
+    "sha256": "30C4A4DC41D340DED9EFD50AE112C126C0C814726230548D95B34C66B6FFFF9D",
+    "path": "prototype\\speech_projects.py"
+  },
+  {
+    "sha256": "AD356E29430D77691A98145CDCFA982FD0D62C30187CF29B7E99F48E11854426",
+    "path": "prototype\\study_core.py"
+  },
+  {
+    "sha256": "892F90A01FBB87BE44A5DAAF79BE25F24729E553E8181A9269F0887CB10939A2",
+    "path": "prototype\\study-fetch.js"
+  },
+  {
+    "sha256": "C41037B90E02374332C27187C61E757D73E08B596F8BFECED7E2725970F6519C",
+    "path": "prototype\\study.html"
+  },
+  {
+    "sha256": "C5CB23416338E8B2BFB0E7A5F9C10ADDE8F41FB8DDA0E07FDC953951E84C2465",
+    "path": "prototype\\test_acoustic_studio.py"
+  },
+  {
+    "sha256": "1774942382947D3923B1CDFC08D20FFCA39A807B1D493C20B3109CAB643C23FB",
+    "path": "prototype\\test_ai_images.py"
+  },
+  {
+    "sha256": "A786F0C5219B166BFED18AD806DEA292A999DD95F6C2E23941B0567258AA0F82",
+    "path": "prototype\\test_api_security.py"
+  },
+  {
+    "sha256": "44A233B7B4477B9EF24B024202EA1C1F86B5A7250D16FCCB7B36CF40775FE42D",
+    "path": "prototype\\test_board_assets.py"
+  },
+  {
+    "sha256": "2E322604EE52062C63C45DC61FAB80B9F0F3FC27FAF50CC7E562573779BA1519",
+    "path": "prototype\\test_board.py"
+  },
+  {
+    "sha256": "26800E7BB9B10D7F719BD46EAAEE27EE0DF05B3B9E81E2CD73ACB3B6574128A2",
+    "path": "prototype\\test_browser_gestures.py"
+  },
+  {
+    "sha256": "605F19B6941A23935407166F22A010C8B13E0B3DE0B62C0A68A020075ED0AE2E",
+    "path": "prototype\\test_canvas_ux_browser.py"
+  },
+  {
+    "sha256": "7EE20635567BD6B07360153FD925344B87DD90A755B889D3AF9B5512DF8AF8D8",
+    "path": "prototype\\test_canvas_v2.py"
+  },
+  {
+    "sha256": "3F78E297380DA57A9503FD6D9F4AF1EF670ECF23AC43EC716A7E329D0BC8F4D5",
+    "path": "prototype\\test_canvas.py"
+  },
+  {
+    "sha256": "1EF5E02A22A51609B073CD8282A2D1EEA8D45316EA96B7701F322B4E6328CA10",
+    "path": "prototype\\test_comfy_adapter.py"
+  },
+  {
+    "sha256": "FE7A9DC0C7B2D118A74EFBB001C2CA9C5968EC58CA869C258F76422673391F5B",
+    "path": "prototype\\test_comfy_jobs.py"
+  },
+  {
+    "sha256": "78303B334BDFA9C98F6D747854BA778B18F3B0A6502ED107FA3F62B8DABF65ED",
+    "path": "prototype\\test_composite_generation_ui.py"
+  },
+  {
+    "sha256": "13A42CB43AF91516CC9AD47F8CC9FF363245D7A483482B795EF90565E4CCA8DD",
+    "path": "prototype\\test_cross_panel.py"
+  },
+  {
+    "sha256": "BBB6F2DCEC953CBB9074352120F8EB4253E5E4BD5D89DAD5DBC3F5972AC46F1F",
+    "path": "prototype\\test_document_import.py"
+  },
+  {
+    "sha256": "591559B2B2F2338291344E902476231471831C5861D001B0B9EBBCC0A6D8639F",
+    "path": "prototype\\test_gesture_contracts.py"
+  },
+  {
+    "sha256": "0CDCF47A7BBAF52746DEF3F0CBA9EAFB9857495B528B335D079CC42610620F4B",
+    "path": "prototype\\test_image_gallery.py"
+  },
+  {
+    "sha256": "0DC14D65710DDA3A19C5FD16040A493A4576562F6D5B7258B9EE0D936D5013C4",
+    "path": "prototype\\test_image_import.py"
+  },
+  {
+    "sha256": "9FCE4BE025F6B41E82E263520C7772E15ABD66CE9EC94CB2DABFF06039A9B89E",
+    "path": "prototype\\test_language_graph.py"
+  },
+  {
+    "sha256": "791F130752B0017BBA05DCD7A6A3CB47B45B66BA17FF8F40CEB71CBC4CDA0C7D",
+    "path": "prototype\\test_learning_memory.py"
+  },
+  {
+    "sha256": "47396E4AD4DC54C408D612E1A3202FCF0FDB3689EBBB3690DFA1DCF922301805",
+    "path": "prototype\\test_lexicon_import.py"
+  },
+  {
+    "sha256": "7DA9C8F6D72B6D2658CA1F36B79F8DA8B1137047D001222E5F420FA675907A99",
+    "path": "prototype\\test_lexicon_store.py"
+  },
+  {
+    "sha256": "39C3620FE5C299ABBC0ACBD178E3EC55FCF4D1E8FE161174F7B7966184260D87",
+    "path": "prototype\\test_local_speech.py"
+  },
+  {
+    "sha256": "F23C70FDA68539EA4A783C884CC6AEEB155C717E5AF1F942AD4D93C1550F5EB2",
+    "path": "prototype\\test_mesh_export.py"
+  },
+  {
+    "sha256": "0D06E1C80B4AF3EEAA609C7098DC41759239627036B640D206A35EFFEE496DA7",
+    "path": "prototype\\test_navigation.py"
+  },
+  {
+    "sha256": "7458F28C42CBDFB6B452309F6B20D443CADB1E43C829794F3FBA32D68F61C237",
+    "path": "prototype\\test_pdf_comfy_ui.py"
+  },
+  {
+    "sha256": "14ED8A6B3A8BA361E8414885B7821BF3A26DFA2C6281DC8280A134241F55458D",
+    "path": "prototype\\test_pdf_ocr_retry.py"
+  },
+  {
+    "sha256": "616D3A4252D6EBC634391AB28C95777F8E28726E9D4A8585AAAFFED67D99C8FC",
+    "path": "prototype\\test_phonovision_3d.py"
+  },
+  {
+    "sha256": "9AFF4843315AAF9E13258E112B96F3064E86F361422A2F8480102D1A0CCFB720",
+    "path": "prototype\\test_phonovision.py"
+  },
+  {
+    "sha256": "C0053FF8F6C8E6997EA7822192EE2FEBB9D48F49F120BEB74157FC365412FCE4",
+    "path": "prototype\\test_pitch_shift.py"
+  },
+  {
+    "sha256": "738C035D6873E0B5FE439283A11C8AF52A37DF57D975D63B64DBF72BBF6C82BA",
+    "path": "prototype\\test_scientific_studio.py"
+  },
+  {
+    "sha256": "D764A835F881C6D0E8289AD1A298C18079A809081E8876AEEE5A901B332DCCF6",
+    "path": "prototype\\test_semantic_composer.py"
+  },
+  {
+    "sha256": "8D4ED0189EAC36596B0A515B0F3C062F6465A17D87F304FE655B33DB95546363",
+    "path": "prototype\\test_sentence_translation.py"
+  },
+  {
+    "sha256": "4B266001370D82FD5629D6265D8A7510B0FF4139CE54039984EA45CBA73009B9",
+    "path": "prototype\\test_shared_speech_ui.py"
+  },
+  {
+    "sha256": "E54AAAD0F2E29275BEB3D7EF733982D66884B1FB66DD6200D1E14D502ED77EBA",
+    "path": "prototype\\test_skill_memory.py"
+  },
+  {
+    "sha256": "13BFE16A08143368A74F5E13EDB8A336ED3E651A78A075143775262E178AB439",
+    "path": "prototype\\test_spatial_board.py"
+  },
+  {
+    "sha256": "0CEDC9F3CF8494466B94668EF581799EF97E82E7CA5876C23A5351B7034ACD21",
+    "path": "prototype\\test_speech_projects.py"
+  },
+  {
+    "sha256": "49E10DAA8AFB7E58256EE4421B8A271BA0158BB722FA8620FC89AF710A08AA6F",
+    "path": "prototype\\test_study_core.py"
+  },
+  {
+    "sha256": "D9708CEE0D82E1C84F65DDBD7AB7CD97C631AB767A6F8EDFBD30FA5AA7A81EE2",
+    "path": "prototype\\test_study_fetch_browser.py"
+  },
+  {
+    "sha256": "69CFA1409E546782569BA52FC8AF7586AC9FD85D2D7E35189CD3EF4A163FB8F4",
+    "path": "prototype\\test_three_tabs.py"
+  },
+  {
+    "sha256": "B3B1A657737137A380F8F5BA2B449B616CE877B8754DBB089B289733315046E0",
+    "path": "prototype\\test_translation_models.py"
+  },
+  {
+    "sha256": "4C5C8F1EC99FB16D782BC6562FD5AD99CF1FB6F14BBBA70C5F93C8658319FBAE",
+    "path": "prototype\\test_visible_drag.py"
+  },
+  {
+    "sha256": "D046D7E55B2B135FF94CFA46867744CD1E3B0BDE68F709ED7B8BD66F305D3615",
+    "path": "prototype\\test_visual_memory.py"
+  },
+  {
+    "sha256": "E79F7D9C145673346BBCEEBC64CB71BB5BA61BFA3BD97D501B2FA89EC88A984E",
+    "path": "prototype\\translation_models.py"
+  },
+  {
+    "sha256": "30E172B78BD296069DE612008B1ADD4F448DB51DFEA6DABBF47E04FE0295C846",
+    "path": "prototype\\visual_memory.py"
+  },
+  {
+    "sha256": "E476037B462CAF9E109407158A45707850033C3EB5FBF09E3111EB6267FE99E6",
+    "path": "prototype\\web_app.py"
+  },
+  {
+    "sha256": "2A04432FEBF4BDD96B8D18E2F0074F0EF3778D5DAE6382E986CBB6069F76C841",
+    "path": "prototype\\workspace.html"
+  },
+  {
+    "sha256": "54E0E419B95F8850F225CEB99B46CF89F02F707023780C90EDDB449212C142FD",
+    "path": "qa\\acceptance.ps1"
+  },
+  {
+    "sha256": "589F559D442D1BDA327F7975FDAAD72C2A15CE6095E6C152C7B7B724A2952FBD",
+    "path": "qa\\windows_audit.py"
+  }
+]

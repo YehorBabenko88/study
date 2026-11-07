@@ -1,0 +1,16 @@
+test_concurrent_late_failure_does_not_overwrite_recovered_text (test_pdf_ocr_retry.PDFOCRRetryTests.test_concurrent_late_failure_does_not_overwrite_recovered_text) ... FAIL
+
+======================================================================
+FAIL: test_concurrent_late_failure_does_not_overwrite_recovered_text (test_pdf_ocr_retry.PDFOCRRetryTests.test_concurrent_late_failure_does_not_overwrite_recovered_text)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\study\prototype\test_pdf_ocr_retry.py", line 106, in test_concurrent_late_failure_does_not_overwrite_recovered_text
+    self.assertEqual(d.page(self.job,1)['text'],'Recovered result must survive')
+AssertionError: '' != 'Recovered result must survive'
++ Recovered result must survive
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.216s
+
+FAILED (failures=1)

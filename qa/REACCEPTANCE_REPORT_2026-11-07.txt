@@ -1,0 +1,150 @@
+Study — P0/P1 remediation & independent re-acceptance, Issue #10 / Draft PR #14
+
+РЕШЕНИЕ: PASS для исправления P0/P1 и перечисленной автоматической приёмки.
+Общая готовность к выпуску не сертифицирована: реальные ComfyUI/OCR, длительная
+нагрузка и авария диска остаются вне подтверждённого объёма.
+
+Точный проверенный runtime HEAD:
+e8a45a1753895c0aa7826c89c1adda404c053e79
+После этого HEAD публикуются только отчёт/доказательства, без изменения runtime.
+
+Окно прогона: 2026-11-07 19:20:44–19:22:24 UTC,
+то есть 20:20:44–20:22:24 Europe/Berlin (CET).
+Windows, Python 3.12.3, Playwright 1.64.1 / Chromium 156, Pillow 12.3.0,
+PyMuPDF 2.1, pytesseract 0.3.13; полный freeze в evidence/remediation/final/.
+
+Интегрированные точные ревизии агентов (cherry-pick; merge PR не выполнялся):
+A backend: 580210d1f0959fdfb086c3d693e7308d0afbc016,
+  включая security eafbd8380ef2cc869a4ef458f0dfddb06cd8242d,
+  route/contract 5a30317ff21fcba5a81845e3f5383e458e52e147,
+  diagnostics 184ddb3bb7b33c616a6bc8484dfd7b82b52ba9c7,
+  filename fix bc8cd6bbb6dd1b9310b4f9064980f4ab0fcb8ba6.
+B canonical: 44f75f08470994d77052207773987bcf9eddbf6f
+  из feat/semantic-scene-composer (не старая agent-b/semantic-composer).
+C core: 49f22897d2b74b4cdabfb8a02aa7c464b95d290c;
+  dependent UI wiring: e62f4cbb389ee46177be05429b18b0eb639c4d02,
+  remaining OCR: 16e61d522ee3136a1e4498f57b04c16cf0c57aff.
+D OCR locking: a27be7ad0d88d6c4059d1e8b9335aa88c21eb4a8;
+  app restart regression: e611e099d65e84599e72960d1becd8bae8242eb8;
+  fetch wrapper: f0c0ed2 (и подключения остальных HTML 05f0d16).
+
+Владельцы общих файлов были согласованы через существующие чаты:
+A — web_app.py/api_security.py; C — canvas/workspace/acoustic HTML/canvas_ux.js;
+D — document_import.py, study-fetch.js, остальные HTML и независимые тесты.
+
+Команды и результаты
+  python -m unittest discover -s prototype -v
+  190 test methods, 165 PASS, 25 SKIP только из-за отсутствия E2E URL.
+  Эти 25 не потеряны: следующая команда выполняет все браузерные модули.
+
+  python qa/windows_audit.py --browser
+  38 PASS, 0 FAIL, 0 ERROR, 0 SKIP:
+  25 браузерных методов + 13 дополнительных независимых сценариев.
+  Итого 203 уникальных выполненных test methods, включая все 190 discovery.
+  unittest_exit=0, acceptance_exit=0, PowerShell runner exit=0.
+
+Обе команды запущены qa/acceptance.ps1 в свежей копии исходников, с отдельными
+БД/файлами и случайным loopback-портом. run.json содержит UTC-время/команды,
+commit.log точный HEAD, source-manifest.json SHA256 исполняемых исходников,
+packages.log полные версии. Логи не фильтруют ошибки сервера.
+
+P0 — PASS
+Защита выполняется parse_request до диспетчеризации любого маршрута.
+Host: только точный loopback-host с реальным портом; чужой Host, неверный порт,
+суффиксы DNS, дубли заголовка и absolute-form запросы отклоняются.
+Origin: если присутствует, должен точно совпадать с origin текущего Host.
+Все unsafe методы, включая POST/PUT/DELETE, PATCH и будущие методы/маршруты,
+требуют непредсказуемый per-server X-Study-CSRF. Отсутствие Origin не даёт обход.
+Bootstrap GET имеет no-store и не публикуется через CORS.
+Это защита браузерной границы, не аутентификация от локального приложения.
+
+Негативные проверки: hostile Host/Origin, null Origin, отсутствующий Origin,
+нет токена, поддельный токен, same-origin без токена, unknown generation route.
+Позитивные: same-origin + токен и native-клиент без Origin + токен.
+Отдельно выполнены полные поддельные POST/PUT/DELETE с валидными payload:
+число досок/PNG неизменно, защищаемая мнемоника сохраняется после каждого запроса.
+На Windows раннее отклонение непрочитанного тела иногда даёт TCP reset вместо
+читаемого 403. Это явно записано FULL_BODY_REJECTION; PASS требует проверки
+отсутствия side effects, а не просто перехвата сетевой ошибки. Header-only
+негативная матрица отдельно подтверждает 403 до чтения заявленного тела.
+
+Study UI: общий wrapper добавляет токен только same-origin unsafe fetch;
+реальный Chromium проверяет Request/body POST/PUT/DELETE и отсутствие утечки
+токена на другой origin. Все legacy и новые UI E2E проходят с включённым gate.
+
+P1 — PASS
+OCR error сохраняется методом ocr_error, документ остаётся ocr_error,
+next_page не перескакивает ошибочную страницу; original PDF не меняется.
+Явный process(...,ocr=True,retry=True) и кнопка «Повторить OCR» повторяют
+ocr_error, старые ocr_unavailable и no_text; успешные страницы не переписываются.
+pdf_text / no_text / tesseract_unverified / ocr_no_text / ocr_error различаются.
+Успешный OCR без текста не зацикливает batch; UI показывает retry_pages.
+Проверен перезапуск приложения между отсутствием движка/языка и Retry,
+а также восстановление старого completed + ocr_unavailable документа.
+Параллельные Retry одного PDF сериализованы, поздняя ошибка второй вкладки
+не может стереть уже восстановленный текст; отдельный RED->GREEN regression.
+
+Повторная приёмка — PASS в проверенном объёме
+1. Полный discovery и все браузеры: результаты выше, никаких итоговых SKIP.
+2. PDF 150 страниц: реальный PUT upload, kill процесса после 15 сохранённых
+   страниц, новый процесс завершает импорт. Затем ошибка OCR на индексе75
+   (76-я страница),
+   Retry через реальный HTTP после восстановления dependency boundary.
+   Проверены все149 текстовых страниц, восстановленная76-я, ровно150 записей,
+   неизменность исходного PDF и ранее извлечённого текста.
+   Отдельный live-browser тест нажимает настоящую Retry-кнопку и читает результат.
+3. Галерея: две реальные PNG, SHA256 в свежем процессе, новая браузерная сессия
+   открывает доску и загружает обе картинки. Порядок, удаление, Undo/Redo,
+   черновики и восстановление покрыты тестами C.
+4. Реальные движения мыши между панелями, sphere->card, рывок со связями2->0.
+5. Mock ComfyUI: настоящий loopback HTTP и UI generation->PNG->новая карточка;
+   реальные backend queue/timeout/cancel/restart/PNG/resource tests A.
+6. B: composer handoff/recovery/lifecycle, идемпотентность и legacy namespace,
+   полный набор вошёл в discovery; независимое review дополнительно повторило
+   14 handoff/lifecycle тестов, без пропусков.
+7. Windows SQLite: rename после close, durable restart, worker join до close.
+
+Короткие performance measurements (не SLA и не доказательство отсутствия утечек)
+500 объектов, 56 видимых DOM карточек: draw 2.6 / 7.3 / 6.9 ms;
+RSS дерева дочерних процессов ~369 ->401 MB. Во время PDF resume sampled peak
+worker tree ~65.5 MB; GET /workspace 0–32 ms при грубом Windows timer.
+BLOCKED: длительный soak, большие сканированные PDF, input/frame latency во время
+OCR, пределы RAM под конкурентной нагрузкой, disk-full и авария диска.
+
+Внешние возможности и границы
+SKIP: реальный ComfyUI — локальный listener8188 недоступен, модели не ставились.
+BLOCKED: качество реального deu/rus OCR — движок/языковые данные недоступны.
+Успешное восстановление языка проверено mock только на внешней OCR-границе;
+PDF, SQLite, HTTP, процессы и браузер настоящие. Установку языка это не заменяет.
+Старые fixture-UUID существующего gallery_and_composition дают ожидаемые404;
+дополнительная галерея проверяет настоящие изображения.
+Остаются ранее документированные ограничения B: сохранение PNG и history не
+единая транзакция; после сбоя возможны лишние файлы. Пользовательские файлы
+не чистились, атомарность диска и физический power-loss не сертифицированы.
+
+Сохранённая история
+qa/evidence/base, agent-a, agent-b и WINDOWS_QA_REPORT.txt не изменены.
+remediation/red содержит исходные падения OCR/CSRF и concurrency regression.
+remediation/interim-A-C фиксирует FAIL из-за интеграционного /canvas-ux.js404;
+исправлен точный filename map, последующие прогоны используют HTTP200.
+remediation/candidate фиксирует промежуточный f49556f:172 discovery +38 live PASS.
+remediation/final — только финальный e8a45a1 и его артефакты.
+C ранее наблюдал flaky success-case Comfy timeout0.15s; A580210d увеличил budget
+success-case до2s, отдельный строгий deadline0.15s сохранён. Финальный полный
+прогон и отдельный review19 Comfy tests прошли; прошлый flake не скрыт.
+
+Воспроизведение Windows PowerShell
+Из чистого checkout runtime HEAD e8a45a1753895c0aa7826c89c1adda404c053e79:
+  $Repo='C:\path\study'
+  python -m venv "$Repo\.qa-venv"
+  & "$Repo\.qa-venv\Scripts\python.exe" -m pip install -r "$Repo\qa\requirements-windows.txt"
+  $env:PLAYWRIGHT_BROWSERS_PATH="$Repo\.qa-browsers"
+  & "$Repo\.qa-venv\Scripts\python.exe" -m playwright install chromium
+  & "$Repo\qa\acceptance.ps1" -Python "$Repo\.qa-venv\Scripts\python.exe"
+Скрипт не устанавливает зависимости, не удаляет файлы, не принимает существующий
+EvidenceRoot и отказывается копировать исходники с пользовательской SQLite.
+Новый каталог TEMP\StudyQA-GUID сохраняет все результаты. Для каждого запуска
+используйте новый EvidenceRoot. При FAIL/обязательных SKIP возвращается ошибка.
+
+PR #14 остаётся Draft. Merge/deploy, установка моделей/языков, очистка
+пользовательских данных и системные изменения не выполнялись.

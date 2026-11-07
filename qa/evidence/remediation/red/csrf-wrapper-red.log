@@ -1,0 +1,14 @@
+test_mutations_include_csrf_and_preserve_request_body (test_study_fetch_browser.StudyFetchBrowserTests.test_mutations_include_csrf_and_preserve_request_body) ... FAIL
+
+======================================================================
+FAIL: test_mutations_include_csrf_and_preserve_request_body (test_study_fetch_browser.StudyFetchBrowserTests.test_mutations_include_csrf_and_preserve_request_body)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\Easy\Documents\Codex\2026-11-07\codex-agent-d-independent-windows-qa\work\study\prototype\test_study_fetch_browser.py", line 37, in test_mutations_include_csrf_and_preserve_request_body
+    self.assertEqual(result,200)
+AssertionError: 403 != 200
+
+----------------------------------------------------------------------
+Ran 1 test in 1.621s
+
+FAILED (failures=1)

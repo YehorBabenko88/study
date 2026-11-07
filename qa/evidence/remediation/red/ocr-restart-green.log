@@ -1,0 +1,12 @@
+test_concurrent_late_failure_does_not_overwrite_recovered_text (test_pdf_ocr_retry.PDFOCRRetryTests.test_concurrent_late_failure_does_not_overwrite_recovered_text) ... ok
+test_legacy_completed_unavailable_page_can_be_retried (test_pdf_ocr_retry.PDFOCRRetryTests.test_legacy_completed_unavailable_page_can_be_retried) ... ok
+test_missing_language_stops_then_explicit_retry_recovers (test_pdf_ocr_retry.PDFOCRRetryTests.test_missing_language_stops_then_explicit_retry_recovers) ... ok
+test_no_text_is_distinct_from_ocr_error_and_retryable (test_pdf_ocr_retry.PDFOCRRetryTests.test_no_text_is_distinct_from_ocr_error_and_retryable) ... ok
+test_ocr_retry_requires_explicit_ocr_flag (test_pdf_ocr_retry.PDFOCRRetryTests.test_ocr_retry_requires_explicit_ocr_flag) ... ok
+test_retry_batches_do_not_starve_later_empty_pages (test_pdf_ocr_retry.PDFOCRRetryTests.test_retry_batches_do_not_starve_later_empty_pages) ... ok
+test_retry_survives_application_restart_after_language_failure (test_pdf_ocr_retry.PDFOCRRetryTests.test_retry_survives_application_restart_after_language_failure) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 4.903s
+
+OK
