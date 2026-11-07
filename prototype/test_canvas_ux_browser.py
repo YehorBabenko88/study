@@ -109,3 +109,25 @@ class CanvasUXBrowserTests(baseline.GestureBrowserTests):
                 self.assertEqual(await page.locator('.node.word .body').first.inner_text(),text)
         finally:
             await context.close()
+
+    async def test_popup_forks_cloned_session_and_preserves_both_drafts(self):
+        await self.page.goto(baseline.URL+'/canvas')
+        await self.page.wait_for_function('draftReady')
+        await self.page.locator('#title').fill('Original unsaved board')
+        await self.page.wait_for_timeout(450)
+        original_key=await self.page.evaluate('draftKey')
+        async with self.page.expect_popup() as popup_info:
+            await self.page.evaluate("window.open('/canvas','_blank')")
+        popup=await popup_info.value
+        try:
+            await popup.wait_for_function('draftReady')
+            self.assertNotEqual(original_key,await popup.evaluate('draftKey'))
+            self.assertEqual(await popup.locator('#title').input_value(),'Original unsaved board')
+            await popup.locator('#title').fill('Independent popup board')
+            await popup.wait_for_timeout(450)
+            for page,title in ((self.page,'Original unsaved board'),(popup,'Independent popup board')):
+                await page.reload()
+                await page.wait_for_function('draftReady')
+                self.assertEqual(await page.locator('#title').input_value(),title)
+        finally:
+            await popup.close()
