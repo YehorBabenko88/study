@@ -5,7 +5,7 @@ from pathlib import Path
 import json
 from study_core import LexicalItem, Anchor, build_scene, check_recall
 from visual_memory import save, list_scenes, get_scene, delete_scene, svg
-from ai_images import configured, generate, image_bytes
+from ai_images import configured, generate, image_bytes, import_png
 
 SAMPLE = {
     "tasse": LexicalItem("Tasse", "de", "чашка", "die", "/ˈtasə/"),
@@ -79,6 +79,25 @@ class Handler(BaseHTTPRequestHandler):
         if self.path.startswith("/v1/mnemonics/") and len(self.path.split("/")) == 4:
             return self.respond(200, {"deleted": delete_scene(self.path.split("/")[3])})
         return self.respond(404, {"error": "not_found"})
+
+    def do_PUT(self):
+        parts = urlparse(self.path).path.strip("/").split("/")
+        if len(parts) != 4 or parts[:2] != ["v1", "mnemonics"] or parts[3] != "import-image":
+            return self.respond(404, {"error": "not_found"})
+        try:
+            length = int(self.headers.get("Content-Length", "0"))
+            if not 1 <= length <= 8_000_000:
+                return self.respond(413, {"error": "invalid_image_size"})
+            if self.headers.get("Content-Type", "").split(";")[0].strip() != "image/png":
+                return self.respond(415, {"error": "png_required"})
+            result = import_png(parts[2], self.rfile.read(length))
+            return self.respond(200, result)
+        except KeyError:
+            return self.respond(404, {"error": "scene_not_found"})
+        except ValueError as exc:
+            return self.respond(400, {"error": "invalid_png", "detail": str(exc)})
+        except RuntimeError:
+            return self.respond(503, {"error": "pillow_not_installed"})
 
     def do_POST(self):
         if self.path not in ("/v1/mnemonics/preview", "/v1/mnemonics", "/v1/learning/check") and not (self.path.startswith("/v1/mnemonics/") and self.path.endswith("/generate")):
