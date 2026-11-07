@@ -20,8 +20,20 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'prototype'))
 URL = ''
 
-def request(path, data=None, method='GET', headers=None):
-    req=urllib.request.Request(URL+path,data=data,method=method,headers=headers or {})
+def request(path, data=None, method='GET', headers=None, csrf=True, header_only=False):
+    headers=dict(headers or {})
+    if csrf and method in ('POST','PUT','DELETE'):
+        status,raw=request('/v1/security/bootstrap')
+        if status==200:headers.setdefault('X-Study-CSRF',json.loads(raw)['csrf_token'])
+    if header_only:
+        connection=http.client.HTTPConnection(URL.removeprefix('http://'),timeout=10)
+        try:
+            connection.putrequest(method,path,skip_host='Host' in headers)
+            for key,value in headers.items():connection.putheader(key,value)
+            connection.putheader('Content-Length',str(len(data or b'')));connection.endheaders()
+            response=connection.getresponse();return response.status,response.read()
+        finally:connection.close()
+    req=urllib.request.Request(URL+path,data=data,method=method,headers=headers)
     try:
         with urllib.request.urlopen(req,timeout=10) as r:return r.status,r.read()
     except urllib.error.HTTPError as e:return e.code,e.read()
@@ -35,11 +47,13 @@ def pdf_worker(pid):
 
 class Acceptance(unittest.TestCase):
     def test_upload_limits(self):
+        _,bootstrap=request('/v1/security/bootstrap')
+        token=json.loads(bootstrap).get('csrf_token','')
         for method,path,limit in [('PUT','/v1/documents',100_000_000),('PUT','/v1/board-assets',8_000_000),('POST','/v1/boards',4_000_000)]:
             # Send only headers: the server must reject before reading an oversized body.
             conn=http.client.HTTPConnection(URL.removeprefix('http://'),timeout=5)
             try:
-                conn.putrequest(method,path);conn.putheader('Content-Length',str(limit+1));conn.endheaders()
+                conn.putrequest(method,path);conn.putheader('Content-Length',str(limit+1));conn.putheader('X-Study-CSRF',token);conn.endheaders()
                 self.assertEqual(conn.getresponse().status,413)
             finally:conn.close()
         self.assertEqual(request('/v1/board-assets',b'invalid','PUT')[0],400)
@@ -49,9 +63,26 @@ class Acceptance(unittest.TestCase):
         for extra in ({'Origin':'https://attacker.invalid'},{'Host':'attacker.invalid'}):
             with self.subTest(headers=extra):
                 status,body=request('/v1/boards',b'{"nodes":[],"edges":[],"title":"Origin audit"}', 'POST',
-                    {**extra,'Content-Type':'text/plain'})
+                    {**extra,'Content-Type':'text/plain'},header_only=True)
                 print('FOREIGN_ORIGIN_OR_HOST',extra,status,body,flush=True)
                 self.assertIn(status,(400,403),'Untrusted Origin/Host accepted a state-changing request')
+
+    def test_api_mutation_security_matrix(self):
+        body=b'{"nodes":[],"edges":[],"title":"security matrix"}'
+        # Unknown future endpoints must be gated before routing as well.
+        for method,path,payload in [('POST','/v1/boards',body),('PUT','/v1/board-assets',b'png'),('DELETE','/v1/mnemonics/00000000-0000-4000-8000-000000000001',None),('POST','/v1/future-generation',b'{}')]:
+            for headers in ({},{'Origin':URL},{'X-Study-CSRF':'forged'},{'Origin':'null'},{'Origin':'https://attacker.invalid'}):
+                with self.subTest(method=method,headers=headers):
+                    self.assertIn(request(path,payload,method,headers,csrf=False,header_only=True)[0],(400,403))
+        for host in ('attacker.invalid','127.0.0.1.attacker.invalid','127.0.0.1:1','user@127.0.0.1','127.0.0.1'):
+            with self.subTest(host=host):
+                self.assertIn(request('/v1/security/bootstrap',headers={'Host':host})[0],(400,403))
+        for origin in ('null','http://127.0.0.1:1','https://attacker.invalid'):
+            with self.subTest(origin=origin):
+                self.assertIn(request('/v1/boards',body,'POST',{'Origin':origin},header_only=True)[0],(400,403))
+        # Valid token is necessary even for same-origin; valid native client may omit Origin.
+        self.assertEqual(request('/v1/boards',body,'POST')[0],200)
+        self.assertEqual(request('/v1/boards',body,'POST',{'Origin':URL})[0],200)
 
     def test_mock_comfy_http_roundtrip(self):
         import comfy_adapter as c
@@ -111,7 +142,7 @@ class Acceptance(unittest.TestCase):
         pdf = fitz.open()
         for i in range(150):
             p = pdf.new_page()
-            p.insert_text((72,72), f'Independent acceptance page {i:03d} with recoverable text.')
+            if i!=75:p.insert_text((72,72), f'Independent acceptance page {i:03d} with recoverable text.')
         raw = pdf.tobytes()
         pdf.close()
         status,body=request('/v1/documents',raw,'PUT',{'X-Document-Name':'acceptance150.pdf'})
@@ -148,7 +179,20 @@ class Acceptance(unittest.TestCase):
         print('PDF_METRICS',json.dumps({'worker_tree_peak_sampled_rss':peak,'workspace_http_ms':latencies}),flush=True)
         self.assertEqual(d.status(job['id'])['next_page'],150)
         for i in range(150):
-            self.assertIn(f'page {i:03d}',d.page(job['id'],i)['text'])
+            if i!=75:self.assertIn(f'page {i:03d}',d.page(job['id'],i)['text'])
+        preserved={i:d.page(job['id'],i) for i in range(150) if i!=75}
+        import pytesseract
+        retry_body=b'{"batch":5,"ocr":true,"retry":true}'
+        with patch.object(pytesseract,'image_to_string',side_effect=pytesseract.TesseractError(1,'deu missing')):
+            status,body=request('/v1/documents/'+job['id']+'/process',retry_body,'POST')
+        self.assertEqual(status,200);self.assertEqual(json.loads(body)['status'],'ocr_error')
+        self.assertEqual(json.loads(body)['next_page'],75)
+        with patch.object(pytesseract,'image_to_string',return_value='Recovered page 075'):
+            status,body=request('/v1/documents/'+job['id']+'/process',retry_body,'POST')
+        self.assertEqual(status,200);self.assertEqual(json.loads(body)['status'],'complete')
+        self.assertEqual(d.page(job['id'],75)['text'],'Recovered page 075')
+        self.assertEqual((d.ROOT/(job['id']+'.pdf')).read_bytes(),raw)
+        self.assertEqual({i:d.page(job['id'],i) for i in preserved},preserved)
         with d._db() as db:
             self.assertEqual(db.execute('SELECT COUNT(*) FROM document_pages WHERE document_id=?',(job['id'],)).fetchone()[0],150)
 
@@ -173,6 +217,31 @@ class Acceptance(unittest.TestCase):
             state=d.process(job['id'],ocr=True)
         print('PDF_OCR_MISSING',json.dumps({'state':state,'page':d.page(job['id'],0)}),flush=True)
         self.assertNotEqual(state['status'],'complete','Missing OCR marked blank page complete; normal resume cannot retry it')
+
+    def test_pdf_retry_button_live_server(self):
+        import pymupdf
+        import pytesseract
+        import document_import as d
+        from playwright.sync_api import sync_playwright
+        pdf=pymupdf.open();pdf.new_page();raw=pdf.tobytes();pdf.close()
+        code,body=request('/v1/documents',raw,'PUT',{'X-Document-Name':'browser-retry.pdf'})
+        self.assertEqual(code,200);pid=json.loads(body)['id']
+        with patch.object(pytesseract,'image_to_string',side_effect=pytesseract.TesseractNotFoundError()):
+            code,body=request('/v1/documents/'+pid+'/process',b'{"batch":1,"ocr":true}','POST')
+        self.assertEqual(json.loads(body)['status'],'ocr_error')
+        with sync_playwright() as play:
+            browser=play.chromium.launch()
+            try:
+                page=browser.new_page();page.goto(URL+'/canvas?document='+pid)
+                page.wait_for_function('(id)=>document.getElementById("documentList").value===id',arg=pid)
+                with patch.object(pytesseract,'image_to_string',return_value='Recovered via real browser retry'):
+                    page.locator('#pdfRetry').click()
+                    page.wait_for_function('document.getElementById("pdfStatus").textContent.includes("обработка завершена")')
+                self.assertEqual(d.page(pid,0)['text'],'Recovered via real browser retry')
+                self.assertEqual(d.status(pid)['status'],'complete')
+                self.assertEqual((d.ROOT/(pid+'.pdf')).read_bytes(),raw)
+                page.screenshot(path=str(ROOT/'pdf-retry-live.png'))
+            finally:browser.close()
 
     def test_gallery_bytes_persist_across_process(self):
         import board_assets as b
@@ -263,8 +332,10 @@ def main():
     try:
         suite=unittest.defaultTestLoader.loadTestsFromTestCase(Acceptance)
         if a.browser:
-            import test_browser_gestures
-            suite.addTests(unittest.defaultTestLoader.loadTestsFromModule(test_browser_gestures))
+            import importlib
+            for file in sorted((ROOT/'prototype').glob('test*.py')):
+                if 'playwright' in file.read_text(encoding='utf-8'):
+                    suite.addTests(unittest.defaultTestLoader.loadTestsFromModule(importlib.import_module(file.stem)))
         result=unittest.TextTestRunner(verbosity=2).run(suite)
         sys.exit(not result.wasSuccessful() or bool(result.skipped))
     finally:
