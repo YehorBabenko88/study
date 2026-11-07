@@ -1,30 +1,21 @@
-<!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Study — лаборатория мнемоники</title>
-<style>
-body{font:16px system-ui,sans-serif;background:#f3f5fa;color:#182234;max-width:760px;margin:30px auto;padding:16px}
-main{background:white;border-radius:18px;padding:24px;box-shadow:0 8px 30px #16213a14}
-label{display:block;margin:14px 0 5px;font-weight:600}input{padding:12px;border:1px solid #aab3c3;border-radius:8px;width:95%;font:inherit}
-button{margin:16px 6px 10px 0;padding:12px 16px;background:#304e91;color:white;border:0;border-radius:9px;cursor:pointer}
-pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f2f4f8;padding:14px;border-radius:10px}
-small{color:#596579}
-</style></head><body><main><h1>Study · лаборатория памяти</h1>
-<p>Создай необычный образ, связывающий звучание немецкого слова с его значением.</p>
-<label>Слово (Tasse, Haus, Stuhl)</label><input id="word" value="Tasse">
-<label>Звуковой фрагмент</label><input id="fragment" value="ta">
-<label>Предмет твоего образа</label><input id="object" value="танцующая тарелка">
-<label>Как предмет напоминает значение</label><input id="link" value="держит чашку">
-<button id="make">Создать сцену</button><button id="lookup">Найти слово</button>
-<pre id="output" role="status" aria-live="polite">Выбери действие.</pre>
-<label>Вспомни слово с артиклем</label><input id="answer" placeholder="die Tasse">
-<button id="check">Проверить без подсказки</button>
-<p><small>Локальный демонстратор: три проверенных вручную примера, без AI, PostgreSQL и сохранения данных. Сначала запусти web_app.py. Открывай HTML как локальный файл.</small></p>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Study — Visual Memory</title><style>
+body{font:16px system-ui;background:#f3f4fa;color:#20253b;max-width:850px;margin:25px auto;padding:15px}main{background:white;padding:28px;border-radius:20px;box-shadow:0 6px 25px #171f3916}
+input,select{padding:10px;border:1px solid #a9b3c8;border-radius:8px;font:inherit;width:95%;box-sizing:border-box}
+label{display:block;font-weight:600;margin:12px 0 5px}button{background:#3b4b9c;color:white;border:0;border-radius:9px;padding:11px 15px;margin:9px 6px 9px 0;cursor:pointer}
+.anchor{border:1px solid #d5d8e7;border-radius:12px;padding:12px;margin:10px 0;background:#fafaff}
+img{width:100%;border-radius:14px}small{color:#596174}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f5fa;padding:12px;border-radius:10px}
+</style></head><body><main><h1>Study · Visual Memory</h1><p>Создай личную мнемонику из нескольких объектов и сохрани её. Изображение пока схематическое (SVG), без нейросети.</p>
+<label>Немецкое слово</label><select id="word"><option value="Tasse">die Tasse — чашка</option><option value="Haus">das Haus — дом</option><option value="Stuhl">der Stuhl — стул</option></select>
+<h3>Ассоциативные объекты</h3><div id="anchors"></div><button id="add">+ Добавить объект</button><button id="save">Создать и сохранить сцену</button>
+<div id="visual"></div><h3>Мои сцены</h3><button id="refresh">Обновить список</button><div id="saved"></div><pre id="status" role="status" aria-live="polite">Готово.</pre>
+<p><small>Данные сохраняются локально в SQLite на этом компьютере. Не вводи персональные или конфиденциальные данные: это экспериментальный прототип без авторизации.</small></p>
 </main><script>
-const base=window.location.origin, output=document.getElementById("output");
-async function request(path,opts){try{const r=await fetch(base+path,opts);output.textContent=JSON.stringify(await r.json(),null,2)}catch(e){output.textContent="Сервер недоступен: "+e.message}}
-function val(id){return document.getElementById(id).value}
-function post(path,data){return request(path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})}
-document.getElementById("lookup").onclick=()=>request("/v1/lexicon/search?q="+encodeURIComponent(val("word")));
-document.getElementById("make").onclick=()=>post("/v1/mnemonics/preview",{word:val("word"),anchors:[{sound_fragment:val("fragment"),object_name:val("object"),meaning_link:val("link")}]});
-document.getElementById("check").onclick=()=>post("/v1/learning/check",{expected:({tasse:"die Tasse",haus:"das Haus",stuhl:"der Stuhl"})[val("word").toLowerCase()]||"",response:val("answer"),cues_shown:false});
+const $=id=>document.getElementById(id);const api=async(path,options)=>{const r=await fetch(path,options);const data=await r.json();if(!r.ok)throw Error(data.detail||data.error||r.status);return data};
+const post=(path,data)=>api(path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});
+function add(fragment="",object="",link=""){const d=document.createElement("div");d.className="anchor";for(const [name,placeholder,value] of [["sound_fragment","Звуковой фрагмент",fragment],["object_name","Объект образа",object],["meaning_link","Связь со значением",link]]){const l=document.createElement("label");l.textContent=placeholder;const inp=document.createElement("input");inp.dataset.field=name;inp.value=value;l.append(inp);d.append(l)}const btn=document.createElement("button");btn.textContent="Удалить объект";btn.onclick=()=>d.remove();d.append(btn);$("anchors").append(d)}
+function show(scene){const area=$("visual");area.replaceChildren();const h=document.createElement("h3");h.textContent="Визуальная сцена";area.append(h);if(scene.image_url){const img=document.createElement("img");img.alt=scene.accessibility_text;img.src=scene.image_url;area.append(img)}const p=document.createElement("p");p.textContent=scene.anchors.map(a=>a.sound_fragment+" → "+a.object_name+" → "+a.meaning_link).join(" | ");area.append(p)}
+async function refresh(){try{const data=await api("/v1/mnemonics");$("saved").replaceChildren();for(const item of data.items){const row=document.createElement("div");const open=document.createElement("button");open.textContent=item.word+" · "+item.created_at.slice(0,16);open.onclick=async()=>{try{const s=await api("/v1/mnemonics/"+item.id);s.image_url="/v1/mnemonics/"+item.id+"/image";show(s)}catch(e){$("status").textContent=e.message}};const del=document.createElement("button");del.textContent="Удалить";del.onclick=async()=>{if(!confirm("Удалить сцену?"))return;await api("/v1/mnemonics/"+item.id,{method:"DELETE"});await refresh()};row.append(open,del);$("saved").append(row)}}catch(e){$("status").textContent=e.message}}
+$("add").onclick=()=>add();$("refresh").onclick=refresh;
+$("save").onclick=async()=>{try{const anchors=[...document.querySelectorAll(".anchor")].map(d=>Object.fromEntries([...d.querySelectorAll("input")].map(i=>[i.dataset.field,i.value])));const scene=await post("/v1/mnemonics",{word:$("word").value,anchors});show(scene);$("status").textContent="Сцена сохранена: "+scene.scene_id;await refresh()}catch(e){$("status").textContent="Ошибка: "+e.message}};
+add("ta","танцующая тарелка","держит чашку");add("sə","смешной робот","наливает чай в чашку");refresh();
 </script></body></html>
