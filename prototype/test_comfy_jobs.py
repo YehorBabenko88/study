@@ -33,8 +33,10 @@ class FakeComfyTests(unittest.TestCase):
                 self.send_response(200);self.end_headers()
                 value={}
                 if owner.mode=='complete':value={'12345678-1234-1234-1234-123456789012':{'outputs':{'7':{'images':[{'filename':'Study_1.png','type':'output'}]}}}}
-                if owner.mode=='error':value={'12345678-1234-1234-1234-123456789012':{'status':{'status_str':'error'}}}
-                self.wfile.write(json.dumps(value).encode())
+                if owner.mode in ('error','oom','model'):
+                    message={'error':'execution failed','oom':'CUDA out of memory','model':'checkpoint not found'}[owner.mode]
+                    value={'12345678-1234-1234-1234-123456789012':{'status':{'status_str':'error','messages':[['execution_error',{'exception_message':message}]]}}}
+                self.wfile.write(b'not json' if owner.mode=='broken' else json.dumps(value).encode())
         self.server=ThreadingHTTPServer(('127.0.0.1',0),Handler)
         self.thread=threading.Thread(target=self.server.serve_forever,daemon=True);self.thread.start()
         self.env=patch.dict(os.environ,{'STUDY_COMFYUI_CHECKPOINT':'test.safetensors'});self.env.start()
@@ -52,6 +54,7 @@ class FakeComfyTests(unittest.TestCase):
     def test_complete_and_request_binding(self):
         result=self.wait(self.registry.submit('cup'))
         self.assertEqual(result['status'],'complete');self.assertEqual(result['images'][0]['filename'],'Study_1.png')
+        self.assertEqual(result['state'],'completed')
         with self.assertRaises(KeyError):self.registry.result('12345678-1234-1234-1234-123456789012')
     def test_execution_failure(self):
         self.mode='error';self.assertEqual(self.wait(self.registry.submit('cup'))['status'],'failed')
@@ -76,7 +79,22 @@ class FakeComfyTests(unittest.TestCase):
             for bad in (dict(request,mode='image_conditioned'),dict(request,references=['asset']),dict(request,workflow={}),dict(request,contract_version=True)):
                 with self.subTest(bad=bad),self.assertRaises(ValueError):c.consume_generation_request(bad)
     def test_deadline(self):
-        self.mode='pending';self.assertEqual(self.wait(self.registry.submit('cup'))['status'],'timed_out')
+        self.mode='pending';job=self.wait(self.registry.submit('cup'))
+        self.assertEqual(job['status'],'timed_out');self.assertEqual(job['state'],'failed')
+    def test_actionable_diagnostics_for_oom_missing_model_and_corrupt_json(self):
+        for mode,code in [('oom','out_of_vram'),('model','model_missing'),('broken','invalid_response')]:
+            self.mode=mode
+            job=self.wait(self.registry.submit('cup'))
+            self.assertEqual(job['state'],'failed')
+            self.assertEqual(job['error']['code'],code)
+    def test_stopped_comfy_is_distinct_from_execution_error(self):
+        import socket
+        self.registry.timeout=2
+        with socket.socket() as sock:
+            sock.bind(('127.0.0.1',0));port=sock.getsockname()[1]
+        with patch.object(c,'BASE','http://127.0.0.1:'+str(port)):
+            job=self.wait(self.registry.submit('cup'))
+        self.assertEqual(job['error']['code'],'comfyui_unavailable')
     def test_cancel_does_not_complete(self):
         self.mode='pending';job=self.registry.submit('cup');self.registry.cancel(job['prompt_id'])
         time.sleep(.05);self.assertEqual(self.registry.result(job['prompt_id'])['status'],'cancelled')

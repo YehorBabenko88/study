@@ -4,9 +4,23 @@ import os
 import re
 import urllib.request
 import urllib.parse
+import urllib.error
 from uuid import uuid4
 
 BASE="http://127.0.0.1:8188"
+
+class ComfyFailure(RuntimeError):
+    def __init__(self, code):
+        self.code = code
+        super().__init__(code)
+
+def _diagnostic(value):
+    text=str(value).casefold()
+    if any(term in text for term in ('out of memory','outofmemory','cuda error: memory')):
+        return 'out_of_vram'
+    if any(term in text for term in ('checkpoint','ckpt_name','model not found')):
+        return 'model_missing'
+    return 'upstream_failed'
 
 class _NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
@@ -24,10 +38,17 @@ def _request(path,payload=None,timeout=15):
     url=BASE+path
     data=json.dumps(payload).encode("utf-8") if payload is not None else None
     req=urllib.request.Request(url,data=data,headers={"Content-Type":"application/json"} if data else {},method="POST" if data else "GET")
-    with _open(req,timeout=timeout) as response:
-        raw=_read_bounded(response,4_000_000,timeout)
+    try:
+        with _open(req,timeout=timeout) as response:
+            raw=_read_bounded(response,4_000_000,timeout)
+    except urllib.error.HTTPError as exc:
+        with exc:
+            detail=_read_bounded(exc,4_000_000,timeout)
+        raise ComfyFailure(_diagnostic(detail)) from exc
     if len(raw)>4_000_000:raise ValueError("Comfy response too large")
-    return json.loads(raw)
+    result=json.loads(raw)
+    if not isinstance(result,dict):raise ValueError('Comfy JSON object required')
+    return result
 def _read_bounded(response,limit,timeout):
     deadline=time.monotonic()+timeout
     chunks=[];size=0
@@ -97,7 +118,8 @@ class JobRegistry:
         return row
 
     def _public(self,row):
-        return {'prompt_id':row[0], 'job_id':row[0], 'request_id':row[1], 'status':row[3],
+        state={'complete':'completed','timed_out':'failed','interrupted':'failed'}.get(row[3],row[3])
+        return {'prompt_id':row[0], 'job_id':row[0], 'request_id':row[1], 'status':row[3], 'state':state,
                 'created_at':row[5], 'updated_at':row[6], 'images':json.loads(row[7] or '[]'),
                 'error':json.loads(row[8]) if row[8] else None}
 
@@ -142,7 +164,7 @@ class JobRegistry:
                     self.db.execute("UPDATE jobs SET state='running',updated=? WHERE id=?",(time.time(),row[0])); self.db.commit()
             if not row:
                 self.stop.wait(self.poll); continue
-            job_id=row[0]; deadline=time.monotonic()+self.timeout
+            job_id=row[0]; deadline=time.monotonic()+self.timeout; remote=None
             try:
                 response=_request('/prompt',dict(json.loads(row[2]),client_id=job_id),timeout=min(15,self.timeout))
                 remote=response.get('prompt_id')
@@ -155,7 +177,8 @@ class JobRegistry:
                     history=_request('/history/'+remote,timeout=max(.01,min(15,deadline-time.monotonic())))
                     job=history.get(remote)
                     if job:
-                        if job.get('status',{}).get('status_str')=='error':raise RuntimeError('ComfyUI execution failed')
+                        if job.get('status',{}).get('status_str')=='error':
+                            raise ComfyFailure(_diagnostic(json.dumps(job.get('status',{}))))
                         images=[]
                         for value in job.get('outputs',{}).values():
                             for entry in value.get('images',[]):
@@ -167,8 +190,20 @@ class JobRegistry:
                     self.stop.wait(self.poll)
             except Exception as exc:
                 expired=time.monotonic()>=deadline
-                code='generation_timeout' if expired else 'upstream_failed'
-                self._finish(job_id,'timed_out' if expired else 'failed',error={'code':code,'message':'Local ComfyUI request failed. Check service and checkpoint configuration.'})
+                if isinstance(exc,ComfyFailure):code=exc.code
+                elif isinstance(exc,TimeoutError) or (isinstance(exc,urllib.error.URLError) and isinstance(exc.reason,TimeoutError)):
+                    code='generation_timeout' if remote else 'comfyui_unavailable'
+                elif isinstance(exc,(urllib.error.URLError,ConnectionError)):code='comfyui_unavailable'
+                elif isinstance(exc,(ValueError,TypeError,AttributeError,KeyError)):code='invalid_response'
+                else:code='generation_timeout' if expired else 'upstream_failed'
+                messages={
+                    'generation_timeout':'Generation deadline exceeded; check ComfyUI before retrying.',
+                    'out_of_vram':'ComfyUI ran out of video memory. Use a smaller reviewed model or resolution.',
+                    'model_missing':'The reviewed checkpoint is unavailable in ComfyUI. Check STUDY_COMFYUI_CHECKPOINT.',
+                    'comfyui_unavailable':'Local ComfyUI is unreachable or not responding. Check the service before retrying; acceptance may be uncertain.',
+                    'invalid_response':'ComfyUI returned a malformed or unsupported response.',
+                    'upstream_failed':'ComfyUI execution failed. Inspect local service logs.'}
+                self._finish(job_id,'timed_out' if code=='generation_timeout' else 'failed',error={'code':code,'message':messages[code]})
 
     def close(self):
         self.stop.set()
