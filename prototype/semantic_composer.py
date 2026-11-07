@@ -75,6 +75,15 @@ def _asset(value):
     return value
 
 
+def _source_asset(value):
+    """Accept historical board UUID spellings; normalize only the manifest."""
+    _string(value, 80, 'source asset ID')
+    try:
+        return str(UUID(value))
+    except (ValueError, AttributeError) as exc:
+        raise ValueError('Invalid source asset ID') from exc
+
+
 def _clean(value):
     # Prompt sanitation is not a guarantee against natural-language injection.
     return ' '.join(''.join(' ' if unicodedata.category(c).startswith('C') else c
@@ -105,7 +114,8 @@ def generation_request(revision):
     This function deliberately cannot produce image-conditioned requests. Agent A
     must implement actual byte upload/workflow wiring before extending it.
     """
-    if type(revision) is not dict or revision.get('schema_version') != 1:
+    if (type(revision) is not dict or type(revision.get('schema_version')) is not int
+            or revision['schema_version'] != 1):
         raise ValueError('Expected composer schema version 1')
     mode = revision.get('mode')
     if mode == 'image_conditioned':
@@ -114,8 +124,11 @@ def generation_request(revision):
         raise ValueError('Invalid mode')
     prompt = _clean(_string(revision.get('effective_prompt'), 1200, 'effective prompt'))
     _string(prompt, 1200, 'effective prompt')
+    parameters = revision.get('parameters')
+    if type(parameters) is not dict or set(parameters) != set(DEFAULT_PARAMETERS):
+        raise ValueError('Stored revision must specify all generation parameters')
     return {'contract_version': 1, 'mode': mode, 'prompt': prompt,
-            'parameters': _parameters(revision.get('parameters')), 'references': []}
+            'parameters': _parameters(parameters), 'references': []}
 
 
 _UNSET = object()
@@ -336,11 +349,11 @@ def compose(graph, roots, *, direction='outgoing', max_depth=4, max_nodes=24,
         if type(assets) is not list or len(assets) > 12:
             raise ValueError('Invalid image gallery')
         for asset in assets:
-            _asset(asset)
+            _source_asset(asset)
         if len(set(assets)) != len(assets):
             raise ValueError('Duplicate gallery asset')
         if 'asset_id' in node:
-            _asset(node['asset_id'])
+            _source_asset(node['asset_id'])
         by_id[nid] = node
     for edge in edges:
         if (type(edge) is not dict or type(edge.get('from')) is not str
@@ -388,9 +401,9 @@ def compose(graph, roots, *, direction='outgoing', max_depth=4, max_nodes=24,
     references = []
     for nid in selected:
         node = by_id[nid]
-        assets = set(node.get('image_assets', []))
+        assets = {_source_asset(asset) for asset in node.get('image_assets', [])}
         if 'asset_id' in node:
-            assets.add(node['asset_id'])
+            assets.add(_source_asset(node['asset_id']))
         references.extend({'node_id': nid, 'asset_id': asset} for asset in sorted(assets))
     if len({ref['asset_id'] for ref in references}) > 8:
         raise ValueError('Selection exceeds 8 reference images')

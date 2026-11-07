@@ -34,3 +34,33 @@ Completed PNGs pass through the adapter's owned-job output validation. Assets ar
 ## Isolated validation
 
 `../venv/Scripts/python.exe -m unittest discover -s prototype -p test_composition_service.py` covers fake loopback HTTP submission/polling/PNG fetch, exact reviewed parameters, durable request conflicts, cancellation, restart after submission and while running, interrupted/failure/timeout results, history, immutable asset writes, deduplication, and crash-after-image-publication recovery. Test assets, queues, and composition databases use temporary directories. `test_semantic_links.py` preserves the link/undo contract; the original #16 compiler tests continue to run unchanged.
+
+## Compatibility review against updated PR #16
+
+The external PR #16 head `44f75f08470994d77052207773987bcf9eddbf6f` was compared with the initially integrated `868498c` implementation. The final integration adopts its source-asset compatibility and strict adapter request validation without replacing the unified HTTP service or importing a second submission journal.
+
+Source image asset UUIDs now accept the historical spellings accepted by `spatial_board` (uppercase, compact hexadecimal, braced, and `urn:uuid:` forms). Only the `references` manifest is normalized to canonical lowercase hyphenated UUIDs; aliases deduplicate there. The immutable `source_graph_json` and its SHA-256 retain the original raw spelling, and caller input is not mutated. Generated output asset IDs remain strictly canonical.
+
+`generation_request` requires `schema_version` to be integer 1: booleans and floating-point 1.0 are rejected. Saved generation parameters must contain exactly seed, width, height, and steps; missing fields no longer acquire implicit defaults at submission time. Creation still accepts partial user overrides and writes a complete validated parameter snapshot.
+
+Upstream's newer handoff APIs map to this service as follows:
+
+| Updated upstream concept | Unified service equivalent |
+| --- | --- |
+| `prepare_submission` before network I/O | Durable `composition_requests` reservation bound to an immutable revision, using a deterministic adapter request key |
+| Idempotent submission-to-job binding | Adapter's persistent request lookup plus stable reserved service job ID; recovery after acceptance records the same local adapter job |
+| `backend='study_local'` | `prompt_id_kind='local'`, with separate `upstream_prompt_id` |
+| `find_job` reverse lookup | Stable service job ID in the request journal, queried through the jobs endpoint; adapter local ID remains attached |
+| `recovery_state` intents and unfinished jobs | GET latest/history/jobs reconciles the persisted reservations and accepted jobs, preserving interrupted terminal results |
+
+One implementation difference remains explicit: the unified service journal stores the immutable revision ID and adapter request key, and reconstructs the request using `generation_request`; upstream additionally snapshots request JSON in its submission-intent row. With the same compiler and strict complete parameter snapshot, reconstruction is deterministic and the crash-recovery tests exercise it. A future compiler normalization change may make an old reservation's reconstructed request differ; the adapter refuses a changed request under its existing key rather than silently submitting a second job. Replay across arbitrary future compiler versions is not promised by this integration.
+
+`test_composer_compat.py` covers legacy spellings, manifest alias deduplication, raw snapshot/revision retention, strict output IDs, exact schema type, complete saved parameter keys, and partial override defaults at creation. The original #16 compiler tests remain unchanged.
+
+## Integrated execution safety
+
+The adapter keeps the fixed loopback/no-redirect/no-proxy workflow and complete reviewed parameters. Restored queues consult the enabled predicate before dequeuing, so reading history while disabled cannot start persisted work. PNG outputs are fully decoded after structural verification and remain size/pixel bounded. Queue configuration and explicit empty request keys reject invalid values.
+
+An absolute request watchdog covers headers and response-body sockets. On Windows, shutdown alone did not wake a blocked recv: the integration additionally detaches and closes the owned descriptor, and preserves the watchdog while HTTPConnection hands ownership to a readable HTTPResponse. Direct socket and buffered-response regressions prove expiration invalidates the socket; the drip-header test alone is not used as proof of the fix. Registry close waits for bounded in-flight workers before closing SQLite.
+
+OCR processing and explicit retries are serialized per document with weakly held locks. A slow stale retry cannot overwrite a later recovered page. Original PDFs and already-extracted text remain intact; legacy unavailable-OCR progress is repaired into retryable state, rather than silently complete.

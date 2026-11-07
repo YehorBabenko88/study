@@ -11,5 +11,14 @@
     "20f1318e200e99c29ad083a2d68fa3599411d535",
     "f0c0ed27a45870aa8e70338b938fa62dbd161121"
   ],
-  "method": "Cherry-pick reviewed A/C/D/B16 commits into a new integration branch; preserve B11 link edit contract separately; QA14 historical FAIL evidence not imported or rewritten."
+  "method": "Cherry-pick reviewed A/C/D/B16 commits into a new integration branch; preserve B11 link edit contract separately; QA14 historical FAIL evidence not imported or rewritten.",
+  "post_freeze_reviewed_updates": {
+    "A12_observed_head": "cb7ceb34601a16ca4028eeb5286ed10a6501a8e2",
+    "adapter_safety_selected": "580210d1f0959fdfb086c3d693e7308d0afbc016",
+    "B16_observed_head": "44f75f08470994d77052207773987bcf9eddbf6f",
+    "QA14_observed_head": "1b77fbdb0d933b73348dff78227787c69f0ce055",
+    "OCR_concurrency_selected": "a27be7ad0d88d6c4059d1e8b9335aa88c21eb4a8"
+  },
+  "post_freeze_method": "Port scoped safety/legacy compatibility hunks with independent regressions; retain the unified composition_service durable journal instead of overwriting it with a second handoff API.",
+  "additional_windows_fix": "Actual socket descriptor close at deadline and watchdog preservation during HTTPResponse ownership transfer, verified by direct and buffered socket regressions."
 }

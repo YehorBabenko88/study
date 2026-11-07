@@ -4,6 +4,11 @@ import os
 import re
 import urllib.request
 import urllib.parse
+import http.client
+import socket
+import threading
+import time
+import math
 from uuid import uuid4
 
 BASE="http://127.0.0.1:8188"
@@ -12,7 +17,63 @@ class _NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         raise ValueError("ComfyUI redirects are forbidden")
 
-_opener=urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoRedirect())
+class _DeadlineConnection(http.client.HTTPConnection):
+    """Abort the actual loopback socket at an absolute request deadline."""
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.deadline=time.monotonic()+self.timeout
+        self.timer=None
+
+    def connect(self):
+        super().connect()
+        sock=self.sock
+        def expire():
+            try:sock.shutdown(socket.SHUT_RDWR)
+            except OSError:pass
+            # Windows shutdown alone may leave select/recv asleep. Detach and
+            # close the owned descriptor even while HTTPResponse holds makefile
+            # references, so deadline expiration actually invalidates the socket.
+            try:socket.close(sock.detach())
+            except OSError:pass
+        self.timer=threading.Timer(max(0,self.deadline-time.monotonic()),expire)
+        self.timer.daemon=True
+        self.timer.start()
+
+    def getresponse(self):
+        # HTTPConnection closes its socket wrapper for Connection: close before
+        # returning the still-readable response. Keep that response's watchdog.
+        self._reading_response=True
+        try:return super().getresponse()
+        finally:self._reading_response=False
+
+    def close(self):
+        if self.timer is not None and not getattr(self,'_reading_response',False):self.timer.cancel()
+        super().close()
+
+class _DeadlineHTTPHandler(urllib.request.HTTPHandler):
+    def http_open(self,request):
+        connection=None
+        def factory(*args,**kwargs):
+            nonlocal connection
+            connection=_DeadlineConnection(*args,**kwargs)
+            return connection
+        try:
+            response=self.do_open(factory,request)
+        except Exception as exc:
+            if connection is not None:
+                expired=time.monotonic()>=connection.deadline
+                connection.close()
+                if expired:raise TimeoutError('Comfy request deadline exceeded') from exc
+            raise
+        response._study_deadline=connection.deadline
+        original_close=response.close
+        def close():
+            if connection.timer is not None:connection.timer.cancel()
+            original_close()
+        response.close=close
+        return response
+
+_opener=urllib.request.build_opener(urllib.request.ProxyHandler({}), _NoRedirect(), _DeadlineHTTPHandler())
 def _open(url,timeout):
     target=url.full_url if isinstance(url,urllib.request.Request) else url
     parsed=urllib.parse.urlsplit(target)
@@ -29,11 +90,12 @@ def _request(path,payload=None,timeout=15):
     if len(raw)>4_000_000:raise ValueError("Comfy response too large")
     return json.loads(raw)
 def _read_bounded(response,limit,timeout):
-    deadline=time.monotonic()+timeout
+    deadline=min(time.monotonic()+timeout,getattr(response,"_study_deadline",float("inf")))
     chunks=[];size=0
     while size<=limit:
         if time.monotonic()>=deadline:raise TimeoutError('Comfy response deadline exceeded')
         chunk=response.read1(min(65536,limit+1-size))
+        if time.monotonic()>=deadline:raise TimeoutError("Comfy response deadline exceeded")
         if not chunk:break
         chunks.append(chunk);size+=len(chunk)
     return b''.join(chunks)
@@ -73,7 +135,12 @@ class QueueFull(RuntimeError):
     pass
 
 class JobRegistry:
-    def __init__(self, path, *, workers=1, capacity=8, timeout=120, poll=.25, start_workers=True):
+    def __init__(self, path, *, workers=1, capacity=8, timeout=120, poll=.25, start_workers=True, enabled=lambda:True):
+        if type(workers) is not int or not 1<=workers<=4 or type(capacity) is not int or not 1<=capacity<=64:
+            raise ValueError('Use 1-4 workers and capacity 1-64')
+        if type(timeout) not in (int,float) or type(poll) not in (int,float) or not math.isfinite(timeout) or not .01<=timeout<=600 or not math.isfinite(poll) or not 0<poll<=5:
+            raise ValueError('Use finite timeout .01-600 seconds and poll interval up to 5 seconds')
+        self.enabled=enabled
         self.lock = threading.RLock()
         self.stop = threading.Event()
         self.timeout, self.poll, self.capacity = timeout, poll, capacity
@@ -103,7 +170,7 @@ class JobRegistry:
 
     def submit(self,prompt,seed=0,request_id=None,*,width=512,height=512,steps=20):
         payload=json.dumps({'prompt':workflow(prompt,seed=seed,width=width,height=height,steps=steps)},sort_keys=True)
-        request_id=request_id or str(uuid4())
+        request_id=str(uuid4()) if request_id is None else request_id
         if not isinstance(request_id,str) or not re.fullmatch(r'[A-Za-z0-9_.:-]{1,120}',request_id):
             raise ValueError('Invalid request_id')
         with self.lock:
@@ -136,6 +203,9 @@ class JobRegistry:
 
     def _worker(self):
         while not self.stop.is_set():
+            if not self.enabled():
+                self.stop.wait(self.poll)
+                continue
             with self.lock:
                 row=self.db.execute("SELECT * FROM jobs WHERE state='queued' ORDER BY created LIMIT 1").fetchone()
                 if row:
@@ -172,7 +242,7 @@ class JobRegistry:
 
     def close(self):
         self.stop.set()
-        for t in self.threads:t.join(16)
+        for t in self.threads:t.join()
         with self.lock:self.db.close()
 
 
@@ -190,7 +260,7 @@ def registry():
         if _registry is None:
             _registry=JobRegistry(os.getenv('STUDY_COMFYUI_DB',str(Path(__file__).with_name('comfy_jobs.sqlite'))),
                 workers=int(os.getenv('STUDY_COMFYUI_WORKERS','1')), capacity=int(os.getenv('STUDY_COMFYUI_CAPACITY','8')),
-                timeout=float(os.getenv('STUDY_COMFYUI_TIMEOUT','120')))
+                timeout=float(os.getenv('STUDY_COMFYUI_TIMEOUT','120')),enabled=configured)
         return _registry
 
 def submit(prompt,seed=0,request_id=None,*,width=512,height=512,steps=20):
@@ -213,5 +283,7 @@ def image_bytes(prompt_id,filename,subfolder=''):
         with Image.open(BytesIO(data)) as im:
             if im.format!='PNG' or im.width*im.height>16_000_000:raise ValueError('Invalid output image')
             im.verify()
+        with Image.open(BytesIO(data)) as im:
+            im.load()
     except (OSError,Image.DecompressionBombError) as exc:raise ValueError('Invalid PNG') from exc
     return data
