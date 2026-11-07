@@ -162,7 +162,14 @@ class Handler(BaseHTTPRequestHandler):
                     raise ValueError("word must be string")
                 item = SAMPLE.get(word.casefold().strip())
                 if item is None:
-                    return self.respond(404, {"error": "word_not_in_demo"})
+                    translation = data.get("translation","")
+                    article = data.get("article","")
+                    if (not 1 <= len(word.strip()) <= 120 or not isinstance(translation,str)
+                        or not 1 <= len(translation.strip()) <= 200 or
+                        not isinstance(article,str) or article not in ("","der","die","das")):
+                        raise ValueError("New words require a German lemma, a user-verified Russian meaning, and optional der/die/das")
+                    item = LexicalItem(word.strip(),"de",translation.strip(),article,"")
+                # User-authored translations are not claimed to be dictionary-verified.
                 raw_anchors = data.get("anchors")
                 if not isinstance(raw_anchors, list) or not 1 <= len(raw_anchors) <= 20:
                     raise ValueError("1–20 anchors required")
