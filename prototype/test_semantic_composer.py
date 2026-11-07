@@ -40,9 +40,23 @@ class ComposerTests(unittest.TestCase):
         doc = {'nodes': [{'id': str(i), 'type': 'note', 'text': '&lt;b&gt;' + 'x' * 400 + '&lt;/b&gt;'} for i in range(80)],
                'edges': [{'from': '0', 'to': str(i), 'relation': 'meaning'} for i in range(1, 80)]}
         result = compose(doc, '0', max_nodes=80)
-        self.assertLessEqual(len(result['prompt']), 8192)
+        self.assertEqual(len(result['prompt']), 1200)
         self.assertTrue(result['prompt_truncated'])
         self.assertNotIn('<b>', result['prompt'])
+        doc['nodes'].reverse(); doc['edges'].reverse()
+        self.assertEqual(result, compose(doc, '0', max_nodes=80))
+        shorter = compose(doc, '0', max_nodes=80, max_prompt_chars=500)
+        self.assertEqual(shorter['prompt'], result['prompt'][:500])
+        self.assertTrue(shorter['prompt_truncated'])
+        self.assertEqual(shorter['provenance'], result['provenance'])
+
+    def test_prompt_budget_validation_and_no_truncation(self):
+        for value in (0, -1, 1201, True, 100.0, '500'):
+            with self.assertRaises(ValueError):
+                compose(self.graph(), 'a', max_prompt_chars=value)
+        result = compose(self.graph(), 'a')
+        self.assertFalse(result['prompt_truncated'])
+        self.assertLessEqual(len(result['prompt']), 1200)
 
     def test_invalid_graph(self):
         for doc in ({'nodes': [], 'edges': []}, {'nodes': [{'id': 'a', 'type': 'script'}]}, {'nodes': [{'id': 'a', 'type': 'word'}], 'edges': [{'from': 'a', 'to': 'missing'}]}):

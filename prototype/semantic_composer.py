@@ -63,14 +63,14 @@ def _graph(document):
     return indexed, edges
 
 
-def compose(document, root_id, *, max_depth=3, max_nodes=64, use_references=False):
+def compose(document, root_id, *, max_depth=3, max_nodes=64, max_prompt_chars=1200, use_references=False):
     """Traverse incident links breadth-first with stable ordering and bounded output.
 
     References are deliberately unavailable until an image-conditioned executor is
     implemented. Supplying image assets alone never switches generation mode.
     """
     if use_references: raise ValueError('image-conditioned workflow is not supported by this composer')
-    for value, minimum, maximum in ((max_depth, 0, 32), (max_nodes, 1, 256)):
+    for value, minimum, maximum in ((max_depth, 0, 32), (max_nodes, 1, 256), (max_prompt_chars, 1, 1200)):
         if type(value) is not int or not minimum <= value <= maximum: raise ValueError('invalid traversal limit')
     nodes, edges = _graph(document)
     if not isinstance(root_id, str) or root_id not in nodes: raise ValueError('unknown root node')
@@ -96,7 +96,7 @@ def compose(document, root_id, *, max_depth=3, max_nodes=64, use_references=Fals
     for source, relation, target in relations:
         lines.append(f"{_clean(nodes[source].get('text', ''))} {relation} {_clean(nodes[target].get('text', ''))}")
     prompt = '\n'.join(lines)
-    return {'prompt': prompt[:8192], 'prompt_truncated': len(prompt) > 8192, 'node_ids': selected, 'provenance': provenance,
+    return {'prompt': prompt[:max_prompt_chars], 'prompt_truncated': len(prompt) > max_prompt_chars, 'node_ids': selected, 'provenance': provenance,
             'generation_mode': 'text-to-image', 'reference_images_used': False}
 
 
