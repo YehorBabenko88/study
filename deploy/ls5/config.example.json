@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "target_host": "LS5",
+  "app_root": "C:\\Study",
+  "study": {
+    "host": "127.0.0.1",
+    "port": 8766,
+    "python": "C:\\Study\\venvs\\study\\Scripts\\python.exe",
+    "release_dir": "C:\\Study\\releases\\current",
+    "data_dir": "C:\\Study\\data"
+  },
+  "comfy": {
+    "enabled": false,
+    "host": "127.0.0.1",
+    "port": 8188,
+    "python": "C:\\Study\\venvs\\comfy\\Scripts\\python.exe",
+    "directory": "C:\\Study\\ComfyUI",
+    "checkpoint": ""
+  }
+}

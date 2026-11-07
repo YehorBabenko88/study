@@ -3,6 +3,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+from runtime_paths import data_path
 import re
 import sqlite3
 import threading
@@ -187,7 +188,7 @@ def service():
     global _service
     with _service_lock:
         if _service is None:
-            path = os.getenv('STUDY_COMPOSITIONS_DB', str(Path(__file__).with_name('compositions.sqlite')))
+            path = os.getenv('STUDY_COMPOSITIONS_DB', str(data_path(__file__,'compositions.sqlite')))
             _service = CompositionService(path)
         return _service
 

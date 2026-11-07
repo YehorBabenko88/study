@@ -127,6 +127,7 @@ import sqlite3
 import threading
 import time
 from pathlib import Path
+from runtime_paths import data_path
 from io import BytesIO
 
 TERMINAL = {'complete', 'failed', 'cancelled', 'timed_out', 'interrupted'}
@@ -258,7 +259,7 @@ def registry():
     global _registry
     with _registry_lock:
         if _registry is None:
-            _registry=JobRegistry(os.getenv('STUDY_COMFYUI_DB',str(Path(__file__).with_name('comfy_jobs.sqlite'))),
+            _registry=JobRegistry(os.getenv('STUDY_COMFYUI_DB',str(data_path(__file__,'comfy_jobs.sqlite'))),
                 workers=int(os.getenv('STUDY_COMFYUI_WORKERS','1')), capacity=int(os.getenv('STUDY_COMFYUI_CAPACITY','8')),
                 timeout=float(os.getenv('STUDY_COMFYUI_TIMEOUT','120')),enabled=configured)
         return _registry
