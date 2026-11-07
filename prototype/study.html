@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Study — лаборатория мнемоники</title>
+<style>
+body{font:16px system-ui,sans-serif;background:#f3f5fa;color:#182234;max-width:760px;margin:30px auto;padding:16px}
+main{background:white;border-radius:18px;padding:24px;box-shadow:0 8px 30px #16213a14}
+label{display:block;margin:14px 0 5px;font-weight:600}input{padding:12px;border:1px solid #aab3c3;border-radius:8px;width:95%;font:inherit}
+button{margin:16px 6px 10px 0;padding:12px 16px;background:#304e91;color:white;border:0;border-radius:9px;cursor:pointer}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f2f4f8;padding:14px;border-radius:10px}
+small{color:#596579}
+</style></head><body><main><h1>Study · лаборатория памяти</h1>
+<p>Создай необычный образ, связывающий звучание немецкого слова с его значением.</p>
+<label>Слово (Tasse, Haus, Stuhl)</label><input id="word" value="Tasse">
+<label>Звуковой фрагмент</label><input id="fragment" value="ta">
+<label>Предмет твоего образа</label><input id="object" value="танцующая тарелка">
+<label>Как предмет напоминает значение</label><input id="link" value="держит чашку">
+<button id="make">Создать сцену</button><button id="lookup">Найти слово</button>
+<pre id="output" role="status" aria-live="polite">Выбери действие.</pre>
+<label>Вспомни слово с артиклем</label><input id="answer" placeholder="die Tasse">
+<button id="check">Проверить без подсказки</button>
+<p><small>Локальный демонстратор: три проверенных вручную примера, без AI, PostgreSQL и сохранения данных. Сначала запусти web_app.py. Открывай HTML как локальный файл.</small></p>
+</main><script>
+const base="http://127.0.0.1:8766", output=document.getElementById("output");
+async function request(path,opts){try{const r=await fetch(base+path,opts);output.textContent=JSON.stringify(await r.json(),null,2)}catch(e){output.textContent="Сервер недоступен: "+e.message}}
+function val(id){return document.getElementById(id).value}
+function post(path,data){return request(path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})}
+document.getElementById("lookup").onclick=()=>request("/v1/lexicon/search?q="+encodeURIComponent(val("word")));
+document.getElementById("make").onclick=()=>post("/v1/mnemonics/preview",{word:val("word"),anchors:[{sound_fragment:val("fragment"),object_name:val("object"),meaning_link:val("link")}]});
+document.getElementById("check").onclick=()=>post("/v1/learning/check",{expected:({tasse:"die Tasse",haus:"das Haus",stuhl:"der Stuhl"})[val("word").toLowerCase()]||"",response:val("answer"),cues_shown:false});
+</script></body></html>
