@@ -86,10 +86,11 @@ class HttpContractTests(unittest.TestCase):
                 thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
                 base='http://127.0.0.1:'+str(server.server_port)
                 try:
-                    req=urllib.request.Request(base+'/v1/comfy/generate',data=b'{"prompt":"cup","request_id":"route-1"}',headers={'Content-Type':'application/json'})
+                    token=json.load(urllib.request.urlopen(base+'/v1/security/bootstrap'))['csrf_token']
+                    req=urllib.request.Request(base+'/v1/comfy/generate',data=b'{"prompt":"cup","request_id":"route-1"}',headers={'Content-Type':'application/json','X-Study-CSRF':token})
                     job=json.load(urllib.request.urlopen(req));self.assertEqual(job['status'],'queued')
                     self.assertEqual(json.load(urllib.request.urlopen(base+'/v1/comfy/jobs/'+job['prompt_id']))['request_id'],'route-1')
-                    req=urllib.request.Request(base+'/v1/comfy/jobs/'+job['prompt_id']+'/cancel',data=b'{}')
+                    req=urllib.request.Request(base+'/v1/comfy/jobs/'+job['prompt_id']+'/cancel',data=b'{}',headers={'X-Study-CSRF':token})
                     self.assertEqual(json.load(urllib.request.urlopen(req))['status'],'cancelled')
                     with self.assertRaises(urllib.error.HTTPError) as caught:urllib.request.urlopen(base+'/v1/comfy/jobs/12345678-1234-1234-1234-123456789012')
                     self.assertEqual(caught.exception.code,404)
