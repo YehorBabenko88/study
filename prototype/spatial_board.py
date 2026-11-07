@@ -41,6 +41,14 @@ def validate(doc):
                 UUID(n["asset_id"])
             except ValueError as exc:
                 raise ValueError("invalid asset reference") from exc
+        if "image_assets" in n:
+            assets=n["image_assets"]
+            if not isinstance(assets,list) or len(assets)>12 or len(set(map(str,assets)))!=len(assets):
+                raise ValueError("invalid image gallery")
+            for asset in assets:
+                if not isinstance(asset,str):raise ValueError("invalid image gallery id")
+                try:UUID(asset)
+                except (ValueError,TypeError) as exc:raise ValueError("invalid image gallery id") from exc
     for e in edges:
         if not isinstance(e,dict) or e.get("from") not in ids or e.get("to") not in ids:
             raise ValueError("dangling edge")
