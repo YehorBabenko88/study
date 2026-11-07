@@ -99,10 +99,10 @@ class JobRegistry:
     def _public(self,row):
         return {'prompt_id':row[0], 'job_id':row[0], 'request_id':row[1], 'status':row[3],
                 'created_at':row[5], 'updated_at':row[6], 'images':json.loads(row[7] or '[]'),
-                'error':json.loads(row[8]) if row[8] else None}
+                'error':json.loads(row[8]) if row[8] else None, 'prompt_id_kind':'local', 'upstream_prompt_id':row[4]}
 
-    def submit(self,prompt,seed=0,request_id=None):
-        payload=json.dumps({'prompt':workflow(prompt,seed=seed)},sort_keys=True)
+    def submit(self,prompt,seed=0,request_id=None,*,width=512,height=512,steps=20):
+        payload=json.dumps({'prompt':workflow(prompt,seed=seed,width=width,height=height,steps=steps)},sort_keys=True)
         request_id=request_id or str(uuid4())
         if not isinstance(request_id,str) or not re.fullmatch(r'[A-Za-z0-9_.:-]{1,120}',request_id):
             raise ValueError('Invalid request_id')
@@ -193,9 +193,9 @@ def registry():
                 timeout=float(os.getenv('STUDY_COMFYUI_TIMEOUT','120')))
         return _registry
 
-def submit(prompt,seed=0,request_id=None):
+def submit(prompt,seed=0,request_id=None,*,width=512,height=512,steps=20):
     if not configured():return {'status':'unavailable','reason':'comfyui_not_enabled'}
-    return registry().submit(prompt,seed,request_id)
+    return registry().submit(prompt,seed,request_id,width=width,height=height,steps=steps)
 
 def result(prompt_id):return registry().result(prompt_id)
 def cancel(prompt_id):return registry().cancel(prompt_id)

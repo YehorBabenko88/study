@@ -55,9 +55,16 @@ class IndependentDocumentAcceptance(unittest.TestCase):
         job = document_import.create(self.pdf(2,text=False), "scan.pdf")
         with patch.dict(sys.modules, {"pytesseract": fake}):
             result = document_import.process(job["id"], batch=1, ocr=True)
-        self.assertEqual(result["next_page"],1)
-        self.assertEqual(document_import.page(job["id"],0)["method"],"ocr_unavailable")
-        self.assertEqual(document_import.process(job["id"],batch=1)["status"],"complete")
+        self.assertEqual(result["next_page"],0)
+        self.assertEqual(result["status"],"ocr_error")
+        self.assertEqual(document_import.page(job["id"],0)["method"],"ocr_error")
+        self.assertEqual(document_import.process(job["id"],batch=1)["status"],"ocr_error")
+        with patch.dict(sys.modules, {"pytesseract": types.SimpleNamespace(image_to_string=lambda *a, **k: "Recovered German") }):
+            result=document_import.process(job["id"],batch=1,ocr=True,retry=True)
+            self.assertEqual(result["next_page"],1)
+            result=document_import.process(job["id"],batch=1,ocr=True)
+        self.assertEqual(result["status"],"complete")
+        self.assertEqual(document_import.page(job["id"],0)["text"],"Recovered German")
 
     def test_upload_limit_is_inclusive_and_rejects_oversize_without_writes(self):
         data = self.pdf(1)

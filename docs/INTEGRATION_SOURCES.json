@@ -1,0 +1,15 @@
+{
+  "base": "fdb540ffe63b4019cd95375b6806b0c8f455db29",
+  "A12": "eafbd8380ef2cc869a4ef458f0dfddb06cd8242d",
+  "C13": "666f108bd00d6af19f949371fd274c9a5838bc01",
+  "D15": "693a4b7fe6181e8213e1c0ad9fc19a82a23e78e1",
+  "B16": "868498c885a0a5805e56a3f260c9637c15297b82",
+  "B11_link_source": "49c678ae2ae137879205c2985e4a9c3f96867f3b",
+  "QA14_current": "f0c0ed27a45870aa8e70338b938fa62dbd161121",
+  "QA14_selected_commits": [
+    "0cc9d66205772002a0c8d257aadf243487eb6002",
+    "20f1318e200e99c29ad083a2d68fa3599411d535",
+    "f0c0ed27a45870aa8e70338b938fa62dbd161121"
+  ],
+  "method": "Cherry-pick reviewed A/C/D/B16 commits into a new integration branch; preserve B11 link edit contract separately; QA14 historical FAIL evidence not imported or rewritten."
+}

@@ -53,7 +53,8 @@ class IndependentMockGeneration(unittest.TestCase):
                 try:
                     with patch.object(comfy,'_registry',registry):
                         base=f'http://127.0.0.1:{app.server_port}'
-                        with urlopen(Request(base+'/v1/comfy/generate',data=b'{"prompt":"blue cube","request_id":"independent-http"}',headers={'Content-Type':'application/json'})) as r:job=json.load(r)
+                        with urlopen(base+'/v1/security/bootstrap') as r:token=json.load(r)['csrf_token']
+                        with urlopen(Request(base+'/v1/comfy/generate',data=b'{"prompt":"blue cube","request_id":"independent-http"}',headers={'Content-Type':'application/json','X-Study-CSRF':token})) as r:job=json.load(r)
                         deadline=time.monotonic()+3
                         while time.monotonic()<deadline:
                             with urlopen(base+'/v1/comfy/jobs/'+job['prompt_id']) as r:status=json.load(r)

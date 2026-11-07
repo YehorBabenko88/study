@@ -2,6 +2,8 @@
 from pathlib import Path
 from uuid import uuid4, UUID
 from io import BytesIO
+import os
+import tempfile
 from PIL import Image, ImageOps, UnidentifiedImageError
 
 ROOT=Path(__file__).with_name("board_assets")
@@ -23,11 +25,26 @@ def _decode(data):
         raise ValueError("Invalid image") from exc
     return im
 
-def store(data):
+def store(data, *, asset_id=None):
     im=_decode(data)
-    asset_id=str(uuid4())
+    asset_id=str(UUID(asset_id)) if asset_id is not None else str(uuid4())
     ROOT.mkdir(exist_ok=True)
-    im.save(ROOT/(asset_id+".png"),format="PNG",optimize=True)
+    encoded=BytesIO()
+    im.save(encoded,format="PNG",optimize=True)
+    payload=encoded.getvalue()
+    path=ROOT/(asset_id+".png")
+    # Publish complete bytes atomically and without replacing an original asset.
+    with tempfile.NamedTemporaryFile(dir=ROOT, prefix=".asset-", delete=False) as output:
+        temporary=Path(output.name)
+        output.write(payload)
+        output.flush()
+        os.fsync(output.fileno())
+    try:
+        try: os.link(temporary,path)
+        except FileExistsError:
+            if path.read_bytes()!=payload: raise ValueError("Asset ID already contains different image")
+    finally:
+        temporary.unlink()
     return {"asset_id":asset_id,"image_url":"/v1/board-assets/"+asset_id}
 
 def read(asset_id):

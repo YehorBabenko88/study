@@ -2,3 +2,12 @@ study_local.sqlite3
 study_local.sqlite3-*
 __pycache__/
 *.pyc
+# Local learner state and additive integration history must never be staged.
+compositions.sqlite*
+comfy_jobs.sqlite*
+study_lexicon.sqlite3*
+board_assets/
+document_uploads/
+speech_audio/
+generated_media/*
+!generated_media/.gitkeep

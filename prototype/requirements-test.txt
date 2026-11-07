@@ -1,0 +1,5 @@
+# Versions used for the Windows integration acceptance; no models/language data.
+-r requirements.txt
+PyMuPDF==1.26.7
+pytesseract==0.3.13
+playwright==1.64.1

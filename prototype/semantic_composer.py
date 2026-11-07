@@ -229,34 +229,40 @@ class CompositionStore:
                                  (parent['composition_id'],)).fetchone()[0]
             return self._append(db, scene, parent['composition_id'], version, revision_id)
 
-    def record_job(self, revision_id, prompt_id):
-        """Record a real accepted ComfyUI job, not a submission attempt.
+    def record_job(self, revision_id, prompt_id, *, job_id=None, prompt_id_kind="upstream", upstream_prompt_id=None):
+        """Record an accepted local queue or upstream job, not a submission attempt.
 
-        Call only after the adapter receives prompt_id. No network request here.
-        Duplicate prompt IDs are rejected to prevent ambiguous provenance.
+        prompt_id_kind distinguishes local adapter IDs from upstream ComfyUI IDs.
+        Local acceptance is not evidence of upstream execution. No network here.
+        Duplicate IDs are rejected to prevent ambiguous provenance.
         """
-        _string(prompt_id, 200, 'ComfyUI prompt ID')
+        _string(prompt_id, 200, 'generation prompt ID')
+        if job_id is not None: _string(job_id, 80, 'job ID')
+        if prompt_id_kind not in ('local', 'upstream'): raise ValueError('Invalid prompt ID kind')
+        if upstream_prompt_id is not None: _string(upstream_prompt_id, 200, 'upstream prompt ID')
         with self._connection() as db:
             revision = self._load(db, revision_id)
             request = generation_request(revision)
-            job = {'job_id': str(uuid4()), 'revision_id': revision_id,
-                   'prompt_id': prompt_id, 'request': request,
+            job = {'job_id': job_id or str(uuid4()), 'revision_id': revision_id,
+                   'prompt_id': prompt_id, 'prompt_id_kind': prompt_id_kind,
+                   'upstream_prompt_id': upstream_prompt_id, 'request': request,
                    'created_at': datetime.now(timezone.utc).isoformat(),
                    'reference_images_transmitted': False}
             try:
                 db.execute('INSERT INTO semantic_jobs VALUES (?,?,?,?)',
                            (job['job_id'], revision_id, prompt_id, _json(job)))
             except sqlite3.IntegrityError as exc:
-                raise ValueError('ComfyUI prompt ID already recorded') from exc
+                raise ValueError('Generation job or prompt ID already recorded') from exc
         return job
 
-    def record_result(self, job_id, *, status, outputs=None, error=None):
+    def record_result(self, job_id, *, status, outputs=None, error=None, upstream_prompt_id=None):
         """Append one terminal result. Each image is attributed to this job/revision.
 
         Agent A saves image bytes non-destructively, computes SHA-256, then supplies
         asset_id/hash pairs. Metadata is a caller assertion, not a pixel verifier.
         """
         _string(job_id, 80, 'job ID')
+        if upstream_prompt_id is not None: _string(upstream_prompt_id, 200, 'upstream prompt ID')
         if outputs is None:
             outputs = []
         if type(outputs) is not list or len(outputs) > 8:
@@ -271,18 +277,18 @@ class CompositionStore:
         if status == 'complete':
             if not outputs or error is not None:
                 raise ValueError('Complete requires images and no error')
-        elif status == 'failed':
+        elif status in ('failed', 'cancelled', 'timed_out', 'interrupted'):
             _string(error, 2000, 'job error')
             if outputs:
                 raise ValueError('Failed result cannot contain images')
         else:
-            raise ValueError('Expected terminal status complete/failed')
+            raise ValueError('Expected terminal generation status')
         with self._connection() as db:
             row = db.execute('SELECT revision_id FROM semantic_jobs WHERE job_id=?', (job_id,)).fetchone()
             if row is None:
                 raise KeyError(job_id)
             event = {'job_id': job_id, 'revision_id': row[0], 'status': status,
-                     'outputs': outputs, 'error': error,
+                     'outputs': outputs, 'error': error, 'upstream_prompt_id': upstream_prompt_id,
                      'created_at': datetime.now(timezone.utc).isoformat()}
             payload = _json(event)
             try:

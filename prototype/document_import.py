@@ -13,6 +13,7 @@ from visual_memory import DB,LOCK
 
 ROOT=Path(__file__).with_name("document_uploads")
 MAX_UPLOAD=100_000_000
+MAX_OCR_PIXELS=16_000_000
 @contextmanager
 def _db():
     db=sqlite3.connect(DB,timeout=30)
@@ -24,6 +25,15 @@ def _db():
       document_id TEXT NOT NULL,page_number INTEGER NOT NULL,
       text TEXT NOT NULL,method TEXT NOT NULL,
       PRIMARY KEY(document_id,page_number))""")
+    # Normalize legacy imports that incorrectly advanced past unavailable OCR.
+    # Preserve page rows/text and original PDFs; only repair progress metadata.
+    db.execute("""UPDATE documents SET status='ocr_error',
+      next_page=MIN(next_page,(SELECT MIN(page_number) FROM document_pages
+        WHERE document_id=documents.id AND method IN ('ocr_error','ocr_unavailable'))),
+      error=CASE WHEN error='' THEN 'OCR unavailable or failed; explicit OCR retry required.' ELSE error END
+      WHERE EXISTS(SELECT 1 FROM document_pages WHERE document_id=documents.id
+        AND method IN ('ocr_error','ocr_unavailable'))""")
+    db.commit()
     try:
         yield db
     finally:
@@ -78,6 +88,8 @@ def process(pid,batch=2,ocr=False,retry=False):
                 if ocr and not text.strip():
                     try:
                         import pytesseract
+                        if page.rect.width*page.rect.height*2.25>MAX_OCR_PIXELS:
+                            raise ValueError('PDF page exceeds OCR raster pixel limit')
                         pix=page.get_pixmap(matrix=fitz.Matrix(1.5,1.5),alpha=False)
                         image=Image.frombytes("RGB",(pix.width,pix.height),pix.samples)
                         text=pytesseract.image_to_string(image,lang="deu",config="--psm 3",timeout=30)
@@ -86,6 +98,10 @@ def process(pid,batch=2,ocr=False,retry=False):
                         method="ocr_error"
                         error='OCR unavailable or failed; check Tesseract and deu language data, then Retry. '+type(exc).__name__
                 with LOCK,_db() as db:
+                    previous=db.execute("SELECT text FROM document_pages WHERE document_id=? AND page_number=?",(pid,i)).fetchone()
+                    if not text.strip() and previous and previous[0].strip():
+                        # Failed/empty retries must never destroy already stored text.
+                        text=previous[0]
                     db.execute("INSERT OR REPLACE INTO document_pages VALUES(?,?,?,?)",(pid,i,text[:100000],method))
                     rows=dict(db.execute('SELECT page_number,method FROM document_pages WHERE document_id=?',(pid,)))
                     next_page=0
