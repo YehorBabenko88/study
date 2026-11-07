@@ -13,6 +13,9 @@ from sentence_translation import translate as translate_sentence, split_words
 from spatial_board import save as save_board, load as load_board, list_boards
 from board_assets import store as store_board_image, read as read_board_image, recognize as recognize_page
 from phonovision import analyze_wav, svg as sound_svg, metaphor
+from local_speech import transcribe as offline_transcribe, align as offline_align
+from pitch_shift import shift_wav
+from mesh_export import mesh as export_mesh
 
 SAMPLE = {
     "tasse": LexicalItem("Tasse", "de", "чашка", "die", "/ˈtasə/"),
@@ -166,12 +169,25 @@ class Handler(BaseHTTPRequestHandler):
         return self.respond(404, {"error": "not_found"})
 
     def do_PUT(self):
-        if self.path in ("/v1/board-assets","/v1/ocr","/v1/phonovision/analyze"):
+        if self.path in ("/v1/board-assets","/v1/ocr","/v1/phonovision/analyze","/v1/speech/transcribe","/v1/speech/align","/v1/speech/pitch-shift"):
             try:
                 length=int(self.headers.get("Content-Length","0"))
                 if not 1<=length<=8_000_000:
                     return self.respond(413,{"error":"invalid_image_size"})
                 data=self.rfile.read(length)
+                if self.path=="/v1/speech/transcribe":
+                    return self.respond(200,offline_transcribe(data,self.headers.get("X-Language","de")))
+                if self.path=="/v1/speech/align":
+                    return self.respond(200,offline_align(data,self.headers.get("X-Transcript",""),self.headers.get("X-Language","de")))
+                if self.path=="/v1/speech/pitch-shift":
+                    result=shift_wav(data,float(self.headers.get("X-Semitones","0")))
+                    if result is None:
+                        return self.respond(503,{"error":"librosa_not_installed"})
+                    self.send_response(200)
+                    self.send_header("Content-Type","audio/wav")
+                    self.send_header("Content-Length",str(len(result)))
+                    self.end_headers()
+                    return self.wfile.write(result)
                 if self.path=="/v1/phonovision/analyze":
                     result=analyze_wav(data)
                     result["svg"]=sound_svg(result)
@@ -202,16 +218,19 @@ class Handler(BaseHTTPRequestHandler):
             return self.respond(503, {"error": "pillow_not_installed"})
 
     def do_POST(self):
-        if self.path not in ("/v1/mnemonics/preview", "/v1/mnemonics", "/v1/learning/check", "/v1/learning/submit", "/v1/skills/record", "/v1/translate", "/v1/boards", "/v1/phonovision/metaphor") and not (self.path.startswith("/v1/mnemonics/") and self.path.endswith("/generate")):
+        if self.path not in ("/v1/mnemonics/preview", "/v1/mnemonics", "/v1/learning/check", "/v1/learning/submit", "/v1/skills/record", "/v1/translate", "/v1/boards", "/v1/phonovision/metaphor", "/v1/phonovision/mesh") and not (self.path.startswith("/v1/mnemonics/") and self.path.endswith("/generate")):
             return self.respond(404, {"error": "not_found"})
         try:
             length = int(self.headers.get("Content-Length", "0"))
-            max_body = MAX_BOARD_BODY if self.path == "/v1/boards" else MAX_BODY
+            max_body = MAX_BOARD_BODY if self.path in ("/v1/boards","/v1/phonovision/mesh") else MAX_BODY
             if length < 1 or length > max_body:
                 return self.respond(413, {"error": "invalid_body_length"})
             data = json.loads(self.rfile.read(length))
             if not isinstance(data, dict):
                 raise ValueError("JSON object required")
+            if self.path == "/v1/phonovision/mesh":
+                return self.respond(200,export_mesh(data.get("spectrogram"),data.get("shape","sphere"),
+                   data.get("strength",.25),data.get("label",""),data.get("profile")))
             if self.path == "/v1/phonovision/metaphor":
                 return self.respond(200,metaphor(data.get("fragment")))
             if self.path == "/v1/boards":
