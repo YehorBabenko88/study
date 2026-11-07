@@ -2,8 +2,8 @@
 param(
     [ValidateSet('Plan','Menu','Audit','Install','Update','Rollback','Launch','Stop','Restart','Status','Backup','Restore','Uninstall')][string]$Action='Plan',
     [ValidateSet('Managed','External','Disabled')][string]$Mode='Disabled',
-    [string]$Config=(Join-Path $PSScriptRoot 'config.example.json'),
-    [string]$Manifest=$(if (Test-Path -LiteralPath (Join-Path $PSScriptRoot '../../release_manifest.json')) {(Join-Path $PSScriptRoot '../../release_manifest.json')} else {(Join-Path $PSScriptRoot 'release_catalog.json')}),
+    [string]$Config,
+    [string]$Manifest,
     [string]$Audit,
     [string]$BootstrapApprovalFile,
     [string]$ApprovalFile,
@@ -16,6 +16,13 @@ param(
     [ValidateRange(0,300)][int]$MonitorSeconds=0
 )
 $ErrorActionPreference='Stop'
+# Windows PowerShell 5.1 can evaluate parameter defaults before PSScriptRoot is
+# available. Resolve script-relative defaults only after parameter binding.
+if (-not $Config) {$Config=Join-Path $PSScriptRoot 'config.example.json'}
+if (-not $Manifest) {
+    $bundledManifest=Join-Path $PSScriptRoot '../../release_manifest.json'
+    $Manifest=if (Test-Path -LiteralPath $bundledManifest -PathType Leaf) {$bundledManifest} else {Join-Path $PSScriptRoot 'release_catalog.json'}
+}
 
 function Read-SetupJson([string]$Path) {
     if (-not $Path -or -not (Test-Path -LiteralPath $Path -PathType Leaf)) {return $null}

@@ -99,6 +99,22 @@ class InstallerNativeBootstrapTests(unittest.TestCase):
         result=subprocess.run([SHELL,'-NoProfile','-NonInteractive','-File',str(self.script),'-Config',str(config),'-Manifest',str(catalog),'-Audit',str(audit)],capture_output=True,text=True,timeout=15)
         self.assertEqual(result.returncode,0,result.stderr);plan=json.loads(result.stdout)
         self.assertEqual(plan['status'],'READ_ONLY');self.assertFalse(plan['network_performed']);self.assertFalse(app.exists())
+    def test_windows_powershell_51_noargs_extracted_bundle_defaults_are_readonly(self):
+        windows_shell=Path(os.environ.get('SystemRoot','C:/Windows'))/'System32/WindowsPowerShell/v1.0/powershell.exe'
+        if not windows_shell.is_file():self.skipTest('Actual Windows PowerShell 5.1 executable unavailable')
+        bundle=self.root/'extracted bundle';scripts=bundle/'deploy/ls5';scripts.mkdir(parents=True)
+        setup=scripts/'setup.ps1';shutil.copy2(LS5/'setup.ps1',setup)
+        app=self.root/'must-not-be-created'
+        (scripts/'config.example.json').write_text(json.dumps({'app_root':str(app),'target_host':'LS5'}))
+        (scripts/'release_catalog.json').write_text(json.dumps({'catalog_type':'fallback','artifacts':[]}))
+        manifest=bundle/'release_manifest.json';manifest.write_text(json.dumps({'catalog_type':'release_manifest','artifacts':[],'release_ready':True}))
+        result=subprocess.run([str(windows_shell),'-NoProfile','-NonInteractive','-File',str(setup)],cwd=self.root,capture_output=True,text=True,timeout=20)
+        self.assertEqual(result.returncode,0,result.stderr)
+        value=json.loads(result.stdout)
+        self.assertEqual(value['status'],'READ_ONLY');self.assertFalse(value['network_performed']);self.assertFalse(value['filesystem_mutation'])
+        self.assertEqual(value['bootstrap_plan']['app_root'],str(app))
+        self.assertEqual(value['bootstrap_plan']['manifest_sha256'],hashlib.sha256(manifest.read_bytes()).hexdigest())
+        self.assertFalse(app.exists())
     def test_pc1_execution_refused_before_bootstrap(self):
         if socket.gethostname().upper()=='LS5':self.skipTest('PC1 refusal fixture is for non-LS5 hosts')
         config=self.root/'config.json';catalog=self.root/'catalog.json';app=self.root/'not-created'

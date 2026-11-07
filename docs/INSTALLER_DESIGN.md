@@ -1,6 +1,6 @@
 # Unified Study installer design and release research
 
-This change prepares an installer release contract; it does not certify or install LS5. SSH authentication remains blocked, so LS5 GPU, VRAM, RAM, free disk, driver and runtime state are unknown. The catalogue contains 19 pinned artifact candidates. A complete Study-only Python wheel lock is available; Managed ComfyUI remains blocked by its unresolved full dependency lock and hardware/model fit. No model, Torch wheel, Python ZIP, or portable runtime payload was downloaded during this research.
+This change prepares an installer release contract; it does not certify or install LS5. SSH authentication remains blocked, so LS5 GPU, VRAM, RAM, free disk, driver and runtime state are unknown. The catalogue contains 19 pinned artifact candidates. A complete Study-only Python wheel lock is available; An explicit CPU candidate now has a closed metadata-only dependency lock (see the candidate section below); Managed ComfyUI remains blocked by runtime acceptance and LS5 hardware/model fit. CUDA dependency closure remains unresolved. No model, Torch wheel, Python ZIP, or portable runtime payload was downloaded during this research.
 
 ## Three explicit modes
 
